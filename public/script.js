@@ -90,23 +90,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = buffer.getChannelData(0);
 
         for (let i = 0; i < bufferSize; i++) {
-            // White noise base (Hiss) - Slightly filtered feel
-            const white = (Math.random() * 2 - 1) * 0.012;
+            // White noise base (Hiss) - Made bit more audible
+            const white = (Math.random() * 2 - 1) * 0.025;
             
-            // Random "Dust" Crackles (High frequency impulses)
+            // Random "Dust" Crackles (High frequency impulses) - Increased density/loudness
             let crackle = 0;
-            if (Math.random() < 0.001) {
-                crackle = (Math.random() * 2 - 1) * 0.35;
+            if (Math.random() < 0.0015) {
+                crackle = (Math.random() * 2 - 1) * 0.45;
             }
             
             // Occasional deeper "Pops" (Low frequency thumps)
             let pop = 0;
-            if (Math.random() < 0.00015) {
-                pop = (Math.random() * 2 - 1) * 0.5;
+            if (Math.random() < 0.0002) {
+                pop = (Math.random() * 2 - 1) * 0.6;
             }
 
             // Low frequency surface rumble (Subtle oscillation)
-            const rumble = Math.sin(i * 0.002) * 0.005;
+            const rumble = Math.sin(i * 0.002) * 0.008;
 
             data[i] = white + crackle + pop + rumble;
         }
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         humOsc.frequency.value = 50; // Deep 50Hz hum
         
         const humGain = state.audioContext.createGain();
-        humGain.gain.value = 0.015; 
+        humGain.gain.value = 0.02; 
 
         humOsc.connect(humGain);
         humGain.connect(state.audioContext.destination);
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         thump.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.1);
 
         const thumpGain = ctx.createGain();
-        thumpGain.gain.setValueAtTime(0.5, ctx.currentTime);
+        thumpGain.gain.setValueAtTime(0.6, ctx.currentTime);
         thumpGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.2);
 
         thump.connect(thumpGain);
@@ -146,13 +146,13 @@ document.addEventListener('DOMContentLoaded', () => {
         thump.start();
         thump.stop(ctx.currentTime + 0.2);
 
-        // Buzzing/Crackle burst - Extended to 2 seconds
+        // Buzzing/Crackle burst - Extended to 2 seconds - Louder initial burst
         const burstSource = ctx.createBufferSource();
         burstSource.buffer = state.nodes.noiseBuffer;
         const burstGain = ctx.createGain();
         
-        burstGain.gain.setValueAtTime(0.4, ctx.currentTime);
-        burstGain.gain.exponentialRampToValueAtTime(0.1, ctx.currentTime + 2.0);
+        burstGain.gain.setValueAtTime(0.6, ctx.currentTime);
+        burstGain.gain.exponentialRampToValueAtTime(0.15, ctx.currentTime + 2.0);
         
         burstSource.connect(burstGain);
         burstGain.connect(ctx.destination);
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.loop = true;
 
         const gainNode = state.audioContext.createGain();
-        gainNode.gain.value = 0.12; 
+        gainNode.gain.value = 0.18; // Increased from 0.12 for more audible hiss/texture
 
         source.connect(gainNode);
         gainNode.connect(state.audioContext.destination);

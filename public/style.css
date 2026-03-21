@@ -1,10 +1,8 @@
 :root {
-    --bg-color: #0a0a0a; /* Darker Noir background */
+    --bg-color: #0a0a0a;
     --text-color: #d1d1d1;
-    --accent-color: #C5A059; /* Sophisticated Gold */
-    --wood-color: #2c1b18;
+    --accent-color: #C5A059; /* Gold */
     --wood-texture: linear-gradient(45deg, #1a0f0d 25%, #231512 25%, #231512 50%, #1a0f0d 50%, #1a0f0d 75%, #231512 75%, #231512 100%);
-    --panel-bg: #141414;
     --font-heading: 'Playfair Display', serif;
     --font-ui: 'Roboto Mono', monospace;
 }
@@ -32,19 +30,19 @@ body {
     display: flex;
     justify-content: center;
     padding-top: 20px;
-    opacity: 0.5;
+    opacity: 0.3;
 }
 
 .ad-placeholder {
     width: 120px;
     height: 600px;
     background: #111;
-    color: #444;
+    color: #333;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
-    border: 1px solid #222;
+    font-size: 0.7rem;
+    border: 1px solid #1a1a1a;
 }
 
 .main-content {
@@ -72,58 +70,78 @@ body {
 
 .tagline {
     display: block;
-    font-size: 0.9rem;
-    color: #666;
+    font-size: 0.8rem;
+    color: #555;
     font-family: var(--font-ui);
     margin-top: 10px;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 4px;
 }
 
-/* Turntable Hero */
+/* Fancy Turntable Hero */
 .turntable-hero {
     background: var(--wood-texture);
     background-size: 30px 30px;
-    padding: 50px;
-    border-radius: 4px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 100px rgba(0,0,0,0.5);
-    border: 1px solid #1a0f0d;
+    padding: 60px;
+    border-radius: 8px;
+    box-shadow: 
+        0 30px 60px rgba(0,0,0,0.9), 
+        inset 0 0 100px rgba(0,0,0,0.6),
+        0 0 0 2px #1a0f0d;
+    border: 1px solid #332211;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 50px;
     position: relative;
     width: 100%;
-    max-width: 650px;
+    max-width: 680px;
 }
 
 .turntable-platter {
-    width: 340px;
-    height: 340px;
-    background: #000;
+    width: 360px;
+    height: 360px;
+    background: #050505;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 0 40px #111, 0 10px 20px rgba(0,0,0,0.5);
     position: relative;
     margin-bottom: 40px;
+    /* Metallic Edge */
+    border: 4px solid #222;
+    box-shadow: 
+        0 0 0 4px #111,
+        inset 0 0 50px rgba(0,0,0,1),
+        0 15px 30px rgba(0,0,0,0.7);
+}
+
+/* Platter Strobe Dots dots around the edge */
+.turntable-platter::before {
+    content: '';
+    position: absolute;
+    top: -8px; left: -8px; right: -8px; bottom: -8px;
+    border-radius: 50%;
+    border: 2px dashed #333;
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 .vinyl-record {
-    width: 320px;
-    height: 320px;
+    width: 340px;
+    height: 340px;
     background: repeating-radial-gradient(
       #080808,
       #080808 1px,
-      #111 2px
+      #121212 2px
     );
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 15px rgba(0,0,0,1);
+    box-shadow: 0 0 20px rgba(0,0,0,1);
     transition: transform 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    z-index: 1;
 }
 
 .vinyl-record.spinning {
@@ -135,70 +153,77 @@ body {
 }
 
 .center-label {
-    width: 110px;
-    height: 110px;
+    width: 120px;
+    height: 120px;
     background: #111;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid #333;
+    border: 2px solid #222;
     position: relative;
     z-index: 2;
-}
-
-/* Dusty Overlay for Album Art */
-.center-label::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(circle, transparent 60%, rgba(255,255,255,0.05) 100%);
-    pointer-events: none;
 }
 
 .center-label img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: sepia(0.3) contrast(1.1) brightness(0.8);
+    filter: sepia(0.2) contrast(1.1) brightness(0.7);
 }
 
 .tonearm {
-    width: 180px;
-    height: 8px;
-    background: linear-gradient(to bottom, #444, #222);
+    width: 200px;
+    height: 10px;
+    background: linear-gradient(to bottom, #555, #222);
     position: absolute;
-    top: 60px;
-    right: -30px;
+    top: 70px;
+    right: -40px;
     transform-origin: 90% 10%;
     transform: rotate(-35deg);
     transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 4px;
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.6);
+    border-radius: 5px;
+    box-shadow: 5px 10px 20px rgba(0,0,0,0.8);
+    z-index: 10; /* Ensure it stays on top */
 }
 
-.tonearm::before {
+.tonearm::before { /* Headshell */
     content: '';
     position: absolute;
-    left: -5px;
-    top: -8px;
-    width: 35px;
-    height: 24px;
-    background: #1a1a1a;
-    border-radius: 2px;
-    border-bottom: 2px solid #333;
+    left: -8px;
+    top: -10px;
+    width: 45px;
+    height: 30px;
+    background: #111;
+    border-radius: 3px;
+    border-bottom: 3px solid #222;
+    box-shadow: inset 0 2px 5px rgba(255,255,255,0.1);
+}
+
+/* Tonearm base */
+.tonearm::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: -15px;
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle, #333, #000);
+    border-radius: 50%;
+    border: 2px solid #222;
+    z-index: -1;
 }
 
 .turntable-hero.playing .tonearm {
-    transform: rotate(12deg);
+    transform: rotate(10deg);
 }
 
 /* Controls */
 .controls {
     display: flex;
     gap: 40px;
-    background: #0f0f0f;
-    padding: 20px 40px;
-    border-radius: 2px;
-    box-shadow: inset 0 5px 15px rgba(0,0,0,0.8);
+    background: #080808;
+    padding: 25px 50px;
+    border-radius: 4px;
+    box-shadow: inset 0 5px 20px rgba(0,0,0,1);
     border: 1px solid #1a1a1a;
 }
 
@@ -209,33 +234,34 @@ body {
 }
 
 .knob {
-    width: 45px;
-    height: 45px;
-    background: radial-gradient(circle, #222, #050505);
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle, #2a2a2a, #000);
     border-radius: 50%;
-    border: 1px solid #222;
+    border: 1px solid #333;
     position: relative;
-    margin-bottom: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    margin-bottom: 10px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.6);
     cursor: pointer;
 }
 
 .knob .indicator {
     width: 3px;
-    height: 18px;
+    height: 20px;
     background: var(--accent-color);
     position: absolute;
-    top: 4px;
+    top: 5px;
     left: 50%;
     transform: translateX(-50%);
-    box-shadow: 0 0 5px var(--accent-color);
+    box-shadow: 0 0 8px var(--accent-color);
 }
 
 .knob-group label {
     font-size: 0.6rem;
     text-transform: uppercase;
-    color: #444;
+    color: #333;
     letter-spacing: 2px;
+    font-weight: bold;
 }
 
 /* Interface */
@@ -248,54 +274,55 @@ body {
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 25px;
 }
 
 input[type="text"] {
     background: transparent;
     border: none;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #222;
     padding: 15px 5px;
     color: var(--accent-color);
     font-family: var(--font-ui);
-    font-size: 1.1rem;
-    transition: border-color 0.3s;
+    font-size: 1.2rem;
+    transition: all 0.4s;
     text-align: center;
 }
 
 input[type="text"]:focus {
     outline: none;
     border-bottom-color: var(--accent-color);
+    letter-spacing: 1px;
 }
 
 .button-group {
     display: flex;
-    gap: 15px;
+    gap: 20px;
     justify-content: center;
 }
 
 button {
-    padding: 12px 30px;
+    padding: 14px 35px;
     background: transparent;
     color: var(--accent-color);
     border: 1px solid var(--accent-color);
     font-family: var(--font-ui);
     font-size: 0.8rem;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     text-transform: uppercase;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.4s;
 }
 
 button:hover {
     background: var(--accent-color);
     color: #000;
-    box-shadow: 0 0 20px rgba(197, 160, 89, 0.3);
+    box-shadow: 0 0 30px rgba(197, 160, 89, 0.4);
 }
 
 button.secondary {
-    border-color: #444;
-    color: #666;
+    border-color: #333;
+    color: #444;
 }
 
 button.secondary:hover {
@@ -305,11 +332,11 @@ button.secondary:hover {
 }
 
 .status {
-    margin-top: 20px;
-    color: #555;
+    margin-top: 25px;
+    color: #444;
     font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
 }
 
 #youtube-player-placeholder {
@@ -322,7 +349,7 @@ button.secondary:hover {
 /* Sticky Footer */
 .sticky-footer {
     background: #050505;
-    padding: 30px;
+    padding: 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -330,11 +357,11 @@ button.secondary:hover {
 }
 
 .footer-links a {
-    color: #444;
+    color: #333;
     text-decoration: none;
-    margin: 0 15px;
+    margin: 0 20px;
     font-size: 0.7rem;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     transition: color 0.3s;
 }
 
