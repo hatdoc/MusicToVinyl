@@ -174,6 +174,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
     box-shadow: 
         8px 8px 20px var(--plinth-shadow),
         -4px -4px 10px var(--plinth-highlight);
@@ -182,12 +183,45 @@ body {
 .vinyl-record {
     width: 320px;
     height: 320px;
-    background: radial-gradient(circle, #111 0%, #050505 100%);
+    background: #111;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1;
+    position: relative;
+    box-shadow: 
+        0 4px 10px rgba(0,0,0,0.8),
+        inset 0 2px 4px rgba(255,255,255,0.1),
+        inset 0 -2px 4px rgba(0,0,0,0.8),
+        0 0 0 4px var(--recess-bg);
+}
+
+.grooves {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border-radius: 50%;
+    background: 
+        repeating-radial-gradient(
+            #111, 
+            #111 2px, 
+            #1c1c1c 3px, 
+            #111 4px
+        ),
+        conic-gradient(
+            transparent 0%, 
+            rgba(255,255,255,0.2) 15%, 
+            transparent 30%, 
+            transparent 50%, 
+            rgba(255,255,255,0.2) 65%, 
+            transparent 80%
+        );
+    background-blend-mode: color-dodge;
+    pointer-events: none;
+    z-index: 2;
 }
 
 .vinyl-record.spinning { animation: spin 1.8s linear infinite; }
@@ -199,38 +233,70 @@ body {
     border-radius: 50%;
     overflow: hidden;
     border: 2px solid #222;
+    z-index: 10;
+    position: absolute;
+    background: #111;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
 }
 
-.center-label img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); }
+.center-label img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); }
+
+.center-label span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 0.8rem;
+    color: #666;
+}
 
 .tonearm {
     width: 200px;
     height: 12px;
     background: var(--metal-edge);
     position: absolute;
-    top: 60px;
-    right: -10px;
-    transform-origin: 90% 10%;
-    transform: rotate(-35deg);
+    top: 40px;
+    right: 30px;
+    transform-origin: 90% 50%;
+    transform: rotate(-30deg);
     border-radius: 6px;
-    z-index: 10;
-    box-shadow: 4px 8px 15px var(--plinth-shadow);
+    z-index: 20;
+    box-shadow: -5px 12px 15px rgba(0,0,0,0.6), inset 0 3px 3px rgba(255,255,255,0.3), inset 0 -3px 3px rgba(0,0,0,0.4);
     transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tonearm::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: -14px;
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle at 30% 30%, #555, #111, #000);
+    border-radius: 50%;
+    box-shadow: 0 5px 10px var(--plinth-shadow), inset 0 2px 2px rgba(255,255,255,0.3);
+    z-index: 21;
 }
 
 .tonearm::before {
     content: '';
     position: absolute;
-    left: -10px;
-    top: -12px;
-    width: 45px;
-    height: 32px;
-    background: #111;
-    border-radius: 3px;
-    border-bottom: 3px solid var(--accent-color);
+    left: -20px;
+    top: -14px;
+    width: 25px;
+    height: 45px;
+    background: linear-gradient(135deg, #333 0%, #111 50%, #000 100%);
+    border-radius: 5px;
+    border-left: 2px solid var(--accent-color);
+    box-shadow: -4px 8px 10px rgba(0,0,0,0.6), inset 1px 1px 2px rgba(255,255,255,0.2);
+    transform-origin: right center;
+    transform: rotate(-25deg);
 }
 
-.turntable-hero.playing .tonearm { transform: rotate(12deg); }
+.turntable-hero.playing .tonearm { transform: rotate(-55deg); }
 
 /* Controls - Compact */
 .controls {
@@ -255,7 +321,10 @@ body {
     cursor: pointer;
     box-shadow: 
         6px 6px 15px var(--plinth-shadow),
-        -6px -6px 15px var(--plinth-highlight);
+        -6px -6px 15px var(--plinth-highlight),
+        inset 0px 4px 6px rgba(255,255,255,0.1),
+        inset 0px -4px 6px rgba(0,0,0,0.6),
+        0 0 0 2px rgba(0,0,0,0.8);
 }
 
 .knob::after {
