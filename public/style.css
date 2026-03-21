@@ -238,7 +238,36 @@ body {
 
 .input-group {
     display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.button-group {
+    display: flex;
     gap: 10px;
+    justify-content: center;
+}
+
+button.secondary {
+    background: #333;
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+}
+
+button.secondary:hover {
+    background: #444;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#youtube-player-placeholder {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
 }
 
 input[type="text"] {

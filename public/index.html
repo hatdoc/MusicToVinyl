@@ -59,9 +59,14 @@
             <section class="converter-interface">
                 <div class="input-group">
                     <input type="text" id="youtubeUrl" placeholder="Paste YouTube URL here...">
-                    <button id="convertBtn">Play on Vinyl</button>
+                    <div class="button-group">
+                        <button id="convertBtn">Play on Vinyl</button>
+                        <button id="pauseBtn" class="secondary hidden">Pause</button>
+                    </div>
                 </div>
                 <div id="statusMessage" class="status"></div>
+                <!-- YouTube IFrame Target -->
+                <div id="youtube-player-placeholder"></div>
             </section>
 
             <!-- Sign Up Gate Modal (Hidden by default) -->
