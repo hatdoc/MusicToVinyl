@@ -1,108 +1,70 @@
 :root {
-    --transition-speed: 1.2s; /* Slower, more cinematic transition */
+    --transition-speed: 0.8s;
     --font-heading: 'Playfair Display', serif;
     --font-ui: 'Roboto Mono', monospace;
+    
+    /* Neumorphic Lighting - Global Top-Left */
+    --light-source: rgba(255, 255, 255, 0.05);
+    --shadow-source: rgba(0, 0, 0, 0.6);
 }
 
-/* --- THEME 1: OBSIDIAN BLACK (Modern Noir) --- */
+/* --- THEME 1: OBSIDIAN (Modern Noir) --- */
 body.theme-obsidian {
-    --page-bg: #020202;
-    --env-lighting: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.05) 0%, transparent 50%);
-    
-    /* Plinth: Single block of cast obsidian with variable texture */
-    --plinth-bg: radial-gradient(circle at 50% 50%, #151515 0%, #080808 100%);
-    --plinth-shadow: 0 80px 150px rgba(0,0,0,0.9), inset 0 0 40px rgba(255,255,255,0.02);
-    --plinth-border: #111;
-
-    /* Platter: Machined Gunmetal Steel */
-    --platter-surface: conic-gradient(from 180deg at 50% 50%, #1a1a1a, #2c2c2c, #0a0a0a, #1a1a1a);
-    --platter-border: #222;
-    
-    /* Hardware: Matte Black / Carbon Fiber */
-    --accent-color: #ffffff; 
-    --tonearm-base: #111;
-    --tonearm-tube: linear-gradient(to bottom, #151515, #000);
-    --knob-surface: radial-gradient(circle, #222, #000);
+    --bg-color: #080808;
+    --accent-color: #ffffff;
+    --plinth-base: #0a0a0a;
+    --plinth-highlight: rgba(255,255,255,0.03);
+    --plinth-shadow: rgba(0,0,0,0.8);
+    --recess-bg: #050505;
+    --knob-main: linear-gradient(145deg, #1a1a1a, #050505);
+    --metal-edge: linear-gradient(145deg, #333, #111);
 }
 
-/* --- THEME 2: ESPRESSO BROWN (Speakeasy Vibe) - DEFAULT --- */
+/* --- THEME 2: WALNUT (Speakeasy Vibe) - DEFAULT --- */
 body.theme-walnut {
-    --page-bg: #080504;
-    --env-lighting: radial-gradient(circle at 80% 20%, rgba(255, 159, 67, 0.08) 0%, transparent 60%);
-
-    /* Plinth: Single seamless block of dark burl walnut (Unique, non-repetitive) */
-    --plinth-bg: 
-        radial-gradient(circle at 30% 40%, #2a1810 0%, transparent 40%),
-        radial-gradient(circle at 70% 60%, #1f120c 0%, transparent 50%),
-        radial-gradient(circle at 10% 80%, #351e14 0%, transparent 30%),
-        #1a0f0d; /* Deep base color */
-    --plinth-shadow: 0 80px 150px rgba(0,0,0,0.9), inset 0 0 60px rgba(0,0,0,0.8);
-    --plinth-border: #231512;
-
-    /* Platter: Massive slab of oil-rubbed bronze */
-    --platter-surface: radial-gradient(circle, #4d3626 0%, #1a0f0d 100%);
-    --platter-border: #3d2b1f;
-
-    /* Hardware: Knurled Brass / Bronze */
-    --accent-color: #8b5a2b;
-    --tonearm-base: #3d2b1f;
-    --tonearm-tube: linear-gradient(to bottom, #4d3626, #231512);
-    --knob-surface: radial-gradient(circle, #8b5a2b, #3d2b1f);
+    --bg-color: #0f0a08;
+    --accent-color: #C5A059;
+    --plinth-base: #1a0f0d;
+    --plinth-highlight: rgba(255, 159, 67, 0.05);
+    --plinth-shadow: rgba(0,0,0,0.9);
+    --recess-bg: #0d0807;
+    --knob-main: linear-gradient(145deg, #3d2b1f, #1a0f0d);
+    --metal-edge: linear-gradient(145deg, #8b5a2b, #3d2b1f);
 }
 
-/* --- THEME 3: WARM COGNAC BROWN (Rich and Polished) --- */
+/* --- THEME 3: COGNAC (Mid-Century Class) --- */
 body.theme-warm {
-    --page-bg: #120502;
-    --env-lighting: radial-gradient(circle at center, rgba(255, 100, 0, 0.1) 0%, transparent 70%);
-
-    /* Plinth: High-gloss polished rosewood (Multi-layered grain) */
-    --plinth-bg: 
-        linear-gradient(135deg, rgba(141, 42, 26, 0.8), rgba(77, 26, 10, 0.9)),
-        radial-gradient(circle at 50% 0%, #a63a2a 0%, transparent 80%);
-    --plinth-shadow: 0 100px 200px rgba(0,0,0,0.8), inset 0 2px 15px rgba(255,255,255,0.15); /* Glossy top edge */
-    --plinth-border: #5d1a0a;
-
-    /* Platter: Gleaming Brass */
-    --platter-surface: conic-gradient(from 45deg, #ffd700, #b8860b, #ffd700, #fff700, #ffd700);
-    --platter-border: #ffd700;
-
-    /* Hardware: Gleaming Gold */
+    --bg-color: #1a0a05;
     --accent-color: #ffd700;
-    --tonearm-base: #ffd700;
-    --tonearm-tube: linear-gradient(to bottom, #fff700, #b8860b);
-    --knob-surface: radial-gradient(circle, #ffd700, #8b6d00);
+    --plinth-base: #4d1a0a;
+    --plinth-highlight: rgba(255, 255, 255, 0.1);
+    --plinth-shadow: rgba(0,0,0,0.8);
+    --recess-bg: #2d0a05;
+    --knob-main: linear-gradient(145deg, #ffd700, #b8860b);
+    --metal-edge: linear-gradient(145deg, #fff, #ffd700);
 }
 
-/* --- THEME 4: ARCTIC WHITE (Gallery Aesthetic) --- */
+/* --- THEME 4: ALABASTER (Bright Gallery) --- */
 body.theme-alabaster {
-    --page-bg: #e8e8e8;
-    --env-lighting: radial-gradient(circle at 10% 10%, rgba(52, 152, 219, 0.1) 0%, transparent 50%);
-
-    /* Plinth: Seamless sculptural form of solid white ceramic */
-    --plinth-bg: #ffffff;
-    --plinth-shadow: 0 60px 120px rgba(0,0,0,0.1), inset 0 0 40px rgba(0,0,0,0.02);
-    --plinth-border: #eee;
-
-    /* Platter: Frosted clear acrylic with polished steel spindle */
-    --platter-surface: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(240,240,240,0.4) 100%);
-    --platter-border: #fff;
-
-    /* Hardware: Polished Steel */
+    --bg-color: #e0e0e0;
     --accent-color: #3498db;
-    --tonearm-base: #eee;
-    --tonearm-tube: linear-gradient(to bottom, #fff, #bdc3c7);
-    --knob-surface: #fff;
+    --plinth-base: #ffffff;
+    --plinth-highlight: #ffffff;
+    --plinth-shadow: rgba(0,0,0,0.15);
+    --recess-bg: #f5f5f5;
+    --knob-main: linear-gradient(145deg, #ffffff, #e6e6e6);
+    --metal-edge: linear-gradient(145deg, #fff, #bdc3c7);
 }
 
 body {
     margin: 0;
     padding: 0;
-    background-color: var(--page-bg);
-    background-image: var(--env-lighting);
-    min-height: 100vh;
+    background-color: var(--bg-color);
+    font-family: var(--font-ui);
     display: flex;
     flex-direction: column;
-    transition: background-color var(--transition-speed), background-image var(--transition-speed);
+    min-height: 100vh;
+    transition: background-color var(--transition-speed);
     overflow-x: hidden;
 }
 
@@ -114,99 +76,78 @@ body {
     padding: 60px 20px;
 }
 
-.header {
-    text-align: center;
-    margin-bottom: 80px;
-}
-
 .logo {
     font-family: var(--font-heading);
-    font-size: 4rem;
+    font-size: 3.5rem;
     color: var(--accent-color);
-    transition: color var(--transition-speed);
-    text-shadow: 0 0 30px rgba(0,0,0,0.5);
+    text-shadow: -2px -2px 5px var(--plinth-highlight), 2px 2px 5px var(--plinth-shadow);
+    margin-bottom: 60px;
     font-style: italic;
+    transition: color var(--transition-speed);
 }
 
-.tagline {
-    display: block;
-    font-size: 0.75rem;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    color: #666;
-    margin-top: 10px;
-}
-
-/* Theme Switcher Dots */
-.theme-selector {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    display: flex;
-    gap: 15px;
-    z-index: 100;
-}
-
-.theme-dot {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 2px solid rgba(128,128,128,0.3);
-    cursor: pointer;
-    transition: transform 0.3s;
-}
-
-.theme-dot.active {
-    transform: scale(1.2);
-    border-color: var(--accent-color);
-    box-shadow: 0 0 15px var(--accent-color);
-}
-
-.theme-dot.obsidian { background: #0a0a0a; }
-.theme-dot.walnut { background: #231512; }
-.theme-dot.warm { background: #8d2a1a; }
-.theme-dot.alabaster { background: #ffffff; }
-
-/* The Turntable Object */
+/* Neumorphic 3D Plinth */
 .turntable-hero {
     width: 100%;
     max-width: 750px;
-    background: var(--plinth-bg);
-    border: 1px solid var(--plinth-border);
-    box-shadow: var(--plinth-shadow);
-    padding: 80px;
-    border-radius: 2px; /* Sculptural, sharp look */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background: var(--plinth-base);
+    border-radius: 40px; /* Rounded heavy corners */
+    padding: 60px;
     position: relative;
+    
+    /* Multi-layered shadows for 3D mass */
+    box-shadow: 
+        20px 20px 60px var(--plinth-shadow), 
+        -20px -20px 60px var(--plinth-highlight),
+        inset 1px 1px 2px var(--plinth-highlight),
+        inset -1px -1px 2px var(--plinth-shadow);
+        
     transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.turntable-platter {
-    width: 440px;
-    height: 440px;
-    background: var(--platter-surface);
-    border: 10px solid var(--platter-border);
+/* Deep Recessed Area */
+.plinth-recess {
+    background: var(--recess-bg);
     border-radius: 50%;
+    padding: 20px;
+    margin-bottom: 40px;
+    
+    /* "Carved" look */
+    box-shadow: 
+        inset 15px 15px 40px var(--plinth-shadow), 
+        inset -15px -15px 40px var(--plinth-highlight);
+        
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    transition: background var(--transition-speed);
+}
+
+.turntable-platter {
+    width: 420px;
+    height: 420px;
+    background: var(--metal-edge);
+    border-radius: 50%;
     position: relative;
-    margin-bottom: 60px;
-    transition: all var(--transition-speed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Raised 3D Platter */
+    box-shadow: 
+        10px 10px 30px var(--plinth-shadow),
+        -5px -5px 15px var(--plinth-highlight);
 }
 
 .vinyl-record {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, #111 0%, #050505 100%);
+    width: 390px;
+    height: 390px;
+    background: #050505;
     border-radius: 50%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
     z-index: 1;
 }
 
@@ -217,55 +158,60 @@ body {
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
 .center-label {
-    width: 150px;
-    height: 150px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
     overflow: hidden;
-    border: 4px solid rgba(0,0,0,0.3);
+    border: 2px solid #222;
 }
 
 .center-label img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0.8) contrast(1.2);
+    width: 100%; height: 100%; object-fit: cover;
+    filter: brightness(0.7);
 }
 
+/* Physical Tonearm */
 .tonearm {
-    width: 260px;
-    height: 14px;
-    background: var(--tonearm-tube);
+    width: 250px;
+    height: 16px;
+    background: var(--metal-edge);
     position: absolute;
-    top: 100px;
-    right: -20px;
+    top: 80px;
+    right: -10px;
     transform-origin: 90% 10%;
     transform: rotate(-35deg);
-    transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
     z-index: 10;
-    border-radius: 7px;
-    box-shadow: 5px 20px 40px rgba(0,0,0,0.7);
+    
+    /* 3D Volume for the arm */
+    box-shadow: 
+        5px 10px 20px var(--plinth-shadow),
+        -2px -2px 5px var(--plinth-highlight);
+    transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.tonearm::before { /* Headshell - Physical sculptural look */
+.tonearm::before { /* Headshell */
     content: '';
     position: absolute;
     left: -15px;
-    top: -18px;
+    top: -15px;
     width: 60px;
-    height: 45px;
-    background: #0a0a0a;
-    border-radius: 3px;
-    border-bottom: 4px solid var(--accent-color);
+    height: 40px;
+    background: #111;
+    border-radius: 4px;
+    box-shadow: inset 2px 2px 5px rgba(255,255,255,0.1), 2px 5px 10px rgba(0,0,0,0.5);
+    border-bottom: 3px solid var(--accent-color);
 }
 
 .turntable-hero.playing .tonearm {
     transform: rotate(12deg);
 }
 
-/* Controls - Heavy, Tangible buttons */
+/* Neumorphic Knobs - Physical Cylinders */
 .controls {
     display: flex;
-    gap: 80px;
+    gap: 60px;
+    justify-content: center;
     margin-top: 20px;
 }
 
@@ -276,38 +222,55 @@ body {
 }
 
 .knob {
-    width: 65px;
-    height: 65px;
-    background: var(--knob-surface);
+    width: 70px;
+    height: 70px;
+    background: var(--knob-main);
     border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.05);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.8);
     position: relative;
     margin-bottom: 15px;
     cursor: pointer;
+    
+    /* 3D Cylinder look */
+    box-shadow: 
+        8px 8px 20px var(--plinth-shadow),
+        -8px -8px 20px var(--plinth-highlight),
+        inset 1px 1px 1px var(--plinth-highlight);
+}
+
+/* Specular Highlight on Knob */
+.knob::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    width: 30%;
+    height: 30%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    pointer-events: none;
 }
 
 .knob .indicator {
     width: 4px;
-    height: 26px;
+    height: 25px;
     background: var(--accent-color);
     position: absolute;
-    top: 8px;
+    top: 10px;
     left: 50%;
     transform: translateX(-50%);
-    box-shadow: 0 0 15px var(--accent-color);
+    border-radius: 2px;
+    box-shadow: 0 0 10px var(--accent-color);
 }
 
 .knob-group label {
     font-size: 0.7rem;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--accent-color);
-    opacity: 0.5;
+    opacity: 0.4;
     font-weight: bold;
 }
 
-/* Interface Overlay */
+/* Interface */
 .converter-interface {
     margin-top: 60px;
     width: 100%;
@@ -318,7 +281,7 @@ body {
 input[type="text"] {
     background: transparent;
     border: none;
-    border-bottom: 1px solid rgba(128,128,128,0.2);
+    border-bottom: 2px solid var(--plinth-shadow);
     padding: 20px;
     width: 100%;
     color: var(--accent-color);
@@ -334,46 +297,45 @@ input[type="text"]:focus {
     border-bottom-color: var(--accent-color);
 }
 
-.button-group {
-    display: flex;
-    gap: 30px;
-    justify-content: center;
-}
-
 button {
     padding: 20px 50px;
-    background: transparent;
+    background: var(--plinth-base);
     color: var(--accent-color);
-    border: 1px solid var(--accent-color);
+    border: none;
+    border-radius: 15px;
     font-family: var(--font-ui);
-    letter-spacing: 5px;
+    letter-spacing: 4px;
     text-transform: uppercase;
     cursor: pointer;
-    transition: all 0.4s;
+    box-shadow: 
+        8px 8px 20px var(--plinth-shadow),
+        -8px -8px 20px var(--plinth-highlight);
+    transition: all 0.3s;
 }
 
 button:hover {
-    background: var(--accent-color);
-    color: var(--page-bg);
+    box-shadow: 
+        4px 4px 10px var(--plinth-shadow),
+        -4px -4px 10px var(--plinth-highlight);
+    transform: translateY(2px);
 }
 
 .status {
     margin-top: 40px;
-    font-size: 0.75rem;
-    letter-spacing: 4px;
-    color: #666;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    color: #555;
     text-transform: uppercase;
 }
 
 .hidden { display: none !important; }
 
-/* Sticky Footer */
 .sticky-footer {
     padding: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    opacity: 0.4;
+    opacity: 0.3;
 }
 
 .footer-links a {
@@ -381,5 +343,4 @@ button:hover {
     text-decoration: none;
     margin: 0 30px;
     font-size: 0.8rem;
-    letter-spacing: 3px;
 }
