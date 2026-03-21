@@ -29,13 +29,13 @@ body.theme-walnut {
 
 body.theme-warm {
     --bg-color: #1a0a05;
-    --accent-color: #ffd700;
+    --accent-color: #e26a2c;
     --plinth-base: #4d1a0a;
     --plinth-side: #301005;
     --plinth-highlight: rgba(255, 255, 255, 0.1);
     --plinth-shadow: rgba(0,0,0,0.8);
-    --knob-main: linear-gradient(145deg, #ffd700, #b8860b);
-    --metal-edge: linear-gradient(145deg, #fff, #ffd700);
+    --knob-main: linear-gradient(145deg, #b34a17, #5c2307);
+    --metal-edge: linear-gradient(145deg, #fff, #e26a2c);
 }
 
 body.theme-alabaster {
