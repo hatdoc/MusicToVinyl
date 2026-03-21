@@ -84,38 +84,41 @@ document.addEventListener('DOMContentLoaded', () => {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         state.audioContext = new AudioContext();
 
-        // 1. Vinyl Noise Buffer (Crackles and Hiss)
-        const bufferSize = state.audioContext.sampleRate * 4; // 4 seconds of unique noise
+        // 1. Vinyl Noise Buffer (Enhanced Crackles, Hiss, and Rumble)
+        const bufferSize = state.audioContext.sampleRate * 6; // 6 seconds for less repetition
         const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
         const data = buffer.getChannelData(0);
 
         for (let i = 0; i < bufferSize; i++) {
-            // White noise base (Hiss)
-            const white = (Math.random() * 2 - 1) * 0.015;
+            // White noise base (Hiss) - Slightly filtered feel
+            const white = (Math.random() * 2 - 1) * 0.012;
             
-            // Random "Dust" Crackles (Short impulses)
+            // Random "Dust" Crackles (High frequency impulses)
             let crackle = 0;
-            if (Math.random() < 0.0008) {
-                crackle = (Math.random() * 2 - 1) * 0.4;
+            if (Math.random() < 0.001) {
+                crackle = (Math.random() * 2 - 1) * 0.35;
             }
             
-            // Occasional deeper "Pops"
+            // Occasional deeper "Pops" (Low frequency thumps)
             let pop = 0;
-            if (Math.random() < 0.0001) {
-                pop = (Math.random() * 2 - 1) * 0.6;
+            if (Math.random() < 0.00015) {
+                pop = (Math.random() * 2 - 1) * 0.5;
             }
 
-            data[i] = white + crackle + pop;
+            // Low frequency surface rumble (Subtle oscillation)
+            const rumble = Math.sin(i * 0.002) * 0.005;
+
+            data[i] = white + crackle + pop + rumble;
         }
         state.nodes.noiseBuffer = buffer;
 
-        // 2. Low Frequency Hum (60Hz / 50Hz simulation)
+        // 2. Continuous Low Frequency Hum
         const humOsc = state.audioContext.createOscillator();
         humOsc.type = 'sine';
-        humOsc.frequency.value = 60; // Standard electrical hum
+        humOsc.frequency.value = 50; // Deep 50Hz hum
         
         const humGain = state.audioContext.createGain();
-        humGain.gain.value = 0.02; // Very subtle
+        humGain.gain.value = 0.015; 
 
         humOsc.connect(humGain);
         humGain.connect(state.audioContext.destination);
