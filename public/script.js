@@ -90,8 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
             stopPlayback();
         } else if (event.data == YT.PlayerState.PLAYING) {
             statusMessage.textContent = "Now Playing: Analog Stream";
-            vinylRecord.classList.add('spinning');
-            document.querySelector('.turntable-hero').classList.add('playing');
         } else if (event.data == YT.PlayerState.PAUSED) {
             vinylRecord.classList.remove('spinning');
             document.querySelector('.turntable-hero').classList.remove('playing');
@@ -287,6 +285,10 @@ document.addEventListener('DOMContentLoaded', () => {
         state.isPlaying = true;
         state.isPaused = false;
         state.plays++;
+        
+        // Immediately Swing the Arm & Spin the Vinyl
+        document.querySelector('.turntable-hero').classList.add('playing');
+        vinylRecord.classList.add('spinning');
         
         initAudioEngine();
         playNeedleDrop(); // Trigger the initial "buzzing" and needle drop thump

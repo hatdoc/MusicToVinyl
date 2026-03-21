@@ -263,10 +263,10 @@ body {
     height: 250px; /* Total length backwards and forwards */
     transform-origin: 10px 40px; /* pivot at X=10px, Y=40px (down from counterweight) */
     /* Resting config: Points DOWN the plinth */
-    transform: translate(-10px, -40px) translateZ(28px) rotateZ(-12deg); 
+    transform: translate(-10px, -40px) translateZ(40px) rotateZ(-12deg); 
     transform-style: preserve-3d;
     transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 30;
+    z-index: 50;
 }
 
 .counterweight {
@@ -277,7 +277,7 @@ body {
     height: 35px;
     background: linear-gradient(90deg, #444, #888, #222);
     border-radius: 4px;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+    box-shadow: 10px 15px 15px rgba(0,0,0,0.8);
 }
 
 .arm-stick {
@@ -288,7 +288,7 @@ body {
     height: 190px;
     background: linear-gradient(90deg, #aaa, #fff, #555);
     border-radius: 6px;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+    box-shadow: 8px 12px 15px rgba(0,0,0,0.6);
 }
 
 .headshell {
@@ -300,8 +300,8 @@ body {
     background: linear-gradient(135deg, #333, #111);
     border-radius: 4px;
     transform-origin: top center;
-    transform: rotateZ(25deg); /* Angled inwards towards vinyl */
-    box-shadow: 3px 3px 8px rgba(0,0,0,0.7);
+    transform: rotateZ(25deg) translateZ(10px); /* Angled inwards towards vinyl */
+    box-shadow: 12px 15px 15px rgba(0,0,0,0.7);
     border-top: 2px solid var(--accent-color);
 }
 
@@ -317,7 +317,7 @@ body {
 
 /* Playing State: Swing the tonearm over the record */
 .turntable-hero.playing .tonearm { 
-    transform: translate(-10px, -40px) translateZ(28px) rotateZ(35deg); 
+    transform: translate(-10px, -40px) translateZ(40px) rotateZ(35deg); 
 }
 
 /* Arm Rest Peg */
@@ -329,8 +329,8 @@ body {
     height: 15px;
     background: #222;
     border-radius: 50%;
-    transform: translateZ(10px);
-    box-shadow: 0px 1px 0 #000, 0px 2px 0 #000, 0px 4px 5px rgba(0,0,0,0.8);
+    transform: translateZ(28px);
+    box-shadow: 0px 5px 10px rgba(0,0,0,0.8);
 }
 .arm-rest::after {
     content: '';
@@ -338,7 +338,7 @@ body {
     top: -10px; left: 5px;
     width: 5px; height: 15px;
     background: #111;
-    box-shadow: 0px 2px 2px rgba(0,0,0,0.8);
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.8);
 }
 
 /* Controls Panel */
