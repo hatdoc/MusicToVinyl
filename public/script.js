@@ -110,35 +110,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = buffer.getChannelData(0);
 
         for (let i = 0; i < bufferSize; i++) {
-            // White noise base (Hiss) - Made bit more audible
             const white = (Math.random() * 2 - 1) * 0.025;
-            
-            // Random "Dust" Crackles (High frequency impulses) - Increased density/loudness
             let crackle = 0;
-            if (Math.random() < 0.0015) {
-                crackle = (Math.random() * 2 - 1) * 0.45;
-            }
-            
-            // Occasional deeper "Pops" (Low frequency thumps)
+            if (Math.random() < 0.0015) { crackle = (Math.random() * 2 - 1) * 0.45; }
             let pop = 0;
-            if (Math.random() < 0.0002) {
-                pop = (Math.random() * 2 - 1) * 0.6;
-            }
-
-            // Low frequency surface rumble (Subtle oscillation)
+            if (Math.random() < 0.0002) { pop = (Math.random() * 2 - 1) * 0.6; }
             const rumble = Math.sin(i * 0.002) * 0.008;
 
             data[i] = white + crackle + pop + rumble;
         }
         state.nodes.noiseBuffer = buffer;
 
-        // 2. Continuous Low Frequency Hum
+        // 2. Global Noise Filter (Controlled by Warmth)
+        const noiseFilter = state.audioContext.createBiquadFilter();
+        noiseFilter.type = 'lowpass';
+        noiseFilter.frequency.value = 10000 - (state.knobs.warmth * 8000); // 10k down to 2k
+        noiseFilter.connect(state.audioContext.destination);
+        state.nodes.noiseFilter = noiseFilter;
+
+        // 3. Continuous Low Frequency Hum
         const humOsc = state.audioContext.createOscillator();
-        humOsc.type = 'sine';
-        humOsc.frequency.value = 50; // Deep 50Hz hum
+        humOsc.type = 'triangle'; // Triangular wave is richer and more audible
+        humOsc.frequency.value = 60; // 60Hz hum is easier to hear on laptop speakers
         
         const humGain = state.audioContext.createGain();
-        humGain.gain.value = state.knobs.warmth * 0.05; 
+        humGain.gain.value = state.knobs.warmth * 0.15; // 3x Louder max amplitude
 
         humOsc.connect(humGain);
         humGain.connect(state.audioContext.destination);
@@ -175,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         burstGain.gain.exponentialRampToValueAtTime(0.1, ctx.currentTime + 2.0);
         
         burstSource.connect(burstGain);
-        burstGain.connect(ctx.destination);
+        burstGain.connect(state.nodes.noiseFilter); // Route through warmth filter
         burstSource.start();
     }
 
@@ -194,14 +190,14 @@ document.addEventListener('DOMContentLoaded', () => {
         gainNode.gain.value = state.knobs.crackle * 0.40;
 
         source.connect(gainNode);
-        gainNode.connect(state.audioContext.destination);
+        gainNode.connect(state.nodes.noiseFilter); // Route through warmth filter
         
         state.nodes.noiseSource = source;
         state.nodes.noiseGain = gainNode;
         source.start();
 
         // Ensure hum is active
-        if (state.nodes.humGain) state.nodes.humGain.gain.value = state.knobs.warmth * 0.05;
+        if (state.nodes.humGain) state.nodes.humGain.gain.value = state.knobs.warmth * 0.15;
     }
 
     function stopVinylNoise() {
@@ -238,8 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (type === 'volume' && state.youtubePlayer && state.youtubePlayer.setVolume) {
                 state.youtubePlayer.setVolume(val * 100);
             }
-            if (type === 'warmth' && state.nodes.humGain) {
-                state.nodes.humGain.gain.value = val * 0.05; // 0 to 0.05
+            if (type === 'warmth') {
+                if (state.nodes.humGain) state.nodes.humGain.gain.value = val * 0.15; // 0 to 0.15
+                if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 8000); // Tame the highs
             }
             if (type === 'crackle' && state.nodes.noiseGain) {
                 state.nodes.noiseGain.gain.value = val * 0.40; // 0 to 0.40
