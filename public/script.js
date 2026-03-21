@@ -267,7 +267,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         state.youtubeVideoId = videoId;
         const thumbnail = `https://img.youtube.com/vi/${videoId}/0.jpg`;
-        albumArt.src = thumbnail;
+        if (albumArt) {
+            albumArt.src = thumbnail;
+            albumArt.classList.remove('hidden');
+        }
         statusMessage.textContent = "Dropping the needle...";
 
         startPlayback(videoId);
