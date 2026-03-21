@@ -1,101 +1,109 @@
 :root {
-    --bg-color: #050505;
-    --text-color: #d1d1d1;
-    --accent-color: #C5A059;
+    --transition-speed: 1.2s; /* Slower, more cinematic transition */
     --font-heading: 'Playfair Display', serif;
     --font-ui: 'Roboto Mono', monospace;
-    --transition-speed: 0.8s;
 }
 
-/* --- THEME 1: OBSIDIAN BLACK (Modern Luxury) --- */
-/* Stealth Wealth: Matte metals and carbon fiber. */
+/* --- THEME 1: OBSIDIAN BLACK (Modern Noir) --- */
 body.theme-obsidian {
-    --bg-color: #020202;
-    --page-bg: radial-gradient(circle at center, #151515 0%, #020202 100%);
-    --hero-bg: #0a0a0a; /* Matte Obsidian */
-    --hero-border: #1a1a1a;
-    --accent-color: #e0e0e0; /* Machined Silver */
-    --platter-bg: linear-gradient(135deg, #2c2c2c, #000, #2c2c2c); /* Machined Gunmetal Steel */
-    --platter-border: #333;
-    --tonearm-color: #111; /* Carbon Fiber skeleton */
-    --knob-bg: #050505;
-    --indicator-color: #fff; /* Sharp rim highlight */
-    --text-color: #888;
+    --page-bg: #020202;
+    --env-lighting: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.05) 0%, transparent 50%);
+    
+    /* Plinth: Single block of cast obsidian with variable texture */
+    --plinth-bg: radial-gradient(circle at 50% 50%, #151515 0%, #080808 100%);
+    --plinth-shadow: 0 80px 150px rgba(0,0,0,0.9), inset 0 0 40px rgba(255,255,255,0.02);
+    --plinth-border: #111;
+
+    /* Platter: Machined Gunmetal Steel */
+    --platter-surface: conic-gradient(from 180deg at 50% 50%, #1a1a1a, #2c2c2c, #0a0a0a, #1a1a1a);
+    --platter-border: #222;
+    
+    /* Hardware: Matte Black / Carbon Fiber */
+    --accent-color: #ffffff; 
+    --tonearm-base: #111;
+    --tonearm-tube: linear-gradient(to bottom, #151515, #000);
+    --knob-surface: radial-gradient(circle, #222, #000);
 }
 
 /* --- THEME 2: ESPRESSO BROWN (Speakeasy Vibe) - DEFAULT --- */
-/* Old Money: Oil-rubbed walnut and bronze. */
 body.theme-walnut {
-    --bg-color: #0a0705;
-    --page-bg: radial-gradient(circle at center, #1a120f 0%, #0a0705 100%);
-    --hero-bg: linear-gradient(45deg, #1a0f0d 25%, #231512 25%, #231512 50%, #1a0f0d 50%, #1a0f0d 75%, #231512 75%, #231512 100%); /* Oil-rubbed Walnut grain */
-    --hero-border: #3d2b1f;
-    --accent-color: #8b5a2b; /* Oil-rubbed Bronze */
-    --platter-bg: radial-gradient(circle, #3d2b1f, #0a0705);
-    --platter-border: #4d3626;
-    --tonearm-color: #5d4037;
-    --knob-bg: #1a0f0d;
-    --indicator-color: #ff9f43; /* Amber Jewel Glow */
-    --text-color: #705040;
+    --page-bg: #080504;
+    --env-lighting: radial-gradient(circle at 80% 20%, rgba(255, 159, 67, 0.08) 0%, transparent 60%);
+
+    /* Plinth: Single seamless block of dark burl walnut (Unique, non-repetitive) */
+    --plinth-bg: 
+        radial-gradient(circle at 30% 40%, #2a1810 0%, transparent 40%),
+        radial-gradient(circle at 70% 60%, #1f120c 0%, transparent 50%),
+        radial-gradient(circle at 10% 80%, #351e14 0%, transparent 30%),
+        #1a0f0d; /* Deep base color */
+    --plinth-shadow: 0 80px 150px rgba(0,0,0,0.9), inset 0 0 60px rgba(0,0,0,0.8);
+    --plinth-border: #231512;
+
+    /* Platter: Massive slab of oil-rubbed bronze */
+    --platter-surface: radial-gradient(circle, #4d3626 0%, #1a0f0d 100%);
+    --platter-border: #3d2b1f;
+
+    /* Hardware: Knurled Brass / Bronze */
+    --accent-color: #8b5a2b;
+    --tonearm-base: #3d2b1f;
+    --tonearm-tube: linear-gradient(to bottom, #4d3626, #231512);
+    --knob-surface: radial-gradient(circle, #8b5a2b, #3d2b1f);
 }
 
-/* --- THEME 3: COGNAC BROWN (Mid-Century Class) --- */
-/* Penthouse: Polished cherry wood and gold. */
+/* --- THEME 3: WARM COGNAC BROWN (Rich and Polished) --- */
 body.theme-warm {
-    --bg-color: #1a0a05;
-    --page-bg: radial-gradient(circle at center, #4d1a0a 0%, #1a0a05 100%);
-    --hero-bg: linear-gradient(to bottom right, #8d2a1a, #4d1a0a); /* Polished Cherry wood */
-    --hero-border: #a63a2a;
-    --accent-color: #ffd700; /* Gleaming Gold */
-    --platter-bg: radial-gradient(circle, #ffd700 30%, rgba(255,255,255,0.2) 100%); /* Brass + Acrylic */
+    --page-bg: #120502;
+    --env-lighting: radial-gradient(circle at center, rgba(255, 100, 0, 0.1) 0%, transparent 70%);
+
+    /* Plinth: High-gloss polished rosewood (Multi-layered grain) */
+    --plinth-bg: 
+        linear-gradient(135deg, rgba(141, 42, 26, 0.8), rgba(77, 26, 10, 0.9)),
+        radial-gradient(circle at 50% 0%, #a63a2a 0%, transparent 80%);
+    --plinth-shadow: 0 100px 200px rgba(0,0,0,0.8), inset 0 2px 15px rgba(255,255,255,0.15); /* Glossy top edge */
+    --plinth-border: #5d1a0a;
+
+    /* Platter: Gleaming Brass */
+    --platter-surface: conic-gradient(from 45deg, #ffd700, #b8860b, #ffd700, #fff700, #ffd700);
     --platter-border: #ffd700;
-    --tonearm-color: #ffd700;
-    --knob-bg: #b8860b;
-    --indicator-color: #fff; /* Sunset reflection */
-    --text-color: #e67e22;
+
+    /* Hardware: Gleaming Gold */
+    --accent-color: #ffd700;
+    --tonearm-base: #ffd700;
+    --tonearm-tube: linear-gradient(to bottom, #fff700, #b8860b);
+    --knob-surface: radial-gradient(circle, #ffd700, #8b6d00);
 }
 
-/* --- THEME 4: ARCTIC WHITE (Futuristic Minimalist) --- */
-/* Gallery: White marble and frosted glass. */
+/* --- THEME 4: ARCTIC WHITE (Gallery Aesthetic) --- */
 body.theme-alabaster {
-    --bg-color: #f0f0f0;
-    --page-bg: linear-gradient(135deg, #ffffff 0%, #d1d1d1 100%);
-    --hero-bg: #ffffff; /* Satin White Marble */
-    --hero-border: #e0e0e0;
-    --accent-color: #3498db; /* Soft Blue Shadows */
-    --platter-bg: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(200,200,200,0.2)); /* Frosted Glass */
+    --page-bg: #e8e8e8;
+    --env-lighting: radial-gradient(circle at 10% 10%, rgba(52, 152, 219, 0.1) 0%, transparent 50%);
+
+    /* Plinth: Seamless sculptural form of solid white ceramic */
+    --plinth-bg: #ffffff;
+    --plinth-shadow: 0 60px 120px rgba(0,0,0,0.1), inset 0 0 40px rgba(0,0,0,0.02);
+    --plinth-border: #eee;
+
+    /* Platter: Frosted clear acrylic with polished steel spindle */
+    --platter-surface: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(240,240,240,0.4) 100%);
     --platter-border: #fff;
-    --tonearm-color: #bdc3c7; /* Silver Needle */
-    --knob-bg: #fff;
-    --indicator-color: #3498db;
-    --text-color: #2c3e50;
+
+    /* Hardware: Polished Steel */
+    --accent-color: #3498db;
+    --tonearm-base: #eee;
+    --tonearm-tube: linear-gradient(to bottom, #fff, #bdc3c7);
+    --knob-surface: #fff;
 }
 
 body {
     margin: 0;
     padding: 0;
-    background: var(--page-bg);
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: var(--font-ui);
+    background-color: var(--page-bg);
+    background-image: var(--env-lighting);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    transition: background var(--transition-speed), background-color var(--transition-speed), color var(--transition-speed);
-}
-
-.app-container {
-    display: flex;
-    flex: 1;
-}
-
-.ad-rail {
-    width: 160px;
-    background: rgba(0,0,0,0.05);
-    display: flex;
-    justify-content: center;
-    padding-top: 20px;
-    opacity: 0.2;
+    transition: background-color var(--transition-speed), background-image var(--transition-speed);
+    overflow-x: hidden;
 }
 
 .main-content {
@@ -103,111 +111,102 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px 20px;
+    padding: 60px 20px;
 }
 
 .header {
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 80px;
 }
 
 .logo {
     font-family: var(--font-heading);
-    font-size: 3.5rem;
+    font-size: 4rem;
     color: var(--accent-color);
-    text-transform: capitalize;
-    letter-spacing: 1px;
-    font-style: italic;
-    text-shadow: 0 0 20px rgba(var(--accent-color), 0.1);
     transition: color var(--transition-speed);
+    text-shadow: 0 0 30px rgba(0,0,0,0.5);
+    font-style: italic;
 }
 
 .tagline {
     display: block;
-    font-size: 0.8rem;
-    color: #666;
-    font-family: var(--font-ui);
-    margin-top: 10px;
+    font-size: 0.75rem;
+    letter-spacing: 6px;
     text-transform: uppercase;
-    letter-spacing: 4px;
+    color: #666;
+    margin-top: 10px;
 }
 
-/* Theme Selector */
+/* Theme Switcher Dots */
 .theme-selector {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 25px;
+    right: 25px;
     display: flex;
     gap: 15px;
-    z-index: 30;
+    z-index: 100;
 }
 
 .theme-dot {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    border: 2px solid rgba(128,128,128,0.2);
+    border: 2px solid rgba(128,128,128,0.3);
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.3s;
 }
 
-.theme-dot:hover { transform: scale(1.2); }
-.theme-dot.active { border-color: var(--accent-color); transform: scale(1.2); box-shadow: 0 0 15px var(--accent-color); }
+.theme-dot.active {
+    transform: scale(1.2);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-color);
+}
 
-.theme-dot.obsidian { background: #050505; }
+.theme-dot.obsidian { background: #0a0a0a; }
 .theme-dot.walnut { background: #231512; }
 .theme-dot.warm { background: #8d2a1a; }
 .theme-dot.alabaster { background: #ffffff; }
 
-/* Refined Turntable Hero */
+/* The Turntable Object */
 .turntable-hero {
-    background: var(--hero-bg);
-    background-size: 30px 30px;
-    padding: 60px;
-    border-radius: 4px;
-    box-shadow: 0 60px 120px rgba(0,0,0,0.7);
-    border: 1px solid var(--hero-border);
+    width: 100%;
+    max-width: 750px;
+    background: var(--plinth-bg);
+    border: 1px solid var(--plinth-border);
+    box-shadow: var(--plinth-shadow);
+    padding: 80px;
+    border-radius: 2px; /* Sculptural, sharp look */
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 50px;
     position: relative;
-    width: 100%;
-    max-width: 720px;
     transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .turntable-platter {
+    width: 440px;
+    height: 440px;
+    background: var(--platter-surface);
+    border: 10px solid var(--platter-border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    position: relative;
+    margin-bottom: 60px;
+    transition: all var(--transition-speed);
+}
+
+.vinyl-record {
     width: 400px;
     height: 400px;
-    background: var(--platter-bg);
+    background: radial-gradient(circle, #111 0%, #050505 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    margin-bottom: 40px;
-    border: 8px solid var(--platter-border);
-    box-shadow: 
-        0 0 0 4px rgba(0,0,0,0.3),
-        0 30px 60px rgba(0,0,0,0.5);
-    transition: all var(--transition-speed);
-}
-
-.vinyl-record {
-    width: 360px;
-    height: 360px;
-    background: repeating-radial-gradient(
-      #080808,
-      #080808 1px,
-      #121212 2px
-    );
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 25px rgba(0,0,0,1);
-    transition: transform 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
     z-index: 1;
 }
 
@@ -215,69 +214,59 @@ body {
     animation: spin 1.8s linear infinite;
 }
 
-@keyframes spin {
-    100% { transform: rotate(360deg); }
-}
+@keyframes spin { 100% { transform: rotate(360deg); } }
 
 .center-label {
-    width: 140px;
-    height: 140px;
-    background: #111;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid #222;
-    position: relative;
-    z-index: 2;
+    border: 4px solid rgba(0,0,0,0.3);
 }
 
 .center-label img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: sepia(0.2) contrast(1.1) brightness(0.7);
+    filter: brightness(0.8) contrast(1.2);
 }
 
 .tonearm {
-    width: 240px;
-    height: 12px;
-    background: var(--tonearm-color);
+    width: 260px;
+    height: 14px;
+    background: var(--tonearm-tube);
     position: absolute;
-    top: 80px;
-    right: -30px;
+    top: 100px;
+    right: -20px;
     transform-origin: 90% 10%;
     transform: rotate(-35deg);
-    transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1), background var(--transition-speed);
-    border-radius: 6px;
-    box-shadow: 5px 15px 40px rgba(0,0,0,0.8);
+    transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 10;
+    border-radius: 7px;
+    box-shadow: 5px 20px 40px rgba(0,0,0,0.7);
 }
 
-.tonearm::before { /* Headshell */
+.tonearm::before { /* Headshell - Physical sculptural look */
     content: '';
     position: absolute;
-    left: -12px;
-    top: -14px;
-    width: 55px;
-    height: 40px;
-    background: #111;
-    border-radius: 2px;
-    border-bottom: 3px solid var(--accent-color);
-    box-shadow: inset 0 2px 5px rgba(255,255,255,0.1);
+    left: -15px;
+    top: -18px;
+    width: 60px;
+    height: 45px;
+    background: #0a0a0a;
+    border-radius: 3px;
+    border-bottom: 4px solid var(--accent-color);
 }
 
 .turntable-hero.playing .tonearm {
     transform: rotate(12deg);
 }
 
-/* Controls */
+/* Controls - Heavy, Tangible buttons */
 .controls {
     display: flex;
-    gap: 60px;
-    background: rgba(0,0,0,0.2);
-    padding: 30px 70px;
-    border-radius: 2px;
-    box-shadow: inset 0 10px 30px rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,255,255,0.03);
+    gap: 80px;
+    margin-top: 20px;
 }
 
 .knob-group {
@@ -287,62 +276,57 @@ body {
 }
 
 .knob {
-    width: 60px;
-    height: 60px;
-    background: var(--knob-bg);
+    width: 65px;
+    height: 65px;
+    background: var(--knob-surface);
     border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.8);
     position: relative;
     margin-bottom: 15px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.6);
     cursor: pointer;
-    transition: background var(--transition-speed);
 }
 
 .knob .indicator {
     width: 4px;
-    height: 24px;
-    background: var(--indicator-color);
+    height: 26px;
+    background: var(--accent-color);
     position: absolute;
-    top: 6px;
+    top: 8px;
     left: 50%;
     transform: translateX(-50%);
-    box-shadow: 0 0 12px var(--indicator-color);
-    border-radius: 2px;
+    box-shadow: 0 0 15px var(--accent-color);
 }
 
 .knob-group label {
     font-size: 0.7rem;
+    letter-spacing: 4px;
     text-transform: uppercase;
-    color: var(--text-color);
-    letter-spacing: 3px;
+    color: var(--accent-color);
+    opacity: 0.5;
     font-weight: bold;
-    opacity: 0.6;
 }
 
-/* Interface */
+/* Interface Overlay */
 .converter-interface {
+    margin-top: 60px;
     width: 100%;
     max-width: 600px;
     text-align: center;
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
 }
 
 input[type="text"] {
     background: transparent;
     border: none;
     border-bottom: 1px solid rgba(128,128,128,0.2);
-    padding: 15px 5px;
+    padding: 20px;
+    width: 100%;
     color: var(--accent-color);
     font-family: var(--font-ui);
-    font-size: 1.4rem;
-    transition: all 0.4s;
+    font-size: 1.2rem;
     text-align: center;
+    margin-bottom: 40px;
+    transition: border-bottom 0.4s;
 }
 
 input[type="text"]:focus {
@@ -357,12 +341,11 @@ input[type="text"]:focus {
 }
 
 button {
-    padding: 18px 45px;
+    padding: 20px 50px;
     background: transparent;
     color: var(--accent-color);
     border: 1px solid var(--accent-color);
     font-family: var(--font-ui);
-    font-size: 0.9rem;
     letter-spacing: 5px;
     text-transform: uppercase;
     cursor: pointer;
@@ -371,42 +354,32 @@ button {
 
 button:hover {
     background: var(--accent-color);
-    color: var(--bg-color);
-    box-shadow: 0 0 50px var(--accent-color);
+    color: var(--page-bg);
 }
 
 .status {
-    margin-top: 30px;
-    color: var(--text-color);
-    font-size: 0.7rem;
-    text-transform: uppercase;
+    margin-top: 40px;
+    font-size: 0.75rem;
     letter-spacing: 4px;
-    opacity: 0.4;
+    color: #666;
+    text-transform: uppercase;
 }
 
 .hidden { display: none !important; }
 
 /* Sticky Footer */
 .sticky-footer {
-    background: rgba(0,0,0,0.1);
     padding: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-top: 1px solid rgba(255,255,255,0.03);
+    opacity: 0.4;
 }
 
 .footer-links a {
-    color: var(--text-color);
+    color: var(--accent-color);
     text-decoration: none;
     margin: 0 30px;
     font-size: 0.8rem;
     letter-spacing: 3px;
-    opacity: 0.3;
-    transition: opacity 0.3s;
-}
-
-.footer-links a:hover {
-    opacity: 1;
-    color: var(--accent-color);
 }

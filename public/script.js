@@ -172,8 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
         burstSource.buffer = state.nodes.noiseBuffer;
         const burstGain = ctx.createGain();
         
-        burstGain.gain.setValueAtTime(0.6, ctx.currentTime);
-        burstGain.gain.exponentialRampToValueAtTime(0.15, ctx.currentTime + 2.0);
+        burstGain.gain.setValueAtTime(0.4, ctx.currentTime);
+        burstGain.gain.exponentialRampToValueAtTime(0.1, ctx.currentTime + 2.0);
         
         burstSource.connect(burstGain);
         burstGain.connect(ctx.destination);
