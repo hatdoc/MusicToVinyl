@@ -428,7 +428,8 @@ body {
     position: absolute;
     top: 5px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) rotate(0deg);
+    transform-origin: 50% 12.5px; /* Pivot firmly around the absolute 17.5px center of the 35px knob */
     border-radius: 2px;
 }
 

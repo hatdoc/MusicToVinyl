@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
         nodes: {},
         youtubePlayer: null,
         youtubeVideoId: null,
-        playerReady: false
+        playerReady: false,
+        knobs: { volume: 0.8, warmth: 0.5, crackle: 0.5 }
     };
 
     // --- DOM Elements ---
@@ -137,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         humOsc.frequency.value = 50; // Deep 50Hz hum
         
         const humGain = state.audioContext.createGain();
-        humGain.gain.value = 0.02; 
+        humGain.gain.value = state.knobs.warmth * 0.05; 
 
         humOsc.connect(humGain);
         humGain.connect(state.audioContext.destination);
@@ -190,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.loop = true;
 
         const gainNode = state.audioContext.createGain();
-        gainNode.gain.value = 0.18; // Increased from 0.12 for more audible hiss/texture
+        gainNode.gain.value = state.knobs.crackle * 0.40;
 
         source.connect(gainNode);
         gainNode.connect(state.audioContext.destination);
@@ -200,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.start();
 
         // Ensure hum is active
-        if (state.nodes.humGain) state.nodes.humGain.gain.value = 0.02;
+        if (state.nodes.humGain) state.nodes.humGain.gain.value = state.knobs.warmth * 0.05;
     }
 
     function stopVinylNoise() {
@@ -214,6 +215,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- UI Interactions ---
+
+    // --- Knobs Logic ---
+    const knobs = document.querySelectorAll('.knob');
+    knobs.forEach(knob => {
+        const controlType = knob.getAttribute('data-control');
+        const indicator = knob.querySelector('.indicator');
+        
+        let isDragging = false;
+        let startY = 0;
+        let startVal = state.knobs[controlType];
+
+        function updateVisual(val) {
+            // -135deg to +135deg coverage
+            const degrees = -135 + (val * 270);
+            indicator.style.transform = `translateX(-50%) rotate(${degrees}deg)`;
+        }
+        updateVisual(startVal);
+
+        function setAudioParameter(type, val) {
+            state.knobs[type] = val;
+            if (type === 'volume' && state.youtubePlayer && state.youtubePlayer.setVolume) {
+                state.youtubePlayer.setVolume(val * 100);
+            }
+            if (type === 'warmth' && state.nodes.humGain) {
+                state.nodes.humGain.gain.value = val * 0.05; // 0 to 0.05
+            }
+            if (type === 'crackle' && state.nodes.noiseGain) {
+                state.nodes.noiseGain.gain.value = val * 0.40; // 0 to 0.40
+            }
+        }
+
+        knob.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startY = e.clientY;
+            startVal = state.knobs[controlType];
+            document.body.style.cursor = 'ns-resize';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const deltaY = startY - e.clientY;
+            let newVal = startVal + (deltaY / 150); // 150px drag for full sweep
+            newVal = Math.max(0, Math.min(1, newVal));
+            updateVisual(newVal);
+            setAudioParameter(controlType, newVal);
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                document.body.style.cursor = 'default';
+            }
+        });
+    });
 
     convertBtn.addEventListener('click', () => {
         if (state.isPlaying && !state.isPaused) {
@@ -303,6 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 playVinylNoise();
                 if (state.youtubePlayer && state.youtubePlayer.loadVideoById) {
                     state.youtubePlayer.loadVideoById(videoId);
+                    state.youtubePlayer.setVolume(state.knobs.volume * 100);
                     state.youtubePlayer.playVideo();
                 }
             }
