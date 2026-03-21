@@ -143,13 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
         thump.start();
         thump.stop(ctx.currentTime + 0.2);
 
-        // Buzzing/Crackle burst
+        // Buzzing/Crackle burst - Extended to 2 seconds
         const burstSource = ctx.createBufferSource();
         burstSource.buffer = state.nodes.noiseBuffer;
         const burstGain = ctx.createGain();
         
         burstGain.gain.setValueAtTime(0.4, ctx.currentTime);
-        burstGain.gain.exponentialRampToValueAtTime(0.1, ctx.currentTime + 1.5);
+        burstGain.gain.exponentialRampToValueAtTime(0.1, ctx.currentTime + 2.0);
         
         burstSource.connect(burstGain);
         burstGain.connect(ctx.destination);
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initAudioEngine();
         playNeedleDrop(); // Trigger the initial "buzzing" and needle drop thump
         
-        // Wait a tiny bit for the needle drop to "land" before starting the music
+        // Wait 2 seconds for the needle drop and buzzing to complete before starting the music
         setTimeout(() => {
             if (state.isPlaying && !state.isPaused) {
                 playVinylNoise();
@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     state.youtubePlayer.playVideo();
                 }
             }
-        }, 300);
+        }, 2000);
 
         pauseBtn.classList.remove('hidden');
         convertBtn.textContent = "Change Record";
