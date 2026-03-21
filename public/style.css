@@ -4,305 +4,351 @@
     --font-ui: 'Roboto Mono', monospace;
 }
 
-/* --- THEME 1: OBSIDIAN --- */
+/* --- THEME DEFINITIONS --- */
 body.theme-obsidian {
-    --bg-color: #080808;
+    --bg-color: #0d0d0d;
     --accent-color: #ffffff;
-    --plinth-base: #0a0a0a;
+    --plinth-base: #111;
+    --plinth-side: #050505;
     --plinth-highlight: rgba(255,255,255,0.03);
     --plinth-shadow: rgba(0,0,0,0.8);
-    --recess-bg: #050505;
     --knob-main: linear-gradient(145deg, #1a1a1a, #050505);
     --metal-edge: linear-gradient(145deg, #333, #111);
 }
 
-/* --- THEME 2: WALNUT --- */
 body.theme-walnut {
-    --bg-color: #0f0a08;
+    --bg-color: #120c0a; 
     --accent-color: #C5A059;
-    --plinth-base: #1a0f0d;
+    --plinth-base: #2a1b16; 
+    --plinth-side: #1c110e;  
     --plinth-highlight: rgba(255, 159, 67, 0.05);
     --plinth-shadow: rgba(0,0,0,0.9);
-    --recess-bg: #0d0807;
     --knob-main: linear-gradient(145deg, #3d2b1f, #1a0f0d);
-    --metal-edge: linear-gradient(145deg, #8b5a2b, #3d2b1f);
+    --metal-edge: linear-gradient(145deg, #bbb, #555); 
 }
 
-/* --- THEME 3: COGNAC --- */
 body.theme-warm {
     --bg-color: #1a0a05;
     --accent-color: #ffd700;
     --plinth-base: #4d1a0a;
+    --plinth-side: #301005;
     --plinth-highlight: rgba(255, 255, 255, 0.1);
     --plinth-shadow: rgba(0,0,0,0.8);
-    --recess-bg: #2d0a05;
     --knob-main: linear-gradient(145deg, #ffd700, #b8860b);
     --metal-edge: linear-gradient(145deg, #fff, #ffd700);
 }
 
-/* --- THEME 4: ALABASTER --- */
 body.theme-alabaster {
-    --bg-color: #e0e0e0;
+    --bg-color: #ffffff;
     --accent-color: #3498db;
-    --plinth-base: #ffffff;
+    --plinth-base: #f0f0f0;
+    --plinth-side: #d0d0d0;
     --plinth-highlight: #ffffff;
     --plinth-shadow: rgba(0,0,0,0.15);
-    --recess-bg: #f5f5f5;
     --knob-main: linear-gradient(145deg, #ffffff, #e6e6e6);
     --metal-edge: linear-gradient(145deg, #fff, #bdc3c7);
 }
 
 body {
-    margin: 0;
-    padding: 0;
+    margin: 0; padding: 0;
     background-color: var(--bg-color);
     font-family: var(--font-ui);
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
+    display: flex; flex-direction: column;
+    height: 100vh; overflow: hidden;
     transition: background-color var(--transition-speed);
 }
 
-.app-container {
-    display: flex;
-    flex: 1;
-    height: 100%;
-}
+.app-container { display: flex; flex: 1; height: 100%; }
+.ad-rail { width: 120px; background: rgba(0,0,0,0.05); display: flex; justify-content: center; padding-top: 20px; opacity: 0.2; }
+.main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; }
 
-.ad-rail {
-    width: 120px;
-    background: rgba(0,0,0,0.05);
-    display: flex;
-    justify-content: center;
-    padding-top: 20px;
-    opacity: 0.2;
-}
+.header { text-align: center; margin-top: 2vh; z-index: 10; transform: translateZ(50px); }
+.logo { font-family: var(--font-heading); font-size: 2.5rem; color: var(--accent-color); margin: 0; font-style: italic; }
+.tagline { display: block; font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: #666; }
 
-.main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2vh 20px;
-}
-
-.header {
-    text-align: center;
-    margin-bottom: 2vh;
-}
-
-.logo {
-    font-family: var(--font-heading);
-    font-size: 2.5rem;
-    color: var(--accent-color);
-    margin: 0;
-    font-style: italic;
-}
-
-.tagline {
-    display: block;
-    font-size: 0.7rem;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: #666;
-}
-
-/* Theme Selector - Small and Unobtrusive */
-.theme-selector {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    gap: 10px;
-    z-index: 100;
-}
-
-.theme-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 1px solid rgba(128,128,128,0.3);
-    cursor: pointer;
-    padding: 0;
-    transition: transform 0.2s;
-}
-
+/* Theme Selector */
+.theme-selector { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 100; transform: translateZ(10px); }
+.theme-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(128,128,128,0.3); cursor: pointer; padding: 0; transition: transform 0.2s; }
 .theme-dot:hover { transform: scale(1.2); }
 .theme-dot.active { border-color: var(--accent-color); transform: scale(1.2); }
+.theme-dot.obsidian { background: #0a0a0a; } .theme-dot.walnut { background: #231512; }
+.theme-dot.warm { background: #8d2a1a; } .theme-dot.alabaster { background: #ffffff; }
 
-.theme-dot.obsidian { background: #0a0a0a; }
-.theme-dot.walnut { background: #231512; }
-.theme-dot.warm { background: #8d2a1a; }
-.theme-dot.alabaster { background: #ffffff; }
+/* --- 3D TURNTABLE WRAPPER --- */
+.turntable-wrapper {
+    perspective: 1200px;
+    width: 600px;
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
 
-/* Neumorphic 3D Plinth - Compact */
+/* The actual wooden base */
 .turntable-hero {
-    width: 100%;
-    max-width: 600px;
+    width: 520px;
+    height: 400px;
     background: var(--plinth-base);
-    border-radius: 30px;
-    padding: 40px;
+    border-radius: 6px;
     position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(50deg) rotateZ(-25deg);
+    /* Front and right 3D sides using box shadow for thickness */
     box-shadow: 
-        15px 15px 40px var(--plinth-shadow), 
-        -10px -10px 30px var(--plinth-highlight),
-        inset 1px 1px 2px var(--plinth-highlight),
-        inset -1px -1px 2px var(--plinth-shadow);
+        1px 1px 0 var(--plinth-side),
+        2px 2px 0 var(--plinth-side),
+        3px 3px 0 var(--plinth-side),
+        4px 4px 0 var(--plinth-side),
+        5px 5px 0 var(--plinth-side),
+        6px 6px 0 var(--plinth-side),
+        7px 7px 0 var(--plinth-side),
+        8px 8px 0 var(--plinth-side),
+        9px 9px 0 var(--plinth-side),
+        10px 10px 0 var(--plinth-side),
+        11px 11px 0 var(--plinth-side),
+        12px 12px 0 var(--plinth-side),
+        15px 15px 30px var(--plinth-shadow),
+        25px 25px 50px rgba(0,0,0,0.8);
     transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.plinth-recess {
-    background: var(--recess-bg);
-    border-radius: 50%;
-    padding: 15px;
-    margin-bottom: 30px;
-    box-shadow: 
-        inset 10px 10px 30px var(--plinth-shadow), 
-        inset -10px -10px 30px var(--plinth-highlight);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Adding texture to the wood base */
+.turntable-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    background-image: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,0,0,0.03) 40px, rgba(0,0,0,0.03) 45px);
+    pointer-events: none;
 }
 
+/* Dust Cover Hinges */
+.dust-cover-hinges {
+    position: absolute;
+    top: -5px;
+    left: 10%;
+    right: 10%;
+    height: 10px;
+    display: flex;
+    justify-content: space-between;
+    transform: translateZ(12px);
+}
+.hinge {
+    width: 30px;
+    height: 20px;
+    background: #111;
+    border-radius: 4px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    transform: translateY(-50%);
+}
+
+/* --- PLATTER --- */
 .turntable-platter {
-    width: 340px;
-    height: 340px;
-    background: var(--metal-edge);
+    width: 310px;
+    height: 310px;
+    background: #222;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+    position: absolute;
+    top: 45px;
+    left: 45px;
+    transform-style: preserve-3d;
+    transform: translateZ(15px); /* Raised off the plinth */
     box-shadow: 
-        8px 8px 20px var(--plinth-shadow),
-        -4px -4px 10px var(--plinth-highlight);
+        0px 0px 5px rgba(0,0,0,0.5),
+        2px 2px 2px #111,
+        4px 4px 2px #0a0a0a,
+        6px 6px 2px #000,
+        15px 15px 25px rgba(0,0,0,0.9);
 }
 
+.platter-edge {
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: repeating-conic-gradient(#333 0 2deg, #111 2deg 4deg);
+    z-index: -1;
+    transform: translateZ(-1px);
+}
+
+/* --- VINYL RECORD --- */
 .vinyl-record {
-    width: 320px;
-    height: 320px;
+    width: 300px;
+    height: 300px;
     background: #111;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-    position: relative;
-    box-shadow: 
-        0 4px 10px rgba(0,0,0,0.8),
-        inset 0 2px 4px rgba(255,255,255,0.1),
-        inset 0 -2px 4px rgba(0,0,0,0.8),
-        0 0 0 4px var(--recess-bg);
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    transform-style: preserve-3d;
+    transform: translateZ(5px);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 2px #000;
 }
 
 .grooves {
     position: absolute;
-    top: 4px;
-    left: 4px;
-    right: 4px;
-    bottom: 4px;
+    inset: 4px;
     border-radius: 50%;
     background: 
-        repeating-radial-gradient(
-            #111, 
-            #111 2px, 
-            #1c1c1c 3px, 
-            #111 4px
-        ),
-        conic-gradient(
-            transparent 0%, 
-            rgba(255,255,255,0.2) 15%, 
-            transparent 30%, 
-            transparent 50%, 
-            rgba(255,255,255,0.2) 65%, 
-            transparent 80%
-        );
+        repeating-radial-gradient(#111, #111 2px, #1c1c1c 3px, #111 4px),
+        conic-gradient(transparent 0%, rgba(255,255,255,0.2) 15%, transparent 30%, transparent 50%, rgba(255,255,255,0.2) 65%, transparent 80%);
     background-blend-mode: color-dodge;
     pointer-events: none;
     z-index: 2;
 }
 
 .vinyl-record.spinning { animation: spin 1.8s linear infinite; }
-@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes spin { 100% { transform: translateZ(5px) rotateZ(360deg); } }
 
 .center-label {
-    width: 110px;
-    height: 110px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid #222;
-    z-index: 10;
-    position: absolute;
+    border: 3px solid #111;
     background: #111;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) translateZ(1px);
+    z-index: 10;
+    overflow: hidden;
+}
+.center-label img { width: 100%; height: 100%; object-fit: cover; }
+
+/* spindle */
+.vinyl-record::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 12px; height: 12px;
+    background: radial-gradient(circle, #ddd, #555);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) translateZ(4px);
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    z-index: 15;
 }
 
-.center-label img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); }
-
-.center-label span {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    font-size: 0.8rem;
-    color: #666;
+/* --- TONEARM SYSTEM --- */
+.tonearm-base {
+    position: absolute;
+    top: 50px;
+    right: 40px;
+    width: 80px;
+    height: 80px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    transform-style: preserve-3d;
+    transform: translateZ(8px);
+    box-shadow: 
+        1px 1px 0 #111,
+        2px 2px 0 #000,
+        3px 3px 0 #000,
+        8px 8px 15px rgba(0,0,0,0.8);
+}
+.tonearm-pivot {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 40px; height: 40px;
+    background: radial-gradient(circle at 30% 30%, #666, #222);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) translateZ(12px);
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.8), -1px -1px 2px rgba(255,255,255,0.2) inset;
 }
 
 .tonearm {
-    width: 200px;
-    height: 12px;
-    background: var(--metal-edge);
     position: absolute;
-    top: 40px;
-    right: 30px;
-    transform-origin: 90% 50%;
-    transform: rotate(-30deg);
+    top: 40px; /* center of pivot */
+    left: 40px; /* center of pivot width */
+    width: 20px; /* Stick thickness / base */
+    height: 250px; /* Total length backwards and forwards */
+    transform-origin: 10px 40px; /* pivot at X=10px, Y=40px (down from counterweight) */
+    /* Resting config: Points DOWN the plinth */
+    transform: translate(-10px, -40px) translateZ(28px) rotateZ(35deg); 
+    transform-style: preserve-3d;
+    transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 30;
+}
+
+.counterweight {
+    position: absolute;
+    top: 0px;
+    left: -5px;
+    width: 30px;
+    height: 35px;
+    background: linear-gradient(90deg, #444, #888, #222);
+    border-radius: 4px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+}
+
+.arm-stick {
+    position: absolute;
+    top: 35px;
+    left: 4px;
+    width: 12px;
+    height: 190px;
+    background: linear-gradient(90deg, #aaa, #fff, #555);
     border-radius: 6px;
-    z-index: 20;
-    box-shadow: -5px 12px 15px rgba(0,0,0,0.6), inset 0 3px 3px rgba(255,255,255,0.3), inset 0 -3px 3px rgba(0,0,0,0.4);
-    transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.6);
 }
 
-.tonearm::after {
-    content: '';
+.headshell {
     position: absolute;
-    right: -4px;
-    top: -14px;
-    width: 40px;
-    height: 40px;
-    background: radial-gradient(circle at 30% 30%, #555, #111, #000);
-    border-radius: 50%;
-    box-shadow: 0 5px 10px var(--plinth-shadow), inset 0 2px 2px rgba(255,255,255,0.3);
-    z-index: 21;
-}
-
-.tonearm::before {
-    content: '';
-    position: absolute;
-    left: -20px;
-    top: -14px;
+    bottom: 25px; /* at end of stick */
+    left: -6px;
     width: 25px;
     height: 45px;
-    background: linear-gradient(135deg, #333 0%, #111 50%, #000 100%);
-    border-radius: 5px;
-    border-left: 2px solid var(--accent-color);
-    box-shadow: -4px 8px 10px rgba(0,0,0,0.6), inset 1px 1px 2px rgba(255,255,255,0.2);
-    transform-origin: right center;
-    transform: rotate(-25deg);
+    background: linear-gradient(135deg, #333, #111);
+    border-radius: 4px;
+    transform-origin: top center;
+    transform: rotateZ(25deg); /* Angled inwards towards vinyl */
+    box-shadow: 3px 3px 8px rgba(0,0,0,0.7);
+    border-top: 2px solid var(--accent-color);
 }
 
-.turntable-hero.playing .tonearm { transform: rotate(-55deg); }
+.stylus {
+    position: absolute;
+    bottom: -4px;
+    left: 10px;
+    width: 5px;
+    height: 10px;
+    background: #e74c3c; /* Red stylus tip */
+    border-radius: 2px;
+}
 
-/* Controls - Compact */
-.controls {
+/* Playing State: Swing the tonearm over the record */
+.turntable-hero.playing .tonearm { 
+    transform: translate(-10px, -40px) translateZ(28px) rotateZ(75deg); 
+}
+
+/* Arm Rest Peg */
+.arm-rest {
+    position: absolute;
+    top: 230px;
+    right: 50px;
+    width: 15px;
+    height: 15px;
+    background: #222;
+    border-radius: 50%;
+    transform: translateZ(10px);
+    box-shadow: 1px 1px 0 #000, 2px 2px 0 #000, 4px 4px 5px rgba(0,0,0,0.8);
+}
+.arm-rest::after {
+    content: '';
+    position: absolute;
+    top: -10px; left: 5px;
+    width: 5px; height: 15px;
+    background: #111;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.8);
+}
+
+/* Controls Panel */
+.panel-controls {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
     display: flex;
-    gap: 40px;
-    justify-content: center;
+    gap: 15px;
+    transform: translateZ(10px);
 }
 
 .knob-group {
@@ -312,92 +358,97 @@ body {
 }
 
 .knob {
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
     background: var(--knob-main);
     border-radius: 50%;
     position: relative;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     cursor: pointer;
     box-shadow: 
-        6px 6px 15px var(--plinth-shadow),
-        -6px -6px 15px var(--plinth-highlight),
+        2px 2px 5px rgba(0,0,0,0.8),
         inset 0px 4px 6px rgba(255,255,255,0.1),
         inset 0px -4px 6px rgba(0,0,0,0.6),
         0 0 0 2px rgba(0,0,0,0.8);
+    transform-style: preserve-3d;
 }
 
 .knob::after {
     content: '';
     position: absolute;
     top: 15%; left: 15%; width: 30%; height: 30%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
 }
 
 .knob .indicator {
     width: 3px;
-    height: 18px;
+    height: 12px;
     background: var(--accent-color);
     position: absolute;
-    top: 8px;
+    top: 5px;
     left: 50%;
     transform: translateX(-50%);
     border-radius: 2px;
 }
 
 .knob-group label {
-    font-size: 0.6rem;
-    letter-spacing: 2px;
+    font-size: 0.5rem;
+    letter-spacing: 1px;
     text-transform: uppercase;
     color: var(--accent-color);
-    opacity: 0.4;
+    opacity: 0.6;
 }
 
-/* Interface - Compact */
+/* Convert UI / Input section */
 .converter-interface {
-    margin-top: 3vh;
+    margin-top: -10px;
     width: 100%;
     max-width: 500px;
     text-align: center;
+    position: relative;
+    z-index: 100;
 }
 
 input[type="text"] {
     background: transparent;
     border: none;
-    border-bottom: 1px solid rgba(128,128,128,0.2);
+    border-bottom: 2px solid rgba(255,255,255,0.2);
     padding: 10px;
-    width: 100%;
+    width: 80%;
     color: var(--accent-color);
     font-family: var(--font-ui);
     font-size: 1rem;
     text-align: center;
     margin-bottom: 2vh;
+    transition: border-bottom-color 0.3s;
 }
 
 input[type="text"]:focus { outline: none; border-bottom-color: var(--accent-color); }
 
 button {
     padding: 12px 30px;
-    background: var(--plinth-base);
+    background: linear-gradient(145deg, #333, #111);
     color: var(--accent-color);
-    border: none;
+    border: 1px solid #000;
     border-radius: 10px;
     font-family: var(--font-ui);
     letter-spacing: 2px;
     text-transform: uppercase;
     cursor: pointer;
-    box-shadow: 5px 5px 15px var(--plinth-shadow), -5px -5px 15px var(--plinth-highlight);
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.8), inset 1px 1px 2px rgba(255,255,255,0.1);
     font-size: 0.8rem;
+    transition: all 0.2s;
 }
+button:hover { transform: translateY(-1px); box-shadow: 4px 4px 12px rgba(0,0,0,0.9); }
+button:active { transform: translateY(1px); box-shadow: 1px 1px 5px rgba(0,0,0,0.8); }
 
 .status {
     margin-top: 2vh;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     letter-spacing: 2px;
-    color: #555;
+    color: #888;
     text-transform: uppercase;
 }
-
 .hidden { display: none !important; }
 
 .sticky-footer {
@@ -408,10 +459,4 @@ button {
     justify-content: center;
     opacity: 0.3;
 }
-
-.footer-links a {
-    color: var(--accent-color);
-    text-decoration: none;
-    margin: 0 15px;
-    font-size: 0.7rem;
-}
+.footer-links a { color: var(--accent-color); text-decoration: none; margin: 0 15px; font-size: 0.8rem; }

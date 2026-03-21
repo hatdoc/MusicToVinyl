@@ -23,43 +23,59 @@
                 <h1 class="logo">Vinyl Analog <span class="tagline">Authentic warmth for digital souls.</span></h1>
             </header>
 
-            <section class="turntable-hero" id="turntableHero">
+            <section class="turntable-wrapper" id="turntableWrapper">
                 <div class="theme-selector">
                     <button class="theme-dot obsidian" data-theme="theme-obsidian" title="Obsidian"></button>
                     <button class="theme-dot walnut active" data-theme="theme-walnut" title="Walnut"></button>
                     <button class="theme-dot warm" data-theme="theme-warm" title="Cognac"></button>
                     <button class="theme-dot alabaster" data-theme="theme-alabaster" title="Alabaster"></button>
                 </div>
-                <div class="plinth-recess">
+                
+                <div class="turntable-hero" id="turntableHero">
+                    <!-- The wood chassis -->
+                    <div class="dust-cover-hinges">
+                        <div class="hinge left"></div>
+                        <div class="hinge right"></div>
+                    </div>
+                    
                     <div class="turntable-platter">
+                        <div class="platter-edge"></div>
                         <div class="vinyl-record" id="vinylRecord">
                             <div class="center-label" id="centerLabel">
                                 <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><rect width='150' height='150' fill='%233a1e12'/><circle cx='75' cy='75' r='70' fill='none' stroke='%235c3422' stroke-width='2'/><text x='50%25' y='50%25' font-family='Playfair Display, serif' font-style='italic' font-size='18' fill='%23c5a059' dominant-baseline='middle' text-anchor='middle'>Vinyl</text></svg>" alt="Album Art" id="albumArt">
                             </div>
                             <div class="grooves"></div>
                         </div>
-                        <div class="tonearm" id="tonearm"></div>
                     </div>
-                </div>
-                
-                <div class="controls">
-                    <div class="knob-group">
-                        <div class="knob" data-control="volume">
-                            <div class="indicator"></div>
+
+                    <!-- Tonearm System -->
+                    <div class="tonearm-base">
+                        <div class="tonearm-pivot"></div>
+                        <div class="tonearm" id="tonearm">
+                            <div class="counterweight"></div>
+                            <div class="arm-stick"></div>
+                            <div class="headshell">
+                                <div class="stylus"></div>
+                            </div>
                         </div>
-                        <label>Volume</label>
                     </div>
-                    <div class="knob-group">
-                        <div class="knob" data-control="warmth">
-                            <div class="indicator"></div>
+                    
+                    <!-- Arm Rest -->
+                    <div class="arm-rest"></div>
+                    
+                    <div class="controls panel-controls">
+                        <div class="knob-group">
+                            <div class="knob" data-control="volume"><div class="indicator"></div></div>
+                            <label>Vol</label>
                         </div>
-                        <label>Warmth</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob" data-control="crackle">
-                            <div class="indicator"></div>
+                        <div class="knob-group">
+                            <div class="knob" data-control="warmth"><div class="indicator"></div></div>
+                            <label>Warm</label>
                         </div>
-                        <label>Crackle</label>
+                        <div class="knob-group">
+                            <div class="knob" data-control="crackle"><div class="indicator"></div></div>
+                            <label>Crackle</label>
+                        </div>
                     </div>
                 </div>
             </section>
