@@ -2,13 +2,9 @@
     --transition-speed: 0.8s;
     --font-heading: 'Playfair Display', serif;
     --font-ui: 'Roboto Mono', monospace;
-    
-    /* Neumorphic Lighting - Global Top-Left */
-    --light-source: rgba(255, 255, 255, 0.05);
-    --shadow-source: rgba(0, 0, 0, 0.6);
 }
 
-/* --- THEME 1: OBSIDIAN (Modern Noir) --- */
+/* --- THEME 1: OBSIDIAN --- */
 body.theme-obsidian {
     --bg-color: #080808;
     --accent-color: #ffffff;
@@ -20,7 +16,7 @@ body.theme-obsidian {
     --metal-edge: linear-gradient(145deg, #333, #111);
 }
 
-/* --- THEME 2: WALNUT (Speakeasy Vibe) - DEFAULT --- */
+/* --- THEME 2: WALNUT --- */
 body.theme-walnut {
     --bg-color: #0f0a08;
     --accent-color: #C5A059;
@@ -32,7 +28,7 @@ body.theme-walnut {
     --metal-edge: linear-gradient(145deg, #8b5a2b, #3d2b1f);
 }
 
-/* --- THEME 3: COGNAC (Mid-Century Class) --- */
+/* --- THEME 3: COGNAC --- */
 body.theme-warm {
     --bg-color: #1a0a05;
     --accent-color: #ffd700;
@@ -44,7 +40,7 @@ body.theme-warm {
     --metal-edge: linear-gradient(145deg, #fff, #ffd700);
 }
 
-/* --- THEME 4: ALABASTER (Bright Gallery) --- */
+/* --- THEME 4: ALABASTER --- */
 body.theme-alabaster {
     --bg-color: #e0e0e0;
     --accent-color: #3498db;
@@ -63,9 +59,24 @@ body {
     font-family: var(--font-ui);
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     transition: background-color var(--transition-speed);
-    overflow-x: hidden;
+}
+
+.app-container {
+    display: flex;
+    flex: 1;
+    height: 100%;
+}
+
+.ad-rail {
+    width: 120px;
+    background: rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    opacity: 0.2;
 }
 
 .main-content {
@@ -73,146 +84,159 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 60px 20px;
+    justify-content: center;
+    padding: 2vh 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2vh;
 }
 
 .logo {
     font-family: var(--font-heading);
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     color: var(--accent-color);
-    text-shadow: -2px -2px 5px var(--plinth-highlight), 2px 2px 5px var(--plinth-shadow);
-    margin-bottom: 60px;
+    margin: 0;
     font-style: italic;
-    transition: color var(--transition-speed);
 }
 
-/* Neumorphic 3D Plinth */
+.tagline {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #666;
+}
+
+/* Theme Selector - Small and Unobtrusive */
+.theme-selector {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+}
+
+.theme-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(128,128,128,0.3);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s;
+}
+
+.theme-dot:hover { transform: scale(1.2); }
+.theme-dot.active { border-color: var(--accent-color); transform: scale(1.2); }
+
+.theme-dot.obsidian { background: #0a0a0a; }
+.theme-dot.walnut { background: #231512; }
+.theme-dot.warm { background: #8d2a1a; }
+.theme-dot.alabaster { background: #ffffff; }
+
+/* Neumorphic 3D Plinth - Compact */
 .turntable-hero {
     width: 100%;
-    max-width: 750px;
+    max-width: 600px;
     background: var(--plinth-base);
-    border-radius: 40px; /* Rounded heavy corners */
-    padding: 60px;
+    border-radius: 30px;
+    padding: 40px;
     position: relative;
-    
-    /* Multi-layered shadows for 3D mass */
     box-shadow: 
-        20px 20px 60px var(--plinth-shadow), 
-        -20px -20px 60px var(--plinth-highlight),
+        15px 15px 40px var(--plinth-shadow), 
+        -10px -10px 30px var(--plinth-highlight),
         inset 1px 1px 2px var(--plinth-highlight),
         inset -1px -1px 2px var(--plinth-shadow);
-        
     transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Deep Recessed Area */
 .plinth-recess {
     background: var(--recess-bg);
     border-radius: 50%;
-    padding: 20px;
-    margin-bottom: 40px;
-    
-    /* "Carved" look */
+    padding: 15px;
+    margin-bottom: 30px;
     box-shadow: 
-        inset 15px 15px 40px var(--plinth-shadow), 
-        inset -15px -15px 40px var(--plinth-highlight);
-        
+        inset 10px 10px 30px var(--plinth-shadow), 
+        inset -10px -10px 30px var(--plinth-highlight);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background var(--transition-speed);
 }
 
 .turntable-platter {
-    width: 420px;
-    height: 420px;
+    width: 340px;
+    height: 340px;
     background: var(--metal-edge);
     border-radius: 50%;
-    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    /* Raised 3D Platter */
     box-shadow: 
-        10px 10px 30px var(--plinth-shadow),
-        -5px -5px 15px var(--plinth-highlight);
+        8px 8px 20px var(--plinth-shadow),
+        -4px -4px 10px var(--plinth-highlight);
 }
 
 .vinyl-record {
-    width: 390px;
-    height: 390px;
-    background: #050505;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, #111 0%, #050505 100%);
     border-radius: 50%;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.8);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1;
 }
 
-.vinyl-record.spinning {
-    animation: spin 1.8s linear infinite;
-}
-
+.vinyl-record.spinning { animation: spin 1.8s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
 .center-label {
-    width: 140px;
-    height: 140px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     overflow: hidden;
     border: 2px solid #222;
 }
 
-.center-label img {
-    width: 100%; height: 100%; object-fit: cover;
-    filter: brightness(0.7);
-}
+.center-label img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); }
 
-/* Physical Tonearm */
 .tonearm {
-    width: 250px;
-    height: 16px;
+    width: 200px;
+    height: 12px;
     background: var(--metal-edge);
     position: absolute;
-    top: 80px;
+    top: 60px;
     right: -10px;
     transform-origin: 90% 10%;
     transform: rotate(-35deg);
-    border-radius: 8px;
+    border-radius: 6px;
     z-index: 10;
-    
-    /* 3D Volume for the arm */
-    box-shadow: 
-        5px 10px 20px var(--plinth-shadow),
-        -2px -2px 5px var(--plinth-highlight);
+    box-shadow: 4px 8px 15px var(--plinth-shadow);
     transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.tonearm::before { /* Headshell */
+.tonearm::before {
     content: '';
     position: absolute;
-    left: -15px;
-    top: -15px;
-    width: 60px;
-    height: 40px;
+    left: -10px;
+    top: -12px;
+    width: 45px;
+    height: 32px;
     background: #111;
-    border-radius: 4px;
-    box-shadow: inset 2px 2px 5px rgba(255,255,255,0.1), 2px 5px 10px rgba(0,0,0,0.5);
+    border-radius: 3px;
     border-bottom: 3px solid var(--accent-color);
 }
 
-.turntable-hero.playing .tonearm {
-    transform: rotate(12deg);
-}
+.turntable-hero.playing .tonearm { transform: rotate(12deg); }
 
-/* Neumorphic Knobs - Physical Cylinders */
+/* Controls - Compact */
 .controls {
     display: flex;
-    gap: 60px;
+    gap: 40px;
     justify-content: center;
-    margin-top: 20px;
 }
 
 .knob-group {
@@ -222,108 +246,85 @@ body {
 }
 
 .knob {
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    height: 50px;
     background: var(--knob-main);
     border-radius: 50%;
     position: relative;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     cursor: pointer;
-    
-    /* 3D Cylinder look */
     box-shadow: 
-        8px 8px 20px var(--plinth-shadow),
-        -8px -8px 20px var(--plinth-highlight),
-        inset 1px 1px 1px var(--plinth-highlight);
+        6px 6px 15px var(--plinth-shadow),
+        -6px -6px 15px var(--plinth-highlight);
 }
 
-/* Specular Highlight on Knob */
 .knob::after {
     content: '';
     position: absolute;
-    top: 15%;
-    left: 15%;
-    width: 30%;
-    height: 30%;
+    top: 15%; left: 15%; width: 30%; height: 30%;
     background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    pointer-events: none;
 }
 
 .knob .indicator {
-    width: 4px;
-    height: 25px;
+    width: 3px;
+    height: 18px;
     background: var(--accent-color);
     position: absolute;
-    top: 10px;
+    top: 8px;
     left: 50%;
     transform: translateX(-50%);
     border-radius: 2px;
-    box-shadow: 0 0 10px var(--accent-color);
 }
 
 .knob-group label {
-    font-size: 0.7rem;
-    letter-spacing: 3px;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--accent-color);
     opacity: 0.4;
-    font-weight: bold;
 }
 
-/* Interface */
+/* Interface - Compact */
 .converter-interface {
-    margin-top: 60px;
+    margin-top: 3vh;
     width: 100%;
-    max-width: 600px;
+    max-width: 500px;
     text-align: center;
 }
 
 input[type="text"] {
     background: transparent;
     border: none;
-    border-bottom: 2px solid var(--plinth-shadow);
-    padding: 20px;
+    border-bottom: 1px solid rgba(128,128,128,0.2);
+    padding: 10px;
     width: 100%;
     color: var(--accent-color);
     font-family: var(--font-ui);
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-align: center;
-    margin-bottom: 40px;
-    transition: border-bottom 0.4s;
+    margin-bottom: 2vh;
 }
 
-input[type="text"]:focus {
-    outline: none;
-    border-bottom-color: var(--accent-color);
-}
+input[type="text"]:focus { outline: none; border-bottom-color: var(--accent-color); }
 
 button {
-    padding: 20px 50px;
+    padding: 12px 30px;
     background: var(--plinth-base);
     color: var(--accent-color);
     border: none;
-    border-radius: 15px;
+    border-radius: 10px;
     font-family: var(--font-ui);
-    letter-spacing: 4px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     cursor: pointer;
-    box-shadow: 
-        8px 8px 20px var(--plinth-shadow),
-        -8px -8px 20px var(--plinth-highlight);
-    transition: all 0.3s;
-}
-
-button:hover {
-    box-shadow: 
-        4px 4px 10px var(--plinth-shadow),
-        -4px -4px 10px var(--plinth-highlight);
-    transform: translateY(2px);
+    box-shadow: 5px 5px 15px var(--plinth-shadow), -5px -5px 15px var(--plinth-highlight);
+    font-size: 0.8rem;
 }
 
 .status {
-    margin-top: 40px;
-    font-size: 0.7rem;
-    letter-spacing: 3px;
+    margin-top: 2vh;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
     color: #555;
     text-transform: uppercase;
 }
@@ -331,16 +332,17 @@ button:hover {
 .hidden { display: none !important; }
 
 .sticky-footer {
-    padding: 60px;
+    height: 10vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     opacity: 0.3;
 }
 
 .footer-links a {
     color: var(--accent-color);
     text-decoration: none;
-    margin: 0 30px;
-    font-size: 0.8rem;
+    margin: 0 15px;
+    font-size: 0.7rem;
 }
