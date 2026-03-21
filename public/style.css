@@ -94,23 +94,23 @@ body {
     border-radius: 6px;
     position: relative;
     transform-style: preserve-3d;
-    transform: rotateX(50deg) rotateZ(-25deg);
-    /* Front and right 3D sides using box shadow for thickness */
+    transform: rotateX(45deg) rotateZ(0deg);
+    /* Front 3D sides using box shadow for thickness (pointing straight down) */
     box-shadow: 
-        1px 1px 0 var(--plinth-side),
-        2px 2px 0 var(--plinth-side),
-        3px 3px 0 var(--plinth-side),
-        4px 4px 0 var(--plinth-side),
-        5px 5px 0 var(--plinth-side),
-        6px 6px 0 var(--plinth-side),
-        7px 7px 0 var(--plinth-side),
-        8px 8px 0 var(--plinth-side),
-        9px 9px 0 var(--plinth-side),
-        10px 10px 0 var(--plinth-side),
-        11px 11px 0 var(--plinth-side),
-        12px 12px 0 var(--plinth-side),
-        15px 15px 30px var(--plinth-shadow),
-        25px 25px 50px rgba(0,0,0,0.8);
+        0px 1px 0 var(--plinth-side),
+        0px 2px 0 var(--plinth-side),
+        0px 3px 0 var(--plinth-side),
+        0px 4px 0 var(--plinth-side),
+        0px 5px 0 var(--plinth-side),
+        0px 6px 0 var(--plinth-side),
+        0px 7px 0 var(--plinth-side),
+        0px 8px 0 var(--plinth-side),
+        0px 9px 0 var(--plinth-side),
+        0px 10px 0 var(--plinth-side),
+        0px 11px 0 var(--plinth-side),
+        0px 12px 0 var(--plinth-side),
+        0px 20px 30px var(--plinth-shadow),
+        0px 30px 50px rgba(0,0,0,0.8);
     transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -157,10 +157,10 @@ body {
     transform: translateZ(15px); /* Raised off the plinth */
     box-shadow: 
         0px 0px 5px rgba(0,0,0,0.5),
-        2px 2px 2px #111,
-        4px 4px 2px #0a0a0a,
-        6px 6px 2px #000,
-        15px 15px 25px rgba(0,0,0,0.9);
+        0px 2px 2px #111,
+        0px 4px 2px #0a0a0a,
+        0px 6px 2px #000,
+        0px 15px 25px rgba(0,0,0,0.9);
 }
 
 .platter-edge {
@@ -240,10 +240,10 @@ body {
     transform-style: preserve-3d;
     transform: translateZ(8px);
     box-shadow: 
-        1px 1px 0 #111,
-        2px 2px 0 #000,
-        3px 3px 0 #000,
-        8px 8px 15px rgba(0,0,0,0.8);
+        0px 1px 0 #111,
+        0px 2px 0 #000,
+        0px 3px 0 #000,
+        0px 8px 15px rgba(0,0,0,0.8);
 }
 .tonearm-pivot {
     position: absolute;
@@ -252,7 +252,7 @@ body {
     background: radial-gradient(circle at 30% 30%, #666, #222);
     border-radius: 50%;
     transform: translate(-50%, -50%) translateZ(12px);
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.8), -1px -1px 2px rgba(255,255,255,0.2) inset;
+    box-shadow: 0px 5px 10px rgba(0,0,0,0.8), 0px -2px 2px rgba(255,255,255,0.2) inset;
 }
 
 .tonearm {
@@ -263,7 +263,7 @@ body {
     height: 250px; /* Total length backwards and forwards */
     transform-origin: 10px 40px; /* pivot at X=10px, Y=40px (down from counterweight) */
     /* Resting config: Points DOWN the plinth */
-    transform: translate(-10px, -40px) translateZ(28px) rotateZ(35deg); 
+    transform: translate(-10px, -40px) translateZ(28px) rotateZ(-12deg); 
     transform-style: preserve-3d;
     transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 30;
@@ -317,7 +317,7 @@ body {
 
 /* Playing State: Swing the tonearm over the record */
 .turntable-hero.playing .tonearm { 
-    transform: translate(-10px, -40px) translateZ(28px) rotateZ(75deg); 
+    transform: translate(-10px, -40px) translateZ(28px) rotateZ(35deg); 
 }
 
 /* Arm Rest Peg */
@@ -330,7 +330,7 @@ body {
     background: #222;
     border-radius: 50%;
     transform: translateZ(10px);
-    box-shadow: 1px 1px 0 #000, 2px 2px 0 #000, 4px 4px 5px rgba(0,0,0,0.8);
+    box-shadow: 0px 1px 0 #000, 0px 2px 0 #000, 0px 4px 5px rgba(0,0,0,0.8);
 }
 .arm-rest::after {
     content: '';
@@ -338,7 +338,7 @@ body {
     top: -10px; left: 5px;
     width: 5px; height: 15px;
     background: #111;
-    box-shadow: 2px 2px 2px rgba(0,0,0,0.8);
+    box-shadow: 0px 2px 2px rgba(0,0,0,0.8);
 }
 
 /* Controls Panel */
@@ -366,7 +366,7 @@ body {
     margin-bottom: 5px;
     cursor: pointer;
     box-shadow: 
-        2px 2px 5px rgba(0,0,0,0.8),
+        0px 5px 8px rgba(0,0,0,0.8),
         inset 0px 4px 6px rgba(255,255,255,0.1),
         inset 0px -4px 6px rgba(0,0,0,0.6),
         0 0 0 2px rgba(0,0,0,0.8);
