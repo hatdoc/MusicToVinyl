@@ -31,10 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
         dot.addEventListener('click', () => {
             const theme = dot.getAttribute('data-theme');
             
-            // Remove all themes
-            turntableHero.classList.remove('theme-noir', 'theme-silver', 'theme-walnut');
-            // Add selected theme
-            turntableHero.classList.add(theme);
+            // Remove all themes from body
+            document.body.classList.remove('theme-obsidian', 'theme-walnut', 'theme-warm', 'theme-alabaster');
+            // Add selected theme to body
+            document.body.classList.add(theme);
             
             // Update active dot
             themeDots.forEach(d => d.classList.remove('active'));
@@ -42,8 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Initialize with Noir
-    turntableHero.classList.add('theme-noir');
+    // Initialize with Obsidian
+    document.body.classList.add('theme-obsidian');
 
     // --- Initialization ---
     // Load YouTube IFrame API
