@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VinylSoul - Analog Audio Converter</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar Ad Rail -->
+        <aside class="ad-rail left">
+            <div class="ad-placeholder">Ad Space</div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h1 class="logo">VinylSoul <span class="tagline">Analog warmth for the digital age.</span></h1>
+            </header>
+
+            <section class="turntable-hero">
+                <div class="turntable-platter">
+                    <div class="vinyl-record" id="vinylRecord">
+                        <div class="center-label" id="centerLabel">
+                            <img src="https://via.placeholder.com/150" alt="Album Art" id="albumArt">
+                        </div>
+                        <div class="grooves"></div>
+                    </div>
+                    <div class="tonearm" id="tonearm"></div>
+                </div>
+                
+                <div class="controls">
+                    <div class="knob-group">
+                        <div class="knob" data-control="volume">
+                            <div class="indicator"></div>
+                        </div>
+                        <label>Volume</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-control="warmth">
+                            <div class="indicator"></div>
+                        </div>
+                        <label>Warmth</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-control="crackle">
+                            <div class="indicator"></div>
+                        </div>
+                        <label>Crackle</label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="converter-interface">
+                <div class="input-group">
+                    <input type="text" id="youtubeUrl" placeholder="Paste YouTube URL here...">
+                    <button id="convertBtn">Play on Vinyl</button>
+                </div>
+                <div id="statusMessage" class="status"></div>
+            </section>
+
+            <!-- Sign Up Gate Modal (Hidden by default) -->
+            <div id="authGate" class="modal hidden">
+                <div class="modal-content wooden-frame">
+                    <h2>Unlock Unlimited Plays</h2>
+                    <p>Join our exclusive community of audiophiles.</p>
+                    <form id="signupForm">
+                        <input type="email" id="userEmail" placeholder="Enter your email" required>
+                        <button type="submit">Unlock Access</button>
+                    </form>
+                    <p class="small-text">One-time registration. No spam, just pure analog soul.</p>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Sidebar Ad Rail -->
+        <aside class="ad-rail right">
+            <div class="ad-placeholder">Ad Space</div>
+        </aside>
+    </div>
+
+    <footer class="sticky-footer">
+        <div class="ad-banner">
+            <!-- AdSense Unit -->
+            <div class="ad-placeholder">Wide Skyscraper Ad</div>
+        </div>
+        <div class="footer-links">
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+            <a href="/admin">Admin Dashboard</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
