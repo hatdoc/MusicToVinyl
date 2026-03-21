@@ -42,8 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Initialize with Obsidian
-    document.body.classList.add('theme-obsidian');
+    // Initialize with Walnut (Espresso Brown) as requested
+    document.body.classList.add('theme-walnut');
 
     // --- Initialization ---
     // Load YouTube IFrame API

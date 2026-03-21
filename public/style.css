@@ -7,68 +7,67 @@
     --transition-speed: 0.8s;
 }
 
-/* --- THEME 1: OBSIDIAN BLACK (High-Mass Audiophile) --- */
+/* --- THEME 1: OBSIDIAN BLACK (Modern Luxury) --- */
+/* Stealth Wealth: Matte metals and carbon fiber. */
 body.theme-obsidian {
     --bg-color: #020202;
-    --page-bg: radial-gradient(circle at center, #121212 0%, #020202 100%);
-    --hero-bg: linear-gradient(145deg, #1a1a1a, #050505); /* Brushed Obsidian */
-    --hero-border: #222;
-    --accent-color: #bdc3c7; /* Machined Silver */
-    --platter-bg: conic-gradient(from 0deg, #2c3e50, #000, #2c3e50, #000, #2c3e50); /* Gunmetal Machined */
-    --platter-border: #444;
-    --tonearm-color: #111; /* Carbon Fiber */
-    --tonearm-hinge: # silver;
-    --knob-bg: radial-gradient(circle, #333, #000);
-    --indicator-color: #fff;
-    --label-font: var(--font-ui);
-    --text-color: #eee;
+    --page-bg: radial-gradient(circle at center, #151515 0%, #020202 100%);
+    --hero-bg: #0a0a0a; /* Matte Obsidian */
+    --hero-border: #1a1a1a;
+    --accent-color: #e0e0e0; /* Machined Silver */
+    --platter-bg: linear-gradient(135deg, #2c2c2c, #000, #2c2c2c); /* Machined Gunmetal Steel */
+    --platter-border: #333;
+    --tonearm-color: #111; /* Carbon Fiber skeleton */
+    --knob-bg: #050505;
+    --indicator-color: #fff; /* Sharp rim highlight */
+    --text-color: #888;
 }
 
-/* --- THEME 2: PATINA BRONZE & WENGE (Speakeasy / Library) --- */
+/* --- THEME 2: ESPRESSO BROWN (Speakeasy Vibe) - DEFAULT --- */
+/* Old Money: Oil-rubbed walnut and bronze. */
 body.theme-walnut {
-    --bg-color: #0d0907;
-    --page-bg: radial-gradient(circle at center, #1a120f 0%, #0d0907 100%);
-    --hero-bg: linear-gradient(45deg, #1a0f0d 25%, #231512 25%, #231512 50%, #1a0f0d 50%, #1a0f0d 75%, #231512 75%, #231512 100%); /* Wenge Wood */
+    --bg-color: #0a0705;
+    --page-bg: radial-gradient(circle at center, #1a120f 0%, #0a0705 100%);
+    --hero-bg: linear-gradient(45deg, #1a0f0d 25%, #231512 25%, #231512 50%, #1a0f0d 50%, #1a0f0d 75%, #231512 75%, #231512 100%); /* Oil-rubbed Walnut grain */
     --hero-border: #3d2b1f;
-    --accent-color: #b87333; /* Copper/Bronze */
-    --platter-bg: radial-gradient(circle, #3d2b1f, #1a0f0d);
-    --platter-border: #5d4037;
-    --tonearm-color: #8e44ad; /* Actually copper */
-    --knob-bg: radial-gradient(circle, #4d3626, #1a0f0d);
-    --indicator-color: #ff9f43; /* Amber Jewel */
-    --label-font: var(--font-heading);
-    --text-color: #a08070;
+    --accent-color: #8b5a2b; /* Oil-rubbed Bronze */
+    --platter-bg: radial-gradient(circle, #3d2b1f, #0a0705);
+    --platter-border: #4d3626;
+    --tonearm-color: #5d4037;
+    --knob-bg: #1a0f0d;
+    --indicator-color: #ff9f43; /* Amber Jewel Glow */
+    --text-color: #705040;
 }
 
-/* --- THEME 3: MAHOGANY & GOLD (Sunset Penthouse) --- */
+/* --- THEME 3: COGNAC BROWN (Mid-Century Class) --- */
+/* Penthouse: Polished cherry wood and gold. */
 body.theme-warm {
     --bg-color: #1a0a05;
-    --page-bg: radial-gradient(circle at center, #3d1508 0%, #1a0a05 100%);
-    --hero-bg: linear-gradient(to bottom right, #5d1a0a, #2d0a05); /* Polished Mahogany */
-    --hero-border: #8d2a1a;
+    --page-bg: radial-gradient(circle at center, #4d1a0a 0%, #1a0a05 100%);
+    --hero-bg: linear-gradient(to bottom right, #8d2a1a, #4d1a0a); /* Polished Cherry wood */
+    --hero-border: #a63a2a;
     --accent-color: #ffd700; /* Gleaming Gold */
-    --platter-bg: radial-gradient(circle, #ffd700 20%, rgba(255,255,255,0.1) 80%); /* Brass + Acrylic */
+    --platter-bg: radial-gradient(circle, #ffd700 30%, rgba(255,255,255,0.2) 100%); /* Brass + Acrylic */
     --platter-border: #ffd700;
     --tonearm-color: #ffd700;
-    --knob-bg: radial-gradient(circle, #ffd700, #b8860b);
-    --indicator-color: #fff;
-    --label-font: 'Playfair Display', serif;
+    --knob-bg: #b8860b;
+    --indicator-color: #fff; /* Sunset reflection */
     --text-color: #e67e22;
 }
 
-/* --- THEME 4: ARCTIC WHITE & STEEL (Modern Gallery) --- */
+/* --- THEME 4: ARCTIC WHITE (Futuristic Minimalist) --- */
+/* Gallery: White marble and frosted glass. */
 body.theme-alabaster {
-    --bg-color: #f5f5f5;
-    --page-bg: linear-gradient(to bottom, #ffffff, #e0e0e0);
-    --hero-bg: #ffffff; /* Satin White */
-    --hero-border: #eee;
-    --accent-color: #3498db; /* Cool Blue LED */
-    --platter-bg: linear-gradient(135deg, #fff, #bdc3c7, #fff); /* Glass + Steel */
-    --platter-border: #ddd;
-    --tonearm-color: #bdc3c7; /* Polished Steel Skeleton */
+    --bg-color: #f0f0f0;
+    --page-bg: linear-gradient(135deg, #ffffff 0%, #d1d1d1 100%);
+    --hero-bg: #ffffff; /* Satin White Marble */
+    --hero-border: #e0e0e0;
+    --accent-color: #3498db; /* Soft Blue Shadows */
+    --platter-bg: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(200,200,200,0.2)); /* Frosted Glass */
+    --platter-border: #fff;
+    --tonearm-color: #bdc3c7; /* Silver Needle */
     --knob-bg: #fff;
     --indicator-color: #3498db;
-    --label-font: var(--font-ui);
     --text-color: #2c3e50;
 }
 
@@ -82,7 +81,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    transition: background-color var(--transition-speed), color var(--transition-speed);
+    transition: background var(--transition-speed), background-color var(--transition-speed), color var(--transition-speed);
 }
 
 .app-container {
@@ -92,7 +91,7 @@ body {
 
 .ad-rail {
     width: 160px;
-    background: rgba(0,0,0,0.1);
+    background: rgba(0,0,0,0.05);
     display: flex;
     justify-content: center;
     padding-top: 20px;
@@ -139,34 +138,34 @@ body {
     top: 20px;
     right: 20px;
     display: flex;
-    gap: 12px;
+    gap: 15px;
     z-index: 30;
 }
 
 .theme-dot {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
-    border: 2px solid rgba(128,128,128,0.3);
+    border: 2px solid rgba(128,128,128,0.2);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.theme-dot:hover { transform: scale(1.3); }
-.theme-dot.active { border-color: var(--accent-color); transform: scale(1.3); box-shadow: 0 0 10px var(--accent-color); }
+.theme-dot:hover { transform: scale(1.2); }
+.theme-dot.active { border-color: var(--accent-color); transform: scale(1.2); box-shadow: 0 0 15px var(--accent-color); }
 
-.theme-dot.obsidian { background: #050505; border-color: #444; }
-.theme-dot.walnut { background: #231512; border-color: #5d4037; }
-.theme-dot.warm { background: #5d1a0a; border-color: #ffd700; }
-.theme-dot.alabaster { background: #ffffff; border-color: #ddd; }
+.theme-dot.obsidian { background: #050505; }
+.theme-dot.walnut { background: #231512; }
+.theme-dot.warm { background: #8d2a1a; }
+.theme-dot.alabaster { background: #ffffff; }
 
 /* Refined Turntable Hero */
 .turntable-hero {
     background: var(--hero-bg);
     background-size: 30px 30px;
     padding: 60px;
-    border-radius: 4px; /* Sharper edges for high-end look */
-    box-shadow: 0 50px 100px rgba(0,0,0,0.6);
+    border-radius: 4px;
+    box-shadow: 0 60px 120px rgba(0,0,0,0.7);
     border: 1px solid var(--hero-border);
     display: flex;
     flex-direction: column;
@@ -174,13 +173,13 @@ body {
     margin-bottom: 50px;
     position: relative;
     width: 100%;
-    max-width: 700px;
+    max-width: 720px;
     transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .turntable-platter {
-    width: 380px;
-    height: 380px;
+    width: 400px;
+    height: 400px;
     background: var(--platter-bg);
     border-radius: 50%;
     display: flex;
@@ -188,14 +187,16 @@ body {
     justify-content: center;
     position: relative;
     margin-bottom: 40px;
-    border: 6px solid var(--platter-border);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-    transition: border-color var(--transition-speed);
+    border: 8px solid var(--platter-border);
+    box-shadow: 
+        0 0 0 4px rgba(0,0,0,0.3),
+        0 30px 60px rgba(0,0,0,0.5);
+    transition: all var(--transition-speed);
 }
 
 .vinyl-record {
-    width: 350px;
-    height: 350px;
+    width: 360px;
+    height: 360px;
     background: repeating-radial-gradient(
       #080808,
       #080808 1px,
@@ -205,7 +206,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 20px rgba(0,0,0,1);
+    box-shadow: 0 0 25px rgba(0,0,0,1);
     transition: transform 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
     z-index: 1;
 }
@@ -219,12 +220,12 @@ body {
 }
 
 .center-label {
-    width: 130px;
-    height: 130px;
+    width: 140px;
+    height: 140px;
     background: #111;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid #333;
+    border: 3px solid #222;
     position: relative;
     z-index: 2;
 }
@@ -237,30 +238,31 @@ body {
 }
 
 .tonearm {
-    width: 220px;
+    width: 240px;
     height: 12px;
-    background: var(--tonearm-color, #555);
+    background: var(--tonearm-color);
     position: absolute;
     top: 80px;
-    right: -20px;
+    right: -30px;
     transform-origin: 90% 10%;
     transform: rotate(-35deg);
     transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1), background var(--transition-speed);
     border-radius: 6px;
-    box-shadow: 5px 15px 30px rgba(0,0,0,0.6);
+    box-shadow: 5px 15px 40px rgba(0,0,0,0.8);
     z-index: 10;
 }
 
 .tonearm::before { /* Headshell */
     content: '';
     position: absolute;
-    left: -10px;
-    top: -12px;
-    width: 50px;
-    height: 36px;
+    left: -12px;
+    top: -14px;
+    width: 55px;
+    height: 40px;
     background: #111;
     border-radius: 2px;
-    border-bottom: 2px solid var(--accent-color);
+    border-bottom: 3px solid var(--accent-color);
+    box-shadow: inset 0 2px 5px rgba(255,255,255,0.1);
 }
 
 .turntable-hero.playing .tonearm {
@@ -270,12 +272,12 @@ body {
 /* Controls */
 .controls {
     display: flex;
-    gap: 50px;
-    background: rgba(0,0,0,0.3);
-    padding: 30px 60px;
+    gap: 60px;
+    background: rgba(0,0,0,0.2);
+    padding: 30px 70px;
     border-radius: 2px;
-    box-shadow: inset 0 5px 30px rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: inset 0 10px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.03);
 }
 
 .knob-group {
@@ -285,38 +287,37 @@ body {
 }
 
 .knob {
-    width: 55px;
-    height: 55px;
+    width: 60px;
+    height: 60px;
     background: var(--knob-bg);
     border-radius: 50%;
     border: 1px solid rgba(255,255,255,0.1);
     position: relative;
-    margin-bottom: 12px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+    margin-bottom: 15px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.6);
     cursor: pointer;
     transition: background var(--transition-speed);
 }
 
 .knob .indicator {
     width: 4px;
-    height: 22px;
+    height: 24px;
     background: var(--indicator-color);
     position: absolute;
     top: 6px;
     left: 50%;
     transform: translateX(-50%);
-    box-shadow: 0 0 10px var(--indicator-color);
+    box-shadow: 0 0 12px var(--indicator-color);
     border-radius: 2px;
 }
 
 .knob-group label {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     color: var(--text-color);
-    font-family: var(--label-font);
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     font-weight: bold;
-    opacity: 0.7;
+    opacity: 0.6;
 }
 
 /* Interface */
@@ -335,11 +336,11 @@ body {
 input[type="text"] {
     background: transparent;
     border: none;
-    border-bottom: 1px solid rgba(128,128,128,0.3);
+    border-bottom: 1px solid rgba(128,128,128,0.2);
     padding: 15px 5px;
     color: var(--accent-color);
     font-family: var(--font-ui);
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     transition: all 0.4s;
     text-align: center;
 }
@@ -347,23 +348,22 @@ input[type="text"] {
 input[type="text"]:focus {
     outline: none;
     border-bottom-color: var(--accent-color);
-    letter-spacing: 1px;
 }
 
 .button-group {
     display: flex;
-    gap: 25px;
+    gap: 30px;
     justify-content: center;
 }
 
 button {
-    padding: 16px 40px;
+    padding: 18px 45px;
     background: transparent;
     color: var(--accent-color);
     border: 1px solid var(--accent-color);
     font-family: var(--font-ui);
-    font-size: 0.85rem;
-    letter-spacing: 4px;
+    font-size: 0.9rem;
+    letter-spacing: 5px;
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.4s;
@@ -372,7 +372,7 @@ button {
 button:hover {
     background: var(--accent-color);
     color: var(--bg-color);
-    box-shadow: 0 0 40px var(--accent-color);
+    box-shadow: 0 0 50px var(--accent-color);
 }
 
 .status {
@@ -380,29 +380,29 @@ button:hover {
     color: var(--text-color);
     font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    opacity: 0.5;
+    letter-spacing: 4px;
+    opacity: 0.4;
 }
 
 .hidden { display: none !important; }
 
 /* Sticky Footer */
 .sticky-footer {
-    background: rgba(0,0,0,0.2);
-    padding: 50px;
+    background: rgba(0,0,0,0.1);
+    padding: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(255,255,255,0.03);
 }
 
 .footer-links a {
     color: var(--text-color);
     text-decoration: none;
-    margin: 0 25px;
-    font-size: 0.75rem;
-    letter-spacing: 2px;
-    opacity: 0.4;
+    margin: 0 30px;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    opacity: 0.3;
     transition: opacity 0.3s;
 }
 
