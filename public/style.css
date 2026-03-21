@@ -1,10 +1,32 @@
 :root {
     --bg-color: #0a0a0a;
     --text-color: #d1d1d1;
-    --accent-color: #C5A059; /* Gold */
+    --accent-color: #C5A059; /* Default Gold */
     --wood-texture: linear-gradient(45deg, #1a0f0d 25%, #231512 25%, #231512 50%, #1a0f0d 50%, #1a0f0d 75%, #231512 75%, #231512 100%);
     --font-heading: 'Playfair Display', serif;
     --font-ui: 'Roboto Mono', monospace;
+}
+
+/* Theme Definitions */
+.theme-noir {
+    --hero-bg: var(--wood-texture);
+    --hero-border: #332211;
+    --accent-color: #C5A059;
+    --platter-border: #222;
+}
+
+.theme-silver {
+    --hero-bg: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
+    --hero-border: #444;
+    --accent-color: #bdc3c7;
+    --platter-border: #555;
+}
+
+.theme-walnut {
+    --hero-bg: linear-gradient(45deg, #3d2b1f 25%, #4d3626 25%, #4d3626 50%, #3d2b1f 50%, #3d2b1f 75%, #4d3626 75%, #4d3626 100%);
+    --hero-border: #5d4037;
+    --accent-color: #f1c40f;
+    --platter-border: #332211;
 }
 
 body {
@@ -78,17 +100,43 @@ body {
     letter-spacing: 4px;
 }
 
+/* Theme Selector */
+.theme-selector {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 20;
+}
+
+.theme-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.theme-dot:hover { transform: scale(1.2); }
+.theme-dot.active { border-color: #fff; transform: scale(1.2); }
+
+.theme-dot.noir { background: #1a0f0d; }
+.theme-dot.silver { background: #444; }
+.theme-dot.walnut { background: #4d3626; }
+
 /* Fancy Turntable Hero */
 .turntable-hero {
-    background: var(--wood-texture);
+    background: var(--hero-bg, var(--wood-texture));
     background-size: 30px 30px;
     padding: 60px;
     border-radius: 8px;
     box-shadow: 
         0 30px 60px rgba(0,0,0,0.9), 
-        inset 0 0 100px rgba(0,0,0,0.6),
-        0 0 0 2px #1a0f0d;
-    border: 1px solid #332211;
+        inset 0 0 100px rgba(0,0,0,0.6);
+    border: 1px solid var(--hero-border, #332211);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -96,6 +144,7 @@ body {
     position: relative;
     width: 100%;
     max-width: 680px;
+    transition: background 0.5s, border-color 0.5s;
 }
 
 .turntable-platter {
@@ -108,15 +157,14 @@ body {
     justify-content: center;
     position: relative;
     margin-bottom: 40px;
-    /* Metallic Edge */
-    border: 4px solid #222;
+    border: 4px solid var(--platter-border, #222);
     box-shadow: 
         0 0 0 4px #111,
         inset 0 0 50px rgba(0,0,0,1),
         0 15px 30px rgba(0,0,0,0.7);
 }
 
-/* Platter Strobe Dots dots around the edge */
+/* Platter Strobe Dots */
 .turntable-platter::before {
     content: '';
     position: absolute;
@@ -182,7 +230,7 @@ body {
     transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 5px;
     box-shadow: 5px 10px 20px rgba(0,0,0,0.8);
-    z-index: 10; /* Ensure it stays on top */
+    z-index: 10;
 }
 
 .tonearm::before { /* Headshell */
@@ -254,6 +302,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     box-shadow: 0 0 8px var(--accent-color);
+    transition: background 0.5s, box-shadow 0.5s;
 }
 
 .knob-group label {

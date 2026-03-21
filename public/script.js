@@ -23,6 +23,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const authGate = document.getElementById('authGate');
     const signupForm = document.getElementById('signupForm');
     const userEmailInput = document.getElementById('userEmail');
+    const turntableHero = document.getElementById('turntableHero');
+    const themeDots = document.querySelectorAll('.theme-dot');
+
+    // --- Theme Logic ---
+    themeDots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            const theme = dot.getAttribute('data-theme');
+            
+            // Remove all themes
+            turntableHero.classList.remove('theme-noir', 'theme-silver', 'theme-walnut');
+            // Add selected theme
+            turntableHero.classList.add(theme);
+            
+            // Update active dot
+            themeDots.forEach(d => d.classList.remove('active'));
+            dot.classList.add('active');
+        });
+    });
+
+    // Initialize with Noir
+    turntableHero.classList.add('theme-noir');
 
     // --- Initialization ---
     // Load YouTube IFrame API
