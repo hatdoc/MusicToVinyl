@@ -144,7 +144,6 @@ body {
     transform: translateY(-50%);
 }
 
-/* --- PLATTER --- */
 .turntable-platter {
     width: 310px;
     height: 310px;
@@ -156,10 +155,14 @@ body {
     transform-style: preserve-3d;
     transform: translateZ(15px); /* Raised off the plinth */
     box-shadow: 
-        0px 0px 5px rgba(0,0,0,0.5),
-        0px 2px 2px #111,
-        0px 4px 2px #0a0a0a,
-        0px 6px 2px #000,
+        0px 1px 0 #222,
+        0px 2px 0 #1a1a1a,
+        0px 3px 0 #151515,
+        0px 4px 0 #111,
+        0px 5px 0 #0a0a0a,
+        0px 6px 0 #000,
+        0px 7px 0 #000,
+        0px 8px 0 #000,
         0px 15px 25px rgba(0,0,0,0.9);
 }
 
@@ -172,7 +175,6 @@ body {
     transform: translateZ(-1px);
 }
 
-/* --- VINYL RECORD --- */
 .vinyl-record {
     width: 300px;
     height: 300px;
@@ -183,7 +185,10 @@ body {
     left: 5px;
     transform-style: preserve-3d;
     transform: translateZ(5px);
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 2px #000;
+    box-shadow: 
+        0px 1px 0 #050505,
+        0px 2px 0 #000,
+        inset 0 0 10px rgba(0,0,0,0.5);
 }
 
 .grooves {
@@ -228,7 +233,6 @@ body {
     z-index: 15;
 }
 
-/* --- TONEARM SYSTEM --- */
 .tonearm-base {
     position: absolute;
     top: 50px;
@@ -240,10 +244,13 @@ body {
     transform-style: preserve-3d;
     transform: translateZ(8px);
     box-shadow: 
-        0px 1px 0 #111,
-        0px 2px 0 #000,
-        0px 3px 0 #000,
-        0px 8px 15px rgba(0,0,0,0.8);
+        0px 1px 0 #151515,
+        0px 2px 0 #111,
+        0px 3px 0 #0a0a0a,
+        0px 4px 0 #000,
+        0px 5px 0 #000,
+        0px 6px 0 #000,
+        0px 12px 15px rgba(0,0,0,0.8);
 }
 .tonearm-pivot {
     position: absolute;
@@ -252,7 +259,13 @@ body {
     background: radial-gradient(circle at 30% 30%, #666, #222);
     border-radius: 50%;
     transform: translate(-50%, -50%) translateZ(12px);
-    box-shadow: 0px 5px 10px rgba(0,0,0,0.8), 0px -2px 2px rgba(255,255,255,0.2) inset;
+    box-shadow: 
+        0px 1px 0 #444,
+        0px 2px 0 #222,
+        0px 3px 0 #111,
+        0px 4px 0 #000,
+        0px 8px 10px rgba(0,0,0,0.8), 
+        0px -2px 2px rgba(255,255,255,0.2) inset;
 }
 
 .tonearm {
@@ -293,26 +306,30 @@ body {
 
 .headshell {
     position: absolute;
-    bottom: 25px; /* at end of stick */
-    left: -6px;
-    width: 25px;
-    height: 45px;
-    background: linear-gradient(135deg, #333, #111);
+    top: 220px; /* seamlessly connected precisely at stick bottom */
+    left: 2px; /* centered horizontally on stick width (16px wide inside 20px tonearm) */
+    width: 16px;
+    height: 35px;
+    background: linear-gradient(135deg, #333, #0a0a0a);
     border-radius: 4px;
     transform-origin: top center;
-    transform: rotateZ(25deg) translateZ(10px); /* Angled inwards towards vinyl */
-    box-shadow: 12px 15px 15px rgba(0,0,0,0.7);
-    border-top: 2px solid var(--accent-color);
+    transform: rotateZ(20deg) translateZ(0px); /* Angled inwards perfectly flat with stick */
+    box-shadow: 
+        0px 1px 0 #111,
+        0px 2px 0 #000,
+        4px 6px 15px rgba(0,0,0,0.7);
+    border-top: 6px solid #888; /* metallic connector bracket */
 }
 
 .stylus {
     position: absolute;
-    bottom: -4px;
-    left: 10px;
-    width: 5px;
-    height: 10px;
+    bottom: -6px;
+    left: 6px;
+    width: 4px;
+    height: 8px;
     background: #e74c3c; /* Red stylus tip */
     border-radius: 2px;
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.8);
 }
 
 /* Playing State: Swing the tonearm over the record */
@@ -329,16 +346,29 @@ body {
     height: 15px;
     background: #222;
     border-radius: 50%;
+    transform-style: preserve-3d;
     transform: translateZ(28px);
-    box-shadow: 0px 5px 10px rgba(0,0,0,0.8);
+    box-shadow: 
+        0px 1px 0 #1a1a1a,
+        0px 2px 0 #1a1a1a,
+        0px 3px 0 #151515,
+        0px 4px 0 #111,
+        0px 5px 0 #111,
+        0px 6px 0 #0a0a0a,
+        0px 7px 0 #0a0a0a,
+        0px 8px 0 #000,
+        0px 9px 0 #000,
+        0px 10px 0 #000,
+        0px 15px 10px rgba(0,0,0,0.8);
 }
 .arm-rest::after {
     content: '';
     position: absolute;
-    top: -10px; left: 5px;
-    width: 5px; height: 15px;
-    background: #111;
-    box-shadow: 0px 4px 6px rgba(0,0,0,0.8);
+    top: -5px; left: 0px;
+    width: 15px; height: 5px; /* Clip to hold arm */
+    background: #444;
+    border-radius: 2px;
+    box-shadow: 0px 2px 2px rgba(0,0,0,0.8);
 }
 
 /* Controls Panel */
@@ -348,13 +378,15 @@ body {
     right: 30px;
     display: flex;
     gap: 15px;
-    transform: translateZ(10px);
+    transform-style: preserve-3d;
+    transform: translateZ(5px);
 }
 
 .knob-group {
     display: flex;
     flex-direction: column;
     align-items: center;
+    transform-style: preserve-3d;
 }
 
 .knob {
@@ -363,21 +395,30 @@ body {
     background: var(--knob-main);
     border-radius: 50%;
     position: relative;
-    margin-bottom: 5px;
+    margin-bottom: 12px;
     cursor: pointer;
-    box-shadow: 
-        0px 5px 8px rgba(0,0,0,0.8),
-        inset 0px 4px 6px rgba(255,255,255,0.1),
-        inset 0px -4px 6px rgba(0,0,0,0.6),
-        0 0 0 2px rgba(0,0,0,0.8);
     transform-style: preserve-3d;
+    transform: translateZ(6px); /* Pop up */
+    box-shadow: 
+        0px 1px 0 #1a1a1a,
+        0px 2px 0 #151515,
+        0px 3px 0 #111,
+        0px 4px 0 #0a0a0a,
+        0px 5px 0 #0a0a0a,
+        0px 6px 0 #000,
+        0px 7px 0 #000,
+        0px 12px 15px rgba(0,0,0,0.8);
 }
 
 .knob::after {
     content: '';
     position: absolute;
-    top: 15%; left: 15%; width: 30%; height: 30%;
-    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    width: 25px; height: 25px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+    box-shadow: inset 0px 1px 2px rgba(255,255,255,0.2), 0px 1px 2px rgba(0,0,0,0.6);
 }
 
 .knob .indicator {
