@@ -250,9 +250,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (type === 'crackle' && state.nodes.noiseGain) {
                 state.nodes.noiseGain.gain.value = val * 0.25; // 0 to 0.25
             }
+            
+            // Auto-save PRO settings
+            if (state.isLoggedIn) {
+                localStorage.setItem('analog_pro_settings', JSON.stringify(state.knobs));
+            }
         }
 
         knob.addEventListener('mousedown', (e) => {
+            if (!state.isLoggedIn) {
+                statusMessage.textContent = "Sign up for PRO to customize the tactile audio mix.";
+                window.dispatchEvent(new Event('requestAuth')); // Trigger Login Modal
+                return;
+            }
             isDragging = true;
             startY = e.clientY;
             startVal = state.knobs[controlType];
