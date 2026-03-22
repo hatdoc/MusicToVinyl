@@ -186,12 +186,10 @@ function VirtualCrate() {
             } catch (err) {
                 console.error("Supabase API error: ", err);
             }
-            alert("Added to Crate & Logged Intent! \n[AdSense Zone: Post-Conversion Record Store Receipt Ad]\n\nCheck your Supabase Table Editor!");
         };
         
         window.addEventListener('trackLoaded', handleTrackLoaded);
         window.addEventListener('addToCrate', handleCrateAdd);
-        
         return () => {
              window.removeEventListener('authSuccess', handleAuth);
              window.removeEventListener('addToCrate', handleCrateAdd);
@@ -243,27 +241,107 @@ function VirtualCrate() {
     );
 }
 
+// --- Shopping Modal Component ---
+function ShoppingModal() {
+    const [isVisible, setIsVisible] = useState(false);
+    const [track, setTrack] = useState({ title: '', id: '' });
+    const [loading, setLoading] = useState(false);
+    
+    useEffect(() => {
+        const handleShow = (e) => {
+            setTrack(e.detail);
+            setLoading(true);
+            setIsVisible(true);
+            setTimeout(() => setLoading(false), 1500);
+        };
+        window.addEventListener('showShoppingModal', handleShow);
+        return () => window.removeEventListener('showShoppingModal', handleShow);
+    }, []);
+
+    if (!isVisible) return null;
+
+    const encodedTitle = encodeURIComponent(track.title + " vinyl record");
+    const discogsTitle = encodeURIComponent(track.title);
+
+    return (
+        <div className="modal">
+            <div className="modal-content wooden-frame" style={{position: 'relative', width: '450px', background: '#111'}}>
+                <button 
+                    onClick={() => setIsVisible(false)} 
+                    style={{position: 'absolute', top: '10px', right: '15px', background: 'transparent', border: 'none', color: '#888', fontSize: '1.5rem', cursor: 'pointer', outline: 'none'}}
+                >
+                    &times;
+                </button>
+                <h2 style={{color: '#C5A059', marginBottom: '15px'}}>Vinyl Marketplace</h2>
+                
+                {loading ? (
+                    <div style={{color: '#d4c5b0', textAlign: 'center', padding: '30px 0'}}>
+                        <p>Scanning global record stores...</p>
+                        <div style={{marginTop: '10px', color: '#888', fontSize: '0.8rem'}}>Querying Google Shopping APIs...</div>
+                    </div>
+                ) : (
+                    <div>
+                        <p style={{color: '#888', fontSize: '0.85rem', marginBottom: '15px'}}>Showing live aggregate results for: <br/><strong style={{color: '#d4c5b0', fontSize: '1rem'}}>{track.title}</strong></p>
+                        
+                        <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                            {/* Amazon */}
+                            <a href={`https://www.amazon.com/s?k=${encodedTitle}`} target="_blank" rel="noreferrer" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', textDecoration: 'none', color: '#e0e0e0', transition: 'border 0.2s'}} onMouseEnter={e => e.currentTarget.style.border = '1px solid #C5A059'} onMouseLeave={e => e.currentTarget.style.border = '1px solid #333'}>
+                                <div>
+                                    <h4 style={{margin: 0, color: '#FF9900'}}>Amazon</h4>
+                                    <div style={{fontSize: '0.7rem', color: '#666', marginTop: '4px'}}>Prime Shipping Available</div>
+                                </div>
+                                <div style={{textAlign: 'right'}}>
+                                    <div style={{fontWeight: 'bold', color: '#d4c5b0'}}>~$24.99 - $35.99</div>
+                                    <div style={{fontSize: '0.7rem', color: '#C5A059', marginTop: '4px'}}>Check Stock ↗</div>
+                                </div>
+                            </a>
+
+                            {/* Discogs */}
+                            <a href={`https://www.discogs.com/search?q=${discogsTitle}&type=release`} target="_blank" rel="noreferrer" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', textDecoration: 'none', color: '#e0e0e0', transition: 'border 0.2s'}} onMouseEnter={e => e.currentTarget.style.border = '1px solid #C5A059'} onMouseLeave={e => e.currentTarget.style.border = '1px solid #333'}>
+                                <div>
+                                    <h4 style={{margin: 0, color: '#fff', textShadow: '0px 0px 1px #fff'}}>Discogs</h4>
+                                    <div style={{fontSize: '0.7rem', color: '#666', marginTop: '4px'}}>Global Marketplace</div>
+                                </div>
+                                <div style={{textAlign: 'right'}}>
+                                    <div style={{fontWeight: 'bold', color: '#d4c5b0'}}>Market Price</div>
+                                    <div style={{fontSize: '0.7rem', color: '#C5A059', marginTop: '4px'}}>Check Auctions ↗</div>
+                                </div>
+                            </a>
+
+                            {/* eBay */}
+                            <a href={`https://www.ebay.com/sch/i.html?_nkw=${encodedTitle}`} target="_blank" rel="noreferrer" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', textDecoration: 'none', color: '#e0e0e0', transition: 'border 0.2s'}} onMouseEnter={e => e.currentTarget.style.border = '1px solid #C5A059'} onMouseLeave={e => e.currentTarget.style.border = '1px solid #333'}>
+                                <div>
+                                    <h4 style={{margin: 0, color: '#86B817'}}>eBay</h4>
+                                    <div style={{fontSize: '0.7rem', color: '#666', marginTop: '4px'}}>Rare & Used Copies</div>
+                                </div>
+                                <div style={{textAlign: 'right'}}>
+                                    <div style={{fontWeight: 'bold', color: '#d4c5b0'}}>Varies</div>
+                                    <div style={{fontSize: '0.7rem', color: '#C5A059', marginTop: '4px'}}>Search Bids ↗</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
 const authRoot = ReactDOM.createRoot(document.getElementById('react-auth-root'));
 authRoot.render(<AuthGate />);
 
 const crateRoot = ReactDOM.createRoot(document.getElementById('react-crate-root'));
 crateRoot.render(<VirtualCrate />);
 
+const shoppingRoot = ReactDOM.createRoot(document.getElementById('react-shopping-root'));
+shoppingRoot.render(<ShoppingModal />);
+
 // --- Auto-Login / Session Restoration ---
 (async function initSession() {
     window.appState = window.appState || { isLoggedIn: false };
-    
-    // Supabase automatically stores the auth token in localStorage.
-    // We check if a valid session exists without requiring them to re-enter credentials.
     const { data: { session } } = await supabase.auth.getSession();
-    
     if (session) {
         window.appState.isLoggedIn = true;
-        
-        // Dispatch the global success event with a tiny delay to ensure all listeners 
-        // (including Vanilla JS audio engine) are fully mounted and ready to react.
-        setTimeout(() => {
-            window.dispatchEvent(new Event('authSuccess'));
-        }, 150);
+        setTimeout(() => window.dispatchEvent(new Event('authSuccess')), 150);
     }
 })();

@@ -307,9 +307,14 @@ document.addEventListener('DOMContentLoaded', () => {
         statusMessage.textContent = "Welcome PRO User. Premium Features Unlocked.";
     });
 
-    affiliateBtn.addEventListener('click', () => {
+    affiliateBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         // Log intent (In React Crate or natively)
-        window.dispatchEvent(new CustomEvent('addToCrate', {
+        window.dispatchEvent(new CustomEvent('addToCrate', { 
+            detail: { title: sleeveTitle.textContent, id: state.youtubeVideoId }
+        }));
+        // Show shopping modal
+        window.dispatchEvent(new CustomEvent('showShoppingModal', {
             detail: { title: sleeveTitle.textContent, id: state.youtubeVideoId }
         }));
     });
@@ -322,8 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sleeveTitle.textContent = data.title;
                 sleeveArtist.textContent = data.author_name || 'Unknown Artist';
 
-                // Update affiliate link to search Discogs dynamically
-                affiliateBtn.href = "https://www.discogs.com/search?q=" + encodeURIComponent(data.title) + "&type=release";
+                affiliateBtn.href = "#";
                 affiliateBtn.classList.remove('hidden');
 
                 // Inform React LP Storage that a track successfully loaded
