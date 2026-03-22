@@ -241,3 +241,22 @@ authRoot.render(<AuthGate />);
 
 const crateRoot = ReactDOM.createRoot(document.getElementById('react-crate-root'));
 crateRoot.render(<VirtualCrate />);
+
+// --- Auto-Login / Session Restoration ---
+window.addEventListener('DOMContentLoaded', async () => {
+    window.appState = window.appState || { isLoggedIn: false };
+    
+    // Supabase automatically stores the auth token in localStorage.
+    // We check if a valid session exists without requiring them to re-enter credentials.
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (session) {
+        window.appState.isLoggedIn = true;
+        
+        // Dispatch the global success event with a tiny delay to ensure all listeners 
+        // (including Vanilla JS audio engine) are fully mounted and ready to react.
+        setTimeout(() => {
+            window.dispatchEvent(new Event('authSuccess'));
+        }, 150);
+    }
+});
