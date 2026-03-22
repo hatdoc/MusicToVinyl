@@ -142,11 +142,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 3. Continuous Low Frequency Hum
         const humOsc = state.audioContext.createOscillator();
-        humOsc.type = 'triangle'; // Triangular wave is richer and more audible
-        humOsc.frequency.value = 60; // 60Hz hum is easier to hear on laptop speakers
+        humOsc.type = 'sine'; // Back to smooth subtle sine
+        humOsc.frequency.value = 50; // Deep 50Hz hum
         
         const humGain = state.audioContext.createGain();
-        humGain.gain.value = state.knobs.warmth * 0.15; // 3x Louder max amplitude
+        humGain.gain.value = state.knobs.warmth * 0.08; // Softer max amplitude
 
         humOsc.connect(humGain);
         humGain.connect(tubeShaper); // Route hum through the tube amp
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.loop = true;
 
         const gainNode = state.audioContext.createGain();
-        gainNode.gain.value = state.knobs.crackle * 0.40;
+        gainNode.gain.value = state.knobs.crackle * 0.25;
 
         source.connect(gainNode);
         gainNode.connect(state.nodes.noiseFilter); // Route through warmth filter
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.start();
 
         // Ensure hum is active
-        if (state.nodes.humGain) state.nodes.humGain.gain.value = state.knobs.warmth * 0.15;
+        if (state.nodes.humGain) state.nodes.humGain.gain.value = state.knobs.warmth * 0.08;
     }
 
     function stopVinylNoise() {
@@ -259,11 +259,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.youtubePlayer.setVolume(val * 100);
             }
             if (type === 'warmth') {
-                if (state.nodes.humGain) state.nodes.humGain.gain.value = val * 0.15; // 0 to 0.15
+                if (state.nodes.humGain) state.nodes.humGain.gain.value = val * 0.08; // 0 to 0.08
                 if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 8000); // Tame the highs
             }
             if (type === 'crackle' && state.nodes.noiseGain) {
-                state.nodes.noiseGain.gain.value = val * 0.40; // 0 to 0.40
+                state.nodes.noiseGain.gain.value = val * 0.25; // 0 to 0.25
             }
         }
 

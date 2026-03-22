@@ -527,7 +527,7 @@ input:checked + .slider:before { transform: translateX(18px); background-color: 
     border-right: 2px solid #c9ba9d;
 }
 .turntable-hero.playing .record-sleeve {
-    transform: translateX(-180px); /* Slide out to the left */
+    transform: translateX(-250px); /* Slide further out to the left */
 }
 .sleeve-texture {
     position: absolute; inset: 0;
