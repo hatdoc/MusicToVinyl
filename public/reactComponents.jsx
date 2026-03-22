@@ -369,6 +369,47 @@ authRoot.render(<AuthGate />);
 const crateRoot = ReactDOM.createRoot(document.getElementById('react-crate-root'));
 crateRoot.render(<VirtualCrate />);
 
+// --- Search Autocomplete Component ---
+function SearchAutocomplete() {
+    const [results, setResults] = useState([]);
+    
+    useEffect(() => {
+        const handleSearch = (e) => setResults(e.detail);
+        window.addEventListener('youtubeSearchResults', handleSearch);
+        return () => window.removeEventListener('youtubeSearchResults', handleSearch);
+    }, []);
+
+    if (results.length === 0) return null;
+
+    return (
+        <div style={{background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.8)', maxHeight: '250px', overflowY: 'auto'}}>
+            {results.map(r => (
+                <div 
+                    key={r.id} 
+                    style={{display: 'flex', gap: '10px', padding: '10px', borderBottom: '1px solid #222', cursor: 'pointer', transition: 'background 0.2s', alignItems: 'center'}}
+                    onMouseEnter={e => e.currentTarget.style.background = '#2a2a2a'}
+                    onMouseLeave={e => e.currentTarget.style.background = '#1a1a1a'}
+                    onClick={() => {
+                        const input = document.getElementById('trackUrl');
+                        input.value = `https://youtube.com/watch?v=${r.id}`;
+                        setResults([]);
+                        document.getElementById('convertBtn').click();
+                    }}
+                >
+                    <img src={r.thumbnail} style={{width: '60px', height: '45px', objectFit: 'cover', borderRadius: '4px'}} />
+                    <div style={{flex: 1, overflow: 'hidden'}}>
+                        <div style={{color: '#e0e0e0', fontSize: '0.85rem', lineHeight: '1.2', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} title={r.title}>{r.title}</div>
+                        <div style={{color: '#888', fontSize: '0.7rem', marginTop: '4px'}}>{r.author}</div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+const searchRoot = ReactDOM.createRoot(document.getElementById('react-search-autocomplete'));
+searchRoot.render(<SearchAutocomplete />);
+
 const shoppingRoot = ReactDOM.createRoot(document.getElementById('react-shopping-root'));
 shoppingRoot.render(<ShoppingModal />);
 

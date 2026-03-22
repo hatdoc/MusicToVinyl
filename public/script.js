@@ -286,7 +286,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    let searchTimeout;
+    trackUrlInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        const val = e.target.value.trim();
+        if (!val || val.includes('youtube.com') || val.includes('youtu.be')) {
+            window.dispatchEvent(new CustomEvent('youtubeSearchResults', { detail: [] }));
+            return;
+        }
+        searchTimeout = setTimeout(async () => {
+            try {
+                const res = await fetch('/api/search?q=' + encodeURIComponent(val));
+                if (!res.ok) return;
+                const data = await res.json();
+                window.dispatchEvent(new CustomEvent('youtubeSearchResults', { detail: data }));
+            } catch (err) {
+                console.error("Search fetch failed", err);
+            }
+        }, 600);
+    });
+
     convertBtn.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('youtubeSearchResults', { detail: [] })); // Close search
         handleConversion();
     });
 
