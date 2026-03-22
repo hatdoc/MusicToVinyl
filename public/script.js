@@ -251,9 +251,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.nodes.noiseGain.gain.value = Math.pow(val, 0.5) * 0.8; 
             }
             
-            // Auto-save PRO settings
-            if (state.isLoggedIn) {
-                localStorage.setItem('analog_pro_settings', JSON.stringify(state.knobs));
+            // Auto-save PRO settings directly to Supabase via Debounce
+            if (state.isLoggedIn && window.supabase) {
+                clearTimeout(window.saveSettingsTimeout);
+                window.saveSettingsTimeout = setTimeout(async () => {
+                    const { data: { user } } = await window.supabase.auth.getUser();
+                    if (user) {
+                        try {
+                            await window.supabase
+                                .from('users')
+                                .update({
+                                    volume_pref: state.knobs.volume,
+                                    warmth_pref: state.knobs.warmth,
+                                    crackle_pref: state.knobs.crackle
+                                })
+                                .eq('id', user.id);
+                        } catch (e) { console.error('Failed to sync to cloud', e); }
+                    }
+                }, 800); // 800ms debounce
             }
         }
 
@@ -298,14 +313,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Define the core restoration logic as a reusable function
-    function restoreProSettings() {
-        state.isLoggedIn = true;
-        statusMessage.textContent = "Welcome PRO User. Premium Features Unlocked.";
+    async function fetchRemoteSettings(user) {
         try {
-            const savedSettings = localStorage.getItem('analog_pro_settings');
-            if (savedSettings) {
-                const parsed = JSON.parse(savedSettings);
+            const { data, error } = await window.supabase
+                .from('users')
+                .select('volume_pref, warmth_pref, crackle_pref')
+                .eq('id', user.id)
+                .single();
+            
+            if (!error && data) {
+                const parsed = {
+                    volume: data.volume_pref ?? 0.8,
+                    warmth: data.warmth_pref ?? 0.0,
+                    crackle: data.crackle_pref ?? 0.0
+                };
                 ['volume', 'warmth', 'crackle'].forEach(prop => {
                     if (parsed[prop] !== undefined) {
                         setAudioParameter(prop, parsed[prop]);
@@ -320,8 +341,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
             }
-        } catch (e) {
-            console.error("Failed to restore PRO settings", e);
+        } catch (e) {}
+    }
+
+    // Define the core restoration logic as a reusable function
+    async function restoreProSettings() {
+        state.isLoggedIn = true;
+        statusMessage.textContent = "Welcome PRO User. Premium Features Unlocked.";
+        
+        if (window.supabase) {
+            const { data: { user } } = await window.supabase.auth.getUser();
+            if (user) {
+                await fetchRemoteSettings(user);
+            }
         }
     }
 
