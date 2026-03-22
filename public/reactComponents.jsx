@@ -31,7 +31,14 @@ function AuthGate() {
 
     return (
         <div className="modal">
-            <div className="modal-content wooden-frame">
+            <div className="modal-content wooden-frame" style={{position: 'relative'}}>
+                <button 
+                    onClick={() => setIsVisible(false)} 
+                    style={{position: 'absolute', top: '10px', right: '15px', background: 'transparent', border: 'none', color: '#888', fontSize: '1.5rem', cursor: 'pointer', outline: 'none'}}
+                    aria-label="Close"
+                >
+                    &times;
+                </button>
                 <h2 style={{color: '#C5A059'}}>Unlock PRO Fidelity</h2>
                 <p>Login to add tracks to your Crate and enable 1950s Tube Amp emulation.</p>
                 <form onSubmit={handleLogin} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
