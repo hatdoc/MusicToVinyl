@@ -380,6 +380,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Update affiliate link to search Discogs dynamically
                 affiliateBtn.href = "https://www.discogs.com/search?q=" + encodeURIComponent(data.title) + "&type=release";
                 affiliateBtn.classList.remove('hidden');
+
+                // Inform React LP Storage that a track successfully loaded
+                window.dispatchEvent(new CustomEvent('trackLoaded', {
+                    detail: { title: data.title, id: videoId }
+                }));
             }
         } catch (e) {
             sleeveTitle.textContent = "Analog Track";
@@ -387,6 +392,29 @@ document.addEventListener('DOMContentLoaded', () => {
             affiliateBtn.classList.remove('hidden');
         }
     }
+
+    // --- LP Storage Click-to-Play ---
+    window.addEventListener('playHistoryTrack', (e) => {
+        const track = e.detail;
+
+        // Update input visually
+        youtubeUrlInput.value = `https://youtube.com/watch?v=${track.youtube_id}`;
+        statusMessage.textContent = "Pulling vinyl from storage...";
+
+        if (state.plays >= 1 && !state.isLoggedIn) {
+            window.dispatchEvent(new Event('requestAuth')); // Trigger React Modal
+            return;
+        }
+
+        state.youtubeVideoId = track.youtube_id;
+        const thumbnail = `https://img.youtube.com/vi/${track.youtube_id}/0.jpg`;
+        if (albumArt) {
+            albumArt.src = thumbnail;
+            albumArt.classList.remove('hidden');
+        }
+
+        startPlayback(track.youtube_id);
+    });
 
     function handleConversion() {
         const url = youtubeUrlInput.value.trim();
