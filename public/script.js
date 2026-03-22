@@ -292,6 +292,27 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('authSuccess', () => {
         state.isLoggedIn = true;
         statusMessage.textContent = "Welcome PRO User. Premium Features Unlocked.";
+        
+        // Restore PRO audio settings from local storage
+        try {
+            const savedSettings = localStorage.getItem('analog_pro_settings');
+            if (savedSettings) {
+                const parsed = JSON.parse(savedSettings);
+                ['volume', 'warmth', 'crackle'].forEach(prop => {
+                    if (parsed[prop] !== undefined) {
+                        setAudioParameter(prop, parsed[prop]);
+                        // Update visual rotation
+                        const el = document.getElementById('knob' + prop.charAt(0).toUpperCase() + prop.slice(1));
+                        if (el) {
+                            const rot = -135 + (parsed[prop] * 270);
+                            el.style.transform = `rotate(${rot}deg)`;
+                        }
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("Failed to restore PRO settings", e);
+        }
     });
 
     affiliateBtn.addEventListener('click', (e) => {
