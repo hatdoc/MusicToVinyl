@@ -738,7 +738,7 @@ input:checked+.slider:before {
 }
 
 .turntable-hero.playing .record-sleeve {
-    transform: translateX(-400px) translateY(-10px); /* Slide far enough out so text is fully readable */
+    transform: translateX(-460px) translateY(-10px); /* Slide far enough out so text is fully readable */
 }
 
 .sleeve-texture {
@@ -753,7 +753,7 @@ input:checked+.slider:before {
     position: relative;
     z-index: 2;
     padding: 20px;
-    padding-right: 50px;
+    padding-right: 70px;
     transform: rotate(-3deg);
 }
 
