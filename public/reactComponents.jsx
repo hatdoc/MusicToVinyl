@@ -40,7 +40,7 @@ function AuthGate() {
                     &times;
                 </button>
                 <h2 style={{color: '#C5A059'}}>Unlock PRO Fidelity</h2>
-                <p>Login to add tracks to your Crate and enable 1950s Tube Amp emulation.</p>
+                <p style={{color: '#d4c5b0', lineHeight: '1.5'}}>Login to add tracks to your Crate and enable 1950s Tube Amp emulation.</p>
                 <form onSubmit={handleLogin} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
                     <input 
                         type="email" 
