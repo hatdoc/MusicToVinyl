@@ -286,28 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    let searchTimeout;
-    youtubeUrlInput.addEventListener('input', (e) => {
-        clearTimeout(searchTimeout);
-        const val = e.target.value.trim();
-        if (!val || val.includes('youtube.com') || val.includes('youtu.be')) {
-            window.dispatchEvent(new CustomEvent('youtubeSearchResults', { detail: [] }));
-            return;
-        }
-        searchTimeout = setTimeout(async () => {
-            try {
-                const res = await fetch('/api/search?q=' + encodeURIComponent(val));
-                if (!res.ok) return;
-                const data = await res.json();
-                window.dispatchEvent(new CustomEvent('youtubeSearchResults', { detail: data }));
-            } catch (err) {
-                console.error("Search fetch failed", err);
-            }
-        }, 600);
-    });
-
     convertBtn.addEventListener('click', () => {
-        window.dispatchEvent(new CustomEvent('youtubeSearchResults', { detail: [] })); // Close search
         handleConversion();
     });
 
@@ -404,17 +383,37 @@ document.addEventListener('DOMContentLoaded', () => {
         startPlayback(track.youtube_id);
     });
 
-    function handleConversion() {
+    async function handleConversion(explicitId = null) {
+        let videoId = explicitId;
         const url = youtubeUrlInput.value.trim();
-        if (!url) {
-            statusMessage.textContent = "Please enter a valid YouTube URL.";
-            return;
-        }
-
-        const videoId = extractVideoId(url);
+        
         if (!videoId) {
-            statusMessage.textContent = "Invalid YouTube URL.";
-            return;
+            if (!url) {
+                statusMessage.textContent = "Please enter a valid YouTube URL or song name.";
+                return;
+            }
+
+            videoId = extractVideoId(url);
+            
+            if (!videoId) {
+                statusMessage.textContent = "Searching global vinyl archives...";
+                try {
+                    const res = await fetch('/api/search?q=' + encodeURIComponent(url));
+                    if (!res.ok) throw new Error("Search failed");
+                    const data = await res.json();
+                    
+                    if (data && data.length > 0) {
+                        statusMessage.textContent = "Select a pressing from the archives.";
+                        window.dispatchEvent(new CustomEvent('openSearchModal', { detail: data }));
+                    } else {
+                        statusMessage.textContent = "Error: No recordings found.";
+                    }
+                } catch(e) {
+                    console.error(e);
+                    statusMessage.textContent = "Search Error. Try pasting a direct URL.";
+                }
+                return;
+            }
         }
 
         if (!state.playerReady) {
