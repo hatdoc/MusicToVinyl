@@ -298,12 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Listen for Auth Success from React
-    window.addEventListener('authSuccess', () => {
+    // Define the core restoration logic as a reusable function
+    function restoreProSettings() {
         state.isLoggedIn = true;
         statusMessage.textContent = "Welcome PRO User. Premium Features Unlocked.";
-        
-        // Restore PRO audio settings from local storage
         try {
             const savedSettings = localStorage.getItem('analog_pro_settings');
             if (savedSettings) {
@@ -311,13 +309,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 ['volume', 'warmth', 'crackle'].forEach(prop => {
                     if (parsed[prop] !== undefined) {
                         setAudioParameter(prop, parsed[prop]);
-                        // Update visual rotation
                         const knobEl = document.querySelector(`.knob[data-control="${prop}"]`);
                         if (knobEl) {
                             const indicator = knobEl.querySelector('.indicator');
                             if (indicator) {
                                 const rot = -135 + (parsed[prop] * 270);
-                                indicator.style.transform = `translateX(-50%) rotate(${rot}deg)`;
+                                indicator.setAttribute('style', `transform: translateX(-50%) rotate(${rot}deg) !important`);
                             }
                         }
                     }
@@ -326,7 +323,18 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {
             console.error("Failed to restore PRO settings", e);
         }
-    });
+    }
+
+    // Listen for active login modal success
+    window.addEventListener('authSuccess', restoreProSettings);
+
+    // Hard-check Supabase globally on naked script execution to bypass ALL racing conditionals
+    setTimeout(async () => {
+        if (window.supabase) {
+            const { data: { session } } = await window.supabase.auth.getSession();
+            if (session) restoreProSettings();
+        }
+    }, 50);
 
     affiliateBtn.addEventListener('click', (e) => {
         e.preventDefault();
