@@ -314,42 +314,34 @@ function ShoppingModal() {
                         <p style={{color: '#888', fontSize: '0.85rem', marginBottom: '15px'}}>Showing live aggregate results for: <br/><strong style={{color: '#d4c5b0', fontSize: '1rem'}}>{searchTerms.display}</strong></p>
                         
                         <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                            {/* Amazon */}
-                            <a href={`https://www.amazon.com/s?k=${encodedTitle}`} target="_blank" rel="noreferrer" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', textDecoration: 'none', color: '#e0e0e0', transition: 'border 0.2s'}} onMouseEnter={e => e.currentTarget.style.border = '1px solid #C5A059'} onMouseLeave={e => e.currentTarget.style.border = '1px solid #333'}>
+                            {/* Google Shopping Direct Route */}
+                            <a href={`https://www.google.com/search?tbm=shop&q=${encodedTitle}`} target="_blank" rel="noreferrer" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', textDecoration: 'none', color: '#e0e0e0', transition: 'border 0.2s'}} onMouseEnter={e => e.currentTarget.style.border = '1px solid #C5A059'} onMouseLeave={e => e.currentTarget.style.border = '1px solid #333'}>
                                 <div>
-                                    <h4 style={{margin: 0, color: '#FF9900'}}>Amazon</h4>
-                                    <div style={{fontSize: '0.7rem', color: '#666', marginTop: '4px'}}>Prime Shipping Available</div>
+                                    <h4 style={{margin: 0, color: '#4285F4'}}>Google Shopping</h4>
+                                    <div style={{fontSize: '0.7rem', color: '#666', marginTop: '4px'}}>Aggregate all global stores</div>
                                 </div>
                                 <div style={{textAlign: 'right'}}>
-                                    <div style={{fontWeight: 'bold', color: '#d4c5b0'}}>~$24.99 - $35.99</div>
-                                    <div style={{fontSize: '0.7rem', color: '#C5A059', marginTop: '4px'}}>Check Stock ↗</div>
+                                    <div style={{fontWeight: 'bold', color: '#d4c5b0'}}>Compare All</div>
+                                    <div style={{fontSize: '0.7rem', color: '#C5A059', marginTop: '4px'}}>Check Prices ↗</div>
                                 </div>
                             </a>
 
                             {/* Discogs */}
                             <a href={`https://www.discogs.com/search?q=${discogsTitle}&type=release`} target="_blank" rel="noreferrer" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', textDecoration: 'none', color: '#e0e0e0', transition: 'border 0.2s'}} onMouseEnter={e => e.currentTarget.style.border = '1px solid #C5A059'} onMouseLeave={e => e.currentTarget.style.border = '1px solid #333'}>
                                 <div>
-                                    <h4 style={{margin: 0, color: '#fff', textShadow: '0px 0px 1px #fff'}}>Discogs</h4>
-                                    <div style={{fontSize: '0.7rem', color: '#666', marginTop: '4px'}}>Global Marketplace</div>
+                                    <h4 style={{margin: 0, color: '#fff', textShadow: '0px 0px 1px #fff'}}>Discogs Database</h4>
+                                    <div style={{fontSize: '0.7rem', color: '#666', marginTop: '4px'}}>Official Vinyl Marketplace</div>
                                 </div>
                                 <div style={{textAlign: 'right'}}>
                                     <div style={{fontWeight: 'bold', color: '#d4c5b0'}}>Market Price</div>
                                     <div style={{fontSize: '0.7rem', color: '#C5A059', marginTop: '4px'}}>Check Auctions ↗</div>
                                 </div>
                             </a>
-
-                            {/* eBay */}
-                            <a href={`https://www.ebay.com/sch/i.html?_nkw=${encodedTitle}`} target="_blank" rel="noreferrer" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', textDecoration: 'none', color: '#e0e0e0', transition: 'border 0.2s'}} onMouseEnter={e => e.currentTarget.style.border = '1px solid #C5A059'} onMouseLeave={e => e.currentTarget.style.border = '1px solid #333'}>
-                                <div>
-                                    <h4 style={{margin: 0, color: '#86B817'}}>eBay</h4>
-                                    <div style={{fontSize: '0.7rem', color: '#666', marginTop: '4px'}}>Rare & Used Copies</div>
-                                </div>
-                                <div style={{textAlign: 'right'}}>
-                                    <div style={{fontWeight: 'bold', color: '#d4c5b0'}}>Varies</div>
-                                    <div style={{fontSize: '0.7rem', color: '#C5A059', marginTop: '4px'}}>Search Bids ↗</div>
-                                </div>
-                            </a>
                         </div>
+                        
+                        <p style={{fontSize: '0.65rem', color: '#555', marginTop: '20px', textAlign: 'center', fontStyle: 'italic', lineHeight: '1.4'}}>
+                            * Disclaimer: We simply aggregate search queries outwards. We are not liable for differences in inventory, external seller pricing, or if a third-party seller site is a scam. Please buy safely!
+                        </p>
                     </div>
                 )}
             </div>
