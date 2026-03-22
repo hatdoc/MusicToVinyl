@@ -9,7 +9,10 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // --- Auth Gate Component ---
 function AuthGate() {
     const [isVisible, setIsVisible] = useState(false);
+    const [isLoginMode, setIsLoginMode] = useState(true);
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const handleAuthRequest = () => setIsVisible(true);
@@ -17,30 +20,43 @@ function AuthGate() {
         return () => window.removeEventListener('requestAuth', handleAuthRequest);
     }, []);
 
-    const handleLogin = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (email) {
-            // Send live Magic Link via Supabase Auth
-            const { error } = await supabase.auth.signInWithOtp({ email });
-            
+        setLoading(true);
+        
+        if (isLoginMode) {
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) {
-                alert("Auth Error: " + error.message);
+                alert("Login Error: " + error.message);
+                setLoading(false);
                 return;
             }
-            alert("Success! Check your email for the secure login link.");
-            
-            // For testing purposes, we immediately authenticate the session in UI
-            window.appState.isLoggedIn = true;
-            setIsVisible(false);
-            window.dispatchEvent(new Event('authSuccess'));
+            alert("Welcome back to PRO!");
+            finalizeLogin();
+        } else {
+            const { error } = await supabase.auth.signUp({ email, password });
+            if (error) {
+                alert("Sign Up Error: " + error.message);
+                setLoading(false);
+                return;
+            }
+            alert("Account created! Verify your email to complete setup (or enjoy immediate demo access).");
+            finalizeLogin();
         }
+    };
+
+    const finalizeLogin = () => {
+        window.appState.isLoggedIn = true;
+        setIsVisible(false);
+        setLoading(false);
+        window.dispatchEvent(new Event('authSuccess'));
     };
 
     if (!isVisible) return null;
 
     return (
         <div className="modal">
-            <div className="modal-content wooden-frame" style={{position: 'relative'}}>
+            <div className="modal-content wooden-frame" style={{position: 'relative', width: '350px'}}>
                 <button 
                     onClick={() => setIsVisible(false)} 
                     style={{position: 'absolute', top: '10px', right: '15px', background: 'transparent', border: 'none', color: '#888', fontSize: '1.5rem', cursor: 'pointer', outline: 'none'}}
@@ -48,22 +64,44 @@ function AuthGate() {
                 >
                     &times;
                 </button>
-                <h2 style={{color: '#C5A059'}}>Unlock PRO Fidelity</h2>
-                <p style={{color: '#d4c5b0', lineHeight: '1.5'}}>Login to add tracks to your Crate and enable 1950s Tube Amp emulation.</p>
-                <form onSubmit={handleLogin} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+                <h2 style={{color: '#C5A059', marginBottom: '5px', marginTop: '10px'}}>
+                    {isLoginMode ? 'Welcome Back' : 'Unlock PRO'}
+                </h2>
+                <p style={{color: '#d4c5b0', lineHeight: '1.5', fontSize: '0.9rem', marginBottom: '20px'}}>
+                    {isLoginMode ? 'Enter your credentials to access your Crate.' : 'Create an account to build your Crate and enable Tube Amp emulation.'}
+                </p>
+                <form onSubmit={handleSubmit} style={{display:'flex', flexDirection:'column', gap:'12px'}}>
                     <input 
                         type="email" 
                         value={email}
                         onChange={e => setEmail(e.target.value)}
-                        placeholder="audiophile@example.com" 
+                        placeholder="Email (e.g. audiophile@example.com)" 
                         required 
-                        style={{padding: '10px', background: 'rgba(0,0,0,0.5)', border: '1px solid #C5A059', color: '#fff'}}
+                        style={{padding: '12px', background: 'rgba(0,0,0,0.5)', border: '1px solid #C5A059', color: '#fff', borderRadius: '4px'}}
                     />
-                    <button type="submit" style={{padding: '12px', background: 'linear-gradient(145deg, #C5A059, #8c6e33)', color: '#000', cursor: 'pointer', border: '1px solid #000', fontWeight: 'bold'}}>
-                        Authenticate via Magic Link
+                    <input 
+                        type="password" 
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        placeholder="Password" 
+                        required 
+                        minLength="6"
+                        style={{padding: '12px', background: 'rgba(0,0,0,0.5)', border: '1px solid #C5A059', color: '#fff', borderRadius: '4px'}}
+                    />
+                    <button type="submit" disabled={loading} style={{padding: '12px', background: 'linear-gradient(145deg, #C5A059, #8c6e33)', color: '#000', cursor: loading ? 'wait' : 'pointer', border: '1px solid #000', fontWeight: 'bold', borderRadius: '4px'}}>
+                        {loading ? 'Processing...' : (isLoginMode ? 'Log In' : 'Create Account')}
                     </button>
                 </form>
-                <p style={{fontSize: '0.7rem', color: '#888', marginTop: '10px'}}>Acquisition Data: Your vinyl intent helps labels know what to press next.</p>
+                
+                <div style={{marginTop: '20px', fontSize: '0.85rem', color: '#888'}}>
+                    {isLoginMode ? "Don't have an account? " : "Already a member? "}
+                    <button 
+                        onClick={() => setIsLoginMode(!isLoginMode)}
+                        style={{background: 'none', border: 'none', color: '#C5A059', cursor: 'pointer', textDecoration: 'underline', fontSize: '0.85rem', padding: '0'}}
+                    >
+                        {isLoginMode ? 'Sign Up' : 'Log In'}
+                    </button>
+                </div>
             </div>
         </div>
     );
