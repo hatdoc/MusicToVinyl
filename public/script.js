@@ -277,19 +277,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     convertBtn.addEventListener('click', () => {
-        if (state.isPlaying && !state.isPaused) {
-            // If already playing a video, allow stopping/starting new one
-            handleConversion();
-        } else if (state.isPaused) {
-            resumePlayback();
-        } else {
-            handleConversion();
-        }
+        handleConversion();
     });
 
     pauseBtn.addEventListener('click', () => {
         if (state.isPlaying && !state.isPaused) {
             pausePlayback();
+        } else if (state.isPaused) {
+            resumePlayback();
         }
     });
 
@@ -432,6 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
 
         pauseBtn.classList.remove('hidden');
+        pauseBtn.textContent = "Pause";
         convertBtn.textContent = "Change Record";
     }
 
@@ -443,8 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.audioContext) {
             state.audioContext.suspend();
         }
-        pauseBtn.textContent = "Stopped";
-        convertBtn.textContent = "Resume";
+        pauseBtn.textContent = "Resume";
         statusMessage.textContent = "Playback Paused.";
     }
 
@@ -457,7 +452,6 @@ document.addEventListener('DOMContentLoaded', () => {
             state.audioContext.resume();
         }
         pauseBtn.textContent = "Pause";
-        convertBtn.textContent = "Change Record";
         statusMessage.textContent = "Resuming warmth...";
     }
 
