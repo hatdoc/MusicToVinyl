@@ -245,23 +245,53 @@ function VirtualCrate() {
 function ShoppingModal() {
     const [isVisible, setIsVisible] = useState(false);
     const [track, setTrack] = useState({ title: '', id: '' });
+    const [searchTerms, setSearchTerms] = useState({ query: '', display: '' });
     const [loading, setLoading] = useState(false);
     
+    // Helper to sanitize messy YouTube titles
+    const cleanTitle = (str) => {
+        return str.replace(/[\(\[].*?[\)\]]/g, '') // strip brackets/parentheses
+                  .replace(/official|video|audio|lyric|lyrics|mv/ig, '')
+                  .replace(/[-|]/g, ' ')
+                  .replace(/\s+/g, ' ')
+                  .trim();
+    };
+
     useEffect(() => {
-        const handleShow = (e) => {
+        const handleShow = async (e) => {
             setTrack(e.detail);
             setLoading(true);
             setIsVisible(true);
-            setTimeout(() => setLoading(false), 1500);
+            
+            const sanitized = cleanTitle(e.detail.title);
+            let finalQuery = sanitized;
+            let finalDisplay = e.detail.title;
+            
+            // Query iTunes standard API to accurately trace song -> album -> artist
+            try {
+                const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(sanitized)}&entity=song&limit=1`);
+                const data = await res.json();
+                if (data.results && data.results.length > 0) {
+                    const match = data.results[0];
+                    finalQuery = `${match.artistName} ${match.collectionName}`; // Search for the exact artist and album name
+                    finalDisplay = `Album: ${match.collectionName} by ${match.artistName}`;
+                }
+            } catch (err) {
+                console.error("iTunes lookup failed, falling back to parsed title.");
+            }
+            
+            setSearchTerms({ query: finalQuery, display: finalDisplay });
+            setLoading(false);
         };
+        
         window.addEventListener('showShoppingModal', handleShow);
         return () => window.removeEventListener('showShoppingModal', handleShow);
     }, []);
 
     if (!isVisible) return null;
 
-    const encodedTitle = encodeURIComponent(track.title + " vinyl record");
-    const discogsTitle = encodeURIComponent(track.title);
+    const encodedTitle = encodeURIComponent(searchTerms.query + " vinyl record");
+    const discogsTitle = encodeURIComponent(searchTerms.query);
 
     return (
         <div className="modal">
@@ -277,11 +307,11 @@ function ShoppingModal() {
                 {loading ? (
                     <div style={{color: '#d4c5b0', textAlign: 'center', padding: '30px 0'}}>
                         <p>Scanning global record stores...</p>
-                        <div style={{marginTop: '10px', color: '#888', fontSize: '0.8rem'}}>Querying Google Shopping APIs...</div>
+                        <div style={{marginTop: '10px', color: '#888', fontSize: '0.8rem'}}>Cross-referencing Apple Data for exact album match...</div>
                     </div>
                 ) : (
                     <div>
-                        <p style={{color: '#888', fontSize: '0.85rem', marginBottom: '15px'}}>Showing live aggregate results for: <br/><strong style={{color: '#d4c5b0', fontSize: '1rem'}}>{track.title}</strong></p>
+                        <p style={{color: '#888', fontSize: '0.85rem', marginBottom: '15px'}}>Showing live aggregate results for: <br/><strong style={{color: '#d4c5b0', fontSize: '1rem'}}>{searchTerms.display}</strong></p>
                         
                         <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
                             {/* Amazon */}
