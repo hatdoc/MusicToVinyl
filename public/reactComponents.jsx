@@ -125,7 +125,15 @@ function VirtualCrate() {
                     .limit(10);
                 
                 if (!error && data) {
-                    setItems(data.map(d => ({ id: d.id, title: d.video_title, youtube_id: d.youtube_id })));
+                    const unique = [];
+                    const filtered = [];
+                    data.forEach(d => {
+                        if (!unique.includes(d.youtube_id)) {
+                            unique.push(d.youtube_id);
+                            filtered.push({ id: d.id, title: d.video_title, youtube_id: d.youtube_id });
+                        }
+                    });
+                    setItems(filtered.slice(0, 10)); // Ensure max 10 even after strict duplicate reduction
                 }
             }
         };
@@ -210,19 +218,18 @@ function VirtualCrate() {
                     <div 
                         key={item.id} 
                         onClick={() => playHistoryTrack(item)}
-                        style={{padding: '12px 0', borderBottom: '1px solid #1a1a1a', display: 'flex', gap: '10px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s'}}
+                        style={{padding: '10px 0', borderBottom: '1px solid #1a1a1a', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s'}}
                         onMouseEnter={(e) => e.currentTarget.style.background = '#1a1a1a'}
                         onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                         title="Click to play this LP"
                     >
                         <img 
-                            src={`https://img.youtube.com/vi/${item.youtube_id}/default.jpg`} 
+                            src={`https://img.youtube.com/vi/${item.youtube_id}/mqdefault.jpg`} 
                             alt="Cover" 
-                            style={{width: '60px', height: '45px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #333'}}
+                            style={{width: '90px', height: '65px', minWidth: '90px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #333'}}
                         />
                         <div style={{flex: 1, overflow: 'hidden'}}>
-                            <div style={{fontSize: '0.85rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: '#e0e0e0'}}>{item.title}</div>
-                            <div style={{fontSize: '0.65rem', color: '#666', marginTop: '4px'}}>ID: {item.youtube_id}</div>
+                            <div style={{fontSize: '0.9rem', lineHeight: '1.4', color: '#e0e0e0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>{item.title}</div>
                         </div>
                     </div>
                 ))}
