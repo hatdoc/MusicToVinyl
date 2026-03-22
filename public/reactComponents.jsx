@@ -177,6 +177,23 @@ function VirtualCrate() {
                     youtube_id: newTrack.youtube_id,
                     video_title: newTrack.title
                 }]);
+                
+                // Enforce maximum 10 LPs limit in database
+                const { data: keepData } = await supabase
+                    .from('crate_items')
+                    .select('id')
+                    .eq('user_id', user.id)
+                    .order('added_at', { ascending: false })
+                    .limit(10);
+                
+                if (keepData && keepData.length === 10) {
+                    const oldestIdToKeep = keepData[9].id;
+                    await supabase
+                        .from('crate_items')
+                        .delete()
+                        .eq('user_id', user.id)
+                        .lt('id', oldestIdToKeep);
+                }
             }
         };
         
