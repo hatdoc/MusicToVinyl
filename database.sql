@@ -1,6 +1,11 @@
 -- VinylSoul Database Schema
 -- Compatible with PostgreSQL (Supabase) or MySQL
 
+-- CLEAN SLATE (Warning: This deletes existing data)
+DROP TABLE IF EXISTS intent_logs CASCADE;
+DROP TABLE IF EXISTS crate_items CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
 -- 1. Users Table
 -- Stores user data for the acquisition asset.
 CREATE TABLE users (
