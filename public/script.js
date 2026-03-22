@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.loop = true;
 
         const gainNode = state.audioContext.createGain();
-        gainNode.gain.value = state.knobs.crackle * 0.25;
+        gainNode.gain.value = Math.pow(state.knobs.crackle, 0.5) * 0.25;
 
         source.connect(gainNode);
         gainNode.connect(state.nodes.noiseFilter); // Route through warmth filter
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.start();
 
         // Ensure hum is active
-        if (state.nodes.humGain) state.nodes.humGain.gain.value = state.knobs.warmth * 0.08;
+        if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(state.knobs.warmth, 0.5) * 0.08;
     }
 
     function stopVinylNoise() {
@@ -244,11 +244,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.youtubePlayer.setVolume(val * 100);
             }
             if (type === 'warmth') {
-                if (state.nodes.humGain) state.nodes.humGain.gain.value = val * 0.08; // 0 to 0.08
-                if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 8000); // Tame the highs
+                if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 0.5) * 0.08; 
+                if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 9000); // Deeply muffle high-end
             }
             if (type === 'crackle' && state.nodes.noiseGain) {
-                state.nodes.noiseGain.gain.value = val * 0.25; // 0 to 0.25
+                state.nodes.noiseGain.gain.value = Math.pow(val, 0.5) * 0.25; 
             }
             
             // Auto-save PRO settings
@@ -312,10 +312,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (parsed[prop] !== undefined) {
                         setAudioParameter(prop, parsed[prop]);
                         // Update visual rotation
-                        const el = document.getElementById('knob' + prop.charAt(0).toUpperCase() + prop.slice(1));
-                        if (el) {
-                            const rot = -135 + (parsed[prop] * 270);
-                            el.style.transform = `rotate(${rot}deg)`;
+                        const knobEl = document.querySelector(`.knob[data-control="${prop}"]`);
+                        if (knobEl) {
+                            const indicator = knobEl.querySelector('.indicator');
+                            if (indicator) {
+                                const rot = -135 + (parsed[prop] * 270);
+                                indicator.style.transform = `translateX(-50%) rotate(${rot}deg)`;
+                            }
                         }
                     }
                 });

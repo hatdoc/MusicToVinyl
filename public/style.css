@@ -738,7 +738,7 @@ input:checked+.slider:before {
 }
 
 .turntable-hero.playing .record-sleeve {
-    transform: translateX(-500px) translateY(-10px); /* Slide far enough out so text is fully readable */
+    transform: translateX(-650px) translateY(-10px) rotate(-3deg); 
 }
 
 .sleeve-texture {
