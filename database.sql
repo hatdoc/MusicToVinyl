@@ -46,3 +46,33 @@ CREATE INDEX idx_intent_logs_date ON intent_logs(created_at);
 -- WHERE created_at > NOW() - INTERVAL '30 days' AND clicked_affiliate = TRUE
 -- GROUP BY geo_location 
 -- ORDER BY avg_score DESC;
+
+-- ----------------------------------------------------
+-- SECURITY: ROW LEVEL SECURITY (RLS) POLICIES
+-- ----------------------------------------------------
+
+-- Enable RLS on all tables to lock them down by default
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE crate_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE intent_logs ENABLE ROW LEVEL SECURITY;
+
+-- 1. Intent Logs Policy
+-- Allow ANYONE (including public anons) to INSERT tracking data (intent)
+CREATE POLICY "Enable insert for all users" 
+ON intent_logs FOR INSERT 
+TO public 
+WITH CHECK (true);
+
+-- Deny SELECT to public (Only your Admin / Service Role can view the logs)
+CREATE POLICY "Deny select for public" 
+ON intent_logs FOR SELECT 
+TO public 
+USING (false);
+
+-- 2. Crate Items Policy
+-- Allow only authenticated users to manage their own crate items
+CREATE POLICY "Enable crate management for authenticated users only"
+ON crate_items FOR ALL
+TO authenticated
+USING (true)
+WITH CHECK (true);
