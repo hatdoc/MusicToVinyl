@@ -321,52 +321,66 @@ document.addEventListener('DOMContentLoaded', () => {
                 .eq('id', user.id)
                 .single();
             
-            if (!error && data) {
+            if (error) {
+                console.error("Supabase config query failure:", error);
+                return;
+            }
+            if (data) {
+                // Manually mute debounce autosave while restoring from boot sequentially
+                const previousLoginState = state.isLoggedIn;
+                state.isLoggedIn = false;
+
                 const parsed = {
-                    volume: data.volume_pref ?? 0.8,
-                    warmth: data.warmth_pref ?? 0.0,
-                    crackle: data.crackle_pref ?? 0.0
+                    volume: data.volume_pref !== null ? data.volume_pref : 0.8,
+                    warmth: data.warmth_pref !== null ? data.warmth_pref : 0.0,
+                    crackle: data.crackle_pref !== null ? data.crackle_pref : 0.0
                 };
+                
                 ['volume', 'warmth', 'crackle'].forEach(prop => {
-                    if (parsed[prop] !== undefined) {
-                        setAudioParameter(prop, parsed[prop]);
-                        const knobEl = document.querySelector(`.knob[data-control="${prop}"]`);
-                        if (knobEl) {
-                            const indicator = knobEl.querySelector('.indicator');
-                            if (indicator) {
-                                const rot = -135 + (parsed[prop] * 270);
-                                indicator.setAttribute('style', `transform: translateX(-50%) rotate(${rot}deg) !important`);
-                            }
+                    const mappedValue = parsed[prop];
+                    setAudioParameter(prop, mappedValue);
+                    
+                    const knobEl = document.querySelector(`.knob[data-control="${prop}"]`);
+                    if (knobEl) {
+                        const indicator = knobEl.querySelector('.indicator');
+                        if (indicator) {
+                            const rot = -135 + (mappedValue * 270);
+                            indicator.style.transform = `translateX(-50%) rotate(${rot}deg)`;
                         }
                     }
                 });
+
+                // Restore login lock
+                state.isLoggedIn = previousLoginState;
             }
-        } catch (e) {}
+        } catch (e) {
+            console.error("Hard failure restoring settings:", e);
+        }
     }
 
-    // Define the core restoration logic as a reusable function
-    async function restoreProSettings() {
+    async function restoreProSettings(session) {
         state.isLoggedIn = true;
         statusMessage.textContent = "Welcome PRO User. Premium Features Unlocked.";
-        
-        if (window.supabase) {
-            const { data: { user } } = await window.supabase.auth.getUser();
-            if (user) {
-                await fetchRemoteSettings(user);
-            }
+        if (session && session.user) {
+            await fetchRemoteSettings(session.user);
         }
     }
 
     // Listen for active login modal success
-    window.addEventListener('authSuccess', restoreProSettings);
+    window.addEventListener('authSuccess', async () => {
+        if (window.supabase) {
+            const { data: { session } } = await window.supabase.auth.getSession();
+            if (session) restoreProSettings(session);
+        }
+    });
 
     // Hard-check Supabase globally on naked script execution to bypass ALL racing conditionals
     setTimeout(async () => {
         if (window.supabase) {
             const { data: { session } } = await window.supabase.auth.getSession();
-            if (session) restoreProSettings();
+            if (session) restoreProSettings(session);
         }
-    }, 50);
+    }, 150);
 
     affiliateBtn.addEventListener('click', (e) => {
         e.preventDefault();
