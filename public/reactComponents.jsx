@@ -124,8 +124,16 @@ function AuthGate() {
 
 // --- LP Storage Component (History) ---
 function VirtualCrate() {
-    const [items, setItems] = useState([]); // Start empty
-    const [isPro, setIsPro] = useState(window.appState ? window.appState.isLoggedIn : false);
+    const [isVisible, setIsVisible] = useState(false);
+    const [items, setItems] = useState([]);
+    const [isPro, setIsPro] = useState(false);
+
+    // Explicitly check Supabase auth upon React mounting to prevent Babel compile-delay race conditions
+    useEffect(() => {
+        supabase.auth.getSession().then(({data: { session }}) => {
+            if (session) setIsPro(true);
+        });
+    }, []);
 
     // Fetch history from Supabase if logged in
     useEffect(() => {
