@@ -250,7 +250,7 @@ const crateRoot = ReactDOM.createRoot(document.getElementById('react-crate-root'
 crateRoot.render(<VirtualCrate />);
 
 // --- Auto-Login / Session Restoration ---
-window.addEventListener('DOMContentLoaded', async () => {
+(async function initSession() {
     window.appState = window.appState || { isLoggedIn: false };
     
     // Supabase automatically stores the auth token in localStorage.
@@ -266,4 +266,4 @@ window.addEventListener('DOMContentLoaded', async () => {
             window.dispatchEvent(new Event('authSuccess'));
         }, 150);
     }
-});
+})();
