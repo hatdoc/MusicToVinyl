@@ -130,12 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
         noiseFilter.type = 'lowpass';
         noiseFilter.frequency.value = 10000 - (state.knobs.warmth * 8000); // 10k down to 2k
         
-        // --- Tube Amp Emulation (Pro Feature) ---
-        const tubeShaper = state.audioContext.createWaveShaper();
-        tubeShaper.curve = makeDistortionCurve(400); // Heavy soft-clipping saturation
-        tubeShaper.oversample = '4x';
-        tubeShaper.connect(state.audioContext.destination);
-        state.nodes.tubeShaper = tubeShaper;
         state.nodes.noiseFilter = noiseFilter;
 
         // 3. Continuous Low Frequency Hum
@@ -151,28 +145,11 @@ document.addEventListener('DOMContentLoaded', () => {
         state.nodes.humOsc = humOsc;
         state.nodes.humGain = humGain;
         
-        // Route based on current Pro state
-        if (state.isLoggedIn && document.getElementById('proModeCheckbox').checked) {
-            noiseFilter.connect(tubeShaper);
-            humGain.connect(tubeShaper);
-        } else {
-            noiseFilter.connect(state.audioContext.destination);
-            humGain.connect(state.audioContext.destination);
-        }
+        // Always route directly to destination for clean LP sound
+        noiseFilter.connect(state.audioContext.destination);
+        humGain.connect(state.audioContext.destination);
         
         humOsc.start();
-    }
-
-    function makeDistortionCurve(amount) {
-        let k = typeof amount === 'number' ? amount : 50;
-        let n_samples = 44100;
-        let curve = new Float32Array(n_samples);
-        let deg = Math.PI / 180;
-        for (let i = 0; i < n_samples; ++i) {
-            let x = i * 2 / n_samples - 1;
-            curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
-        }
-        return curve;
     }
 
     function playNeedleDrop() {
@@ -322,26 +299,8 @@ document.addEventListener('DOMContentLoaded', () => {
             e.target.checked = false; // Revert visually
             window.dispatchEvent(new Event('requestAuth')); // Trigger React Modal
         } else if (e.target.checked) {
-            // Apply heavy tube distortion when PRO is enabled by re-routing audio nodes
-            if (state.nodes.noiseFilter && state.nodes.tubeShaper) {
-                state.nodes.noiseFilter.disconnect();
-                state.nodes.noiseFilter.connect(state.nodes.tubeShaper);
-            }
-            if (state.nodes.humGain && state.nodes.tubeShaper) {
-                state.nodes.humGain.disconnect();
-                state.nodes.humGain.connect(state.nodes.tubeShaper);
-            }
-            statusMessage.textContent = "[PRO] 1950s Tube Amp Emulation Active!";
+            statusMessage.textContent = "[PRO] Premium Features Active!";
         } else {
-            // Bypass distortion completely for true analog floor
-            if (state.nodes.noiseFilter && state.audioContext) {
-                state.nodes.noiseFilter.disconnect();
-                state.nodes.noiseFilter.connect(state.audioContext.destination);
-            }
-            if (state.nodes.humGain && state.audioContext) {
-                state.nodes.humGain.disconnect();
-                state.nodes.humGain.connect(state.audioContext.destination);
-            }
             statusMessage.textContent = "Standard Fidelity Restored.";
         }
     });
@@ -350,16 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('authSuccess', () => {
         state.isLoggedIn = true;
         proModeCheckbox.checked = true;
-        
-        // Route audio through tube amp
-        if (state.nodes.noiseFilter && state.nodes.tubeShaper && state.nodes.humGain) {
-            state.nodes.noiseFilter.disconnect();
-            state.nodes.noiseFilter.connect(state.nodes.tubeShaper);
-            state.nodes.humGain.disconnect();
-            state.nodes.humGain.connect(state.nodes.tubeShaper);
-        }
-        
-        statusMessage.textContent = "Welcome PRO User. Audiophile Emulation Unlocked.";
+        statusMessage.textContent = "Welcome PRO User. Premium Features Unlocked.";
     });
 
     affiliateBtn.addEventListener('click', () => {
