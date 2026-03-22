@@ -35,12 +35,20 @@ function AuthGate() {
             }
             finalizeLogin();
         } else {
-            const { error } = await supabase.auth.signUp({ email, password });
+            const { data, error } = await supabase.auth.signUp({ email, password });
             if (error) {
                 setAuthError("Sign Up Error: " + error.message);
                 setLoading(false);
                 return;
             }
+            
+            // Supabase returns a user but explicitly nullifies the session if Email Confirmations are turned ON
+            if (!data.session) {
+                setAuthError("Verification required. Check your inbox for the archival link to activate your crate.");
+                setLoading(false);
+                return;
+            }
+            
             finalizeLogin();
         }
     };
