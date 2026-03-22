@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         playerReady: false,
         knobs: { volume: 0.8, warmth: 0.5, crackle: 0.5 }
     };
-    
+
     // Mount global state for React components
     window.appState = state;
 
@@ -35,12 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
     themeDots.forEach(dot => {
         dot.addEventListener('click', () => {
             const theme = dot.getAttribute('data-theme');
-            
+
             // Remove all themes from body
             document.body.classList.remove('theme-obsidian', 'theme-walnut', 'theme-warm', 'theme-alabaster');
             // Add selected theme to body
             document.body.classList.add(theme);
-            
+
             // Update active dot
             themeDots.forEach(d => d.classList.remove('active'));
             dot.classList.add('active');
@@ -134,27 +134,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const tubeShaper = state.audioContext.createWaveShaper();
         tubeShaper.curve = makeDistortionCurve(400); // Heavy soft-clipping saturation
         tubeShaper.oversample = '4x';
-        
-        noiseFilter.connect(tubeShaper);
         tubeShaper.connect(state.audioContext.destination);
-        state.nodes.noiseFilter = noiseFilter;
         state.nodes.tubeShaper = tubeShaper;
+        state.nodes.noiseFilter = noiseFilter;
 
         // 3. Continuous Low Frequency Hum
         const humOsc = state.audioContext.createOscillator();
-        humOsc.type = 'sine'; // Back to smooth subtle sine
-        humOsc.frequency.value = 50; // Deep 50Hz hum
+        humOsc.type = 'triangle'; // User liked the triangle 60hz from commit a014c
+        humOsc.frequency.value = 60; 
         
         const humGain = state.audioContext.createGain();
-        humGain.gain.value = state.knobs.warmth * 0.08; // Softer max amplitude
+        humGain.gain.value = state.knobs.warmth * 0.15; // User liked 0.15 volume from commit a014c
 
         humOsc.connect(humGain);
-        humGain.connect(tubeShaper); // Route hum through the tube amp
+        
         state.nodes.humOsc = humOsc;
         state.nodes.humGain = humGain;
+        
+        // Route based on current Pro state
+        if (state.isLoggedIn && document.getElementById('proModeCheckbox').checked) {
+            noiseFilter.connect(tubeShaper);
+            humGain.connect(tubeShaper);
+        } else {
+            noiseFilter.connect(state.audioContext.destination);
+            humGain.connect(state.audioContext.destination);
+        }
+        
         humOsc.start();
     }
-    
+
     function makeDistortionCurve(amount) {
         let k = typeof amount === 'number' ? amount : 50;
         let n_samples = 44100;
@@ -170,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function playNeedleDrop() {
         if (!state.audioContext) initAudioEngine();
         const ctx = state.audioContext;
-        
+
         // A short burst of loud crackle and a thump
         const thump = ctx.createOscillator();
         thump.type = 'sine';
@@ -190,10 +198,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const burstSource = ctx.createBufferSource();
         burstSource.buffer = state.nodes.noiseBuffer;
         const burstGain = ctx.createGain();
-        
+
         burstGain.gain.setValueAtTime(0.4, ctx.currentTime);
         burstGain.gain.exponentialRampToValueAtTime(0.1, ctx.currentTime + 2.0);
-        
+
         burstSource.connect(burstGain);
         burstGain.connect(state.nodes.noiseFilter); // Route through warmth filter
         burstSource.start();
@@ -204,29 +212,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.audioContext.state === 'suspended') {
             state.audioContext.resume();
         }
-        
+
         // Loop the character noise
         const source = state.audioContext.createBufferSource();
         source.buffer = state.nodes.noiseBuffer;
         source.loop = true;
 
         const gainNode = state.audioContext.createGain();
-        gainNode.gain.value = state.knobs.crackle * 0.25;
+        gainNode.gain.value = state.knobs.crackle * 0.40; // Restoring 0.40 from commit a014c
 
         source.connect(gainNode);
         gainNode.connect(state.nodes.noiseFilter); // Route through warmth filter
-        
+
         state.nodes.noiseSource = source;
         state.nodes.noiseGain = gainNode;
         source.start();
 
         // Ensure hum is active
-        if (state.nodes.humGain) state.nodes.humGain.gain.value = state.knobs.warmth * 0.08;
+        if (state.nodes.humGain) state.nodes.humGain.gain.value = state.knobs.warmth * 0.15; // Restoring 0.15 from commit a014c
     }
 
     function stopVinylNoise() {
         if (state.nodes.noiseSource) {
-            try { state.nodes.noiseSource.stop(); } catch(e) {}
+            try { state.nodes.noiseSource.stop(); } catch (e) { }
             state.nodes.noiseSource = null;
         }
         if (state.nodes.humGain) {
@@ -241,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
     knobs.forEach(knob => {
         const controlType = knob.getAttribute('data-control');
         const indicator = knob.querySelector('.indicator');
-        
+
         let isDragging = false;
         let startY = 0;
         let startVal = state.knobs[controlType];
@@ -259,11 +267,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.youtubePlayer.setVolume(val * 100);
             }
             if (type === 'warmth') {
-                if (state.nodes.humGain) state.nodes.humGain.gain.value = val * 0.08; // 0 to 0.08
+                if (state.nodes.humGain) state.nodes.humGain.gain.value = val * 0.15; // 0 to 0.15
                 if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 8000); // Tame the highs
             }
             if (type === 'crackle' && state.nodes.noiseGain) {
-                state.nodes.noiseGain.gain.value = val * 0.25; // 0 to 0.25
+                state.nodes.noiseGain.gain.value = val * 0.40; // 0 to 0.40
             }
         }
 
@@ -314,12 +322,26 @@ document.addEventListener('DOMContentLoaded', () => {
             e.target.checked = false; // Revert visually
             window.dispatchEvent(new Event('requestAuth')); // Trigger React Modal
         } else if (e.target.checked) {
-            // Apply heavy tube distortion when PRO is enabled!
-            if (state.nodes.tubeShaper) state.nodes.tubeShaper.curve = makeDistortionCurve(400);
+            // Apply heavy tube distortion when PRO is enabled by re-routing audio nodes
+            if (state.nodes.noiseFilter && state.nodes.tubeShaper) {
+                state.nodes.noiseFilter.disconnect();
+                state.nodes.noiseFilter.connect(state.nodes.tubeShaper);
+            }
+            if (state.nodes.humGain && state.nodes.tubeShaper) {
+                state.nodes.humGain.disconnect();
+                state.nodes.humGain.connect(state.nodes.tubeShaper);
+            }
             statusMessage.textContent = "[PRO] 1950s Tube Amp Emulation Active!";
         } else {
-            // Bypass distortion
-            if (state.nodes.tubeShaper) state.nodes.tubeShaper.curve = makeDistortionCurve(0);
+            // Bypass distortion completely for true analog floor
+            if (state.nodes.noiseFilter && state.audioContext) {
+                state.nodes.noiseFilter.disconnect();
+                state.nodes.noiseFilter.connect(state.audioContext.destination);
+            }
+            if (state.nodes.humGain && state.audioContext) {
+                state.nodes.humGain.disconnect();
+                state.nodes.humGain.connect(state.audioContext.destination);
+            }
             statusMessage.textContent = "Standard Fidelity Restored.";
         }
     });
@@ -328,13 +350,21 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('authSuccess', () => {
         state.isLoggedIn = true;
         proModeCheckbox.checked = true;
-        if (state.nodes.tubeShaper) state.nodes.tubeShaper.curve = makeDistortionCurve(400);
+        
+        // Route audio through tube amp
+        if (state.nodes.noiseFilter && state.nodes.tubeShaper && state.nodes.humGain) {
+            state.nodes.noiseFilter.disconnect();
+            state.nodes.noiseFilter.connect(state.nodes.tubeShaper);
+            state.nodes.humGain.disconnect();
+            state.nodes.humGain.connect(state.nodes.tubeShaper);
+        }
+        
         statusMessage.textContent = "Welcome PRO User. Audiophile Emulation Unlocked.";
     });
 
     affiliateBtn.addEventListener('click', () => {
         // Log intent (In React Crate or natively)
-        window.dispatchEvent(new CustomEvent('addToCrate', { 
+        window.dispatchEvent(new CustomEvent('addToCrate', {
             detail: { title: sleeveTitle.textContent, id: state.youtubeVideoId }
         }));
     });
@@ -346,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.title) {
                 sleeveTitle.textContent = data.title;
                 sleeveArtist.textContent = data.author_name || 'Unknown Artist';
-                
+
                 // Update affiliate link to search Discogs dynamically
                 affiliateBtn.href = "https://www.discogs.com/search?q=" + encodeURIComponent(data.title) + "&type=release";
                 affiliateBtn.classList.remove('hidden');
@@ -400,17 +430,17 @@ document.addEventListener('DOMContentLoaded', () => {
         state.isPlaying = true;
         state.isPaused = false;
         state.plays++;
-        
+
         // Fetch Metadata & Slide Out Sleeve
         fetchVideoMetadata(videoId);
 
         // Immediately Swing the Arm & Spin the Vinyl
         document.querySelector('.turntable-hero').classList.add('playing');
         vinylRecord.classList.add('spinning');
-        
+
         initAudioEngine();
         playNeedleDrop(); // Trigger the initial "buzzing" and needle drop thump
-        
+
         // Wait 2 seconds for the needle drop and buzzing to complete before starting the music
         setTimeout(() => {
             if (state.isPlaying && !state.isPaused) {
@@ -456,15 +486,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopPlayback() {
         state.isPlaying = false;
         state.isPaused = false;
-        
+
         vinylRecord.classList.remove('spinning');
         document.querySelector('.turntable-hero').classList.remove('playing');
-        
+
         stopVinylNoise();
         if (state.youtubePlayer && state.youtubePlayer.stopVideo) {
             state.youtubePlayer.stopVideo();
         }
-        
+
         pauseBtn.classList.add('hidden');
         pauseBtn.textContent = "Pause";
         convertBtn.textContent = "Play on Vinyl";
