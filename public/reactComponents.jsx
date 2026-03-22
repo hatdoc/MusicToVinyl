@@ -64,12 +64,21 @@ function AuthGate() {
                 >
                     &times;
                 </button>
-                <h2 style={{color: '#C5A059', marginBottom: '5px', marginTop: '10px'}}>
-                    {isLoginMode ? 'Welcome Back' : 'Unlock PRO'}
-                </h2>
-                <p style={{color: '#d4c5b0', lineHeight: '1.5', fontSize: '0.9rem', marginBottom: '20px'}}>
-                    {isLoginMode ? 'Enter your credentials to access your Crate.' : 'Create an account to build your Crate and enable Tube Amp emulation.'}
-                </p>
+                <div style={{textAlign: 'center', marginBottom: '20px'}}>
+                    <h2 style={{color: '#C5A059', fontFamily: 'var(--font-heading)', margin: '0 0 10px 0'}}>{isLoginMode ? 'Welcome Back' : 'Unlock PRO'}</h2>
+                    <p style={{color: '#d4c5b0', fontSize: '0.85rem', margin: '0 0 15px 0'}}>Elevate your digital vinyl experience.</p>
+                </div>
+
+                {!isLoginMode && (
+                    <div style={{background: 'rgba(0,0,0,0.3)', padding: '15px', borderRadius: '4px', border: '1px dashed #444', marginBottom: '20px', fontSize: '0.85rem', color: '#e0e0e0', textAlign: 'left', lineHeight: '1.4'}}>
+                        <ul style={{listStyleType: 'none', padding: 0, margin: 0}}>
+                            <li style={{marginBottom: '10px'}}><strong style={{color: '#C5A059'}}>💾 LP Storage History:</strong> Automatically save and resume your entire listening history.</li>
+                            <li style={{marginBottom: '10px'}}><strong style={{color: '#C5A059'}}>🛒 Live Marketplace:</strong> Instantly cross-reference global stores to buy the physical record you are playing.</li>
+                            <li><strong style={{color: '#C5A059'}}>✨ Pristine Engine:</strong> Guaranteed pure analog noise floor.</li>
+                        </ul>
+                    </div>
+                )}
+                
                 <form onSubmit={handleSubmit} style={{display:'flex', flexDirection:'column', gap:'12px'}}>
                     <input 
                         type="email" 
