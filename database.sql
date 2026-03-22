@@ -13,9 +13,6 @@ CREATE TABLE users (
     email VARCHAR(255) UNIQUE NOT NULL,
     tier VARCHAR(20) DEFAULT 'free', -- 'free' or 'pro'
     signup_ip VARCHAR(45),
-    volume_pref FLOAT DEFAULT 0.8,
-    warmth_pref FLOAT DEFAULT 0.0,
-    crackle_pref FLOAT DEFAULT 0.0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP WITH TIME ZONE
 );
@@ -63,13 +60,6 @@ CREATE INDEX idx_intent_logs_date ON intent_logs(created_at);
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE crate_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE intent_logs ENABLE ROW LEVEL SECURITY;
-
--- 0. Users Policy
-CREATE POLICY "Users can manage their own profile"
-ON users FOR ALL
-TO authenticated
-USING (auth.uid() = id)
-WITH CHECK (auth.uid() = id);
 
 -- 1. Intent Logs Policy
 -- Allow ANYONE (including public anons) to INSERT tracking data (intent)

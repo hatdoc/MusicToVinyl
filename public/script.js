@@ -251,25 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.nodes.noiseGain.gain.value = Math.pow(val, 0.5) * 0.8; 
             }
             
-            // Auto-save PRO settings directly to Supabase via Debounce
-            if (state.isLoggedIn && window.supabase) {
-                clearTimeout(window.saveSettingsTimeout);
-                window.saveSettingsTimeout = setTimeout(async () => {
-                    const { data: { user } } = await window.supabase.auth.getUser();
-                    if (user) {
-                        try {
-                            await window.supabase
-                                .from('users')
-                                .update({
-                                    volume_pref: state.knobs.volume,
-                                    warmth_pref: state.knobs.warmth,
-                                    crackle_pref: state.knobs.crackle
-                                })
-                                .eq('id', user.id);
-                        } catch (e) { console.error('Failed to sync to cloud', e); }
-                    }
-                }, 800); // 800ms debounce
-            }
         }
 
         knob.addEventListener('mousedown', (e) => {
@@ -313,74 +294,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    async function fetchRemoteSettings(user) {
-        try {
-            const { data, error } = await window.supabase
-                .from('users')
-                .select('volume_pref, warmth_pref, crackle_pref')
-                .eq('id', user.id)
-                .single();
-            
-            if (error) {
-                console.error("Supabase config query failure:", error);
-                return;
-            }
-            if (data) {
-                // Manually mute debounce autosave while restoring from boot sequentially
-                const previousLoginState = state.isLoggedIn;
-                state.isLoggedIn = false;
-
-                const parsed = {
-                    volume: data.volume_pref !== null ? data.volume_pref : 0.8,
-                    warmth: data.warmth_pref !== null ? data.warmth_pref : 0.0,
-                    crackle: data.crackle_pref !== null ? data.crackle_pref : 0.0
-                };
-                
-                ['volume', 'warmth', 'crackle'].forEach(prop => {
-                    const mappedValue = parsed[prop];
-                    setAudioParameter(prop, mappedValue);
-                    
-                    const knobEl = document.querySelector(`.knob[data-control="${prop}"]`);
-                    if (knobEl) {
-                        const indicator = knobEl.querySelector('.indicator');
-                        if (indicator) {
-                            const rot = -135 + (mappedValue * 270);
-                            indicator.style.transform = `translateX(-50%) rotate(${rot}deg)`;
-                        }
-                    }
-                });
-
-                // Restore login lock
-                state.isLoggedIn = previousLoginState;
-            }
-        } catch (e) {
-            console.error("Hard failure restoring settings:", e);
-        }
-    }
-
-    async function restoreProSettings(session) {
+    // Listen for Auth Success from React
+    window.addEventListener('authSuccess', () => {
         state.isLoggedIn = true;
         statusMessage.textContent = "Welcome PRO User. Premium Features Unlocked.";
-        if (session && session.user) {
-            await fetchRemoteSettings(session.user);
-        }
-    }
-
-    // Listen for active login modal success
-    window.addEventListener('authSuccess', async () => {
-        if (window.supabase) {
-            const { data: { session } } = await window.supabase.auth.getSession();
-            if (session) restoreProSettings(session);
-        }
     });
-
-    // Hard-check Supabase globally on naked script execution to bypass ALL racing conditionals
-    setTimeout(async () => {
-        if (window.supabase) {
-            const { data: { session } } = await window.supabase.auth.getSession();
-            if (session) restoreProSettings(session);
-        }
-    }, 150);
 
     affiliateBtn.addEventListener('click', (e) => {
         e.preventDefault();
