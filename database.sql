@@ -6,32 +6,43 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
-    signup_ip VARCHAR(45), -- Optional: for fraud detection
+    tier VARCHAR(20) DEFAULT 'free', -- 'free' or 'pro'
+    signup_ip VARCHAR(45),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP WITH TIME ZONE
 );
 
--- 2. Conversions Table
--- Tracks what users are listening to. This is the core data asset.
-CREATE TABLE conversions (
+-- 2. Crate Items (Want List)
+CREATE TABLE crate_items (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE SET NULL, -- Nullable for guest conversions if allowed
-    youtube_url TEXT NOT NULL,
-    video_id VARCHAR(20),
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    youtube_id VARCHAR(50) NOT NULL,
     video_title VARCHAR(255),
-    detected_genre VARCHAR(100), -- Populated by backend analysis of video metadata
-    converted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    added_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. Intent Logs (Conversions & Analytics)
+-- Tracks what users are converting to physical intent
+CREATE TABLE intent_logs (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE SET NULL, -- Nullable for anon
+    youtube_id VARCHAR(50) NOT NULL,
+    genre VARCHAR(100),
+    geo_location VARCHAR(100), -- E.g. 'London, UK'
+    vinyl_compatibility_score INTEGER, -- 0-100 algorithm score
+    clicked_affiliate BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 3. Indexes for Analytics Performance
 CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_conversions_genre ON conversions(detected_genre);
-CREATE INDEX idx_conversions_date ON conversions(converted_at);
+CREATE INDEX idx_intent_logs_loc ON intent_logs(geo_location);
+CREATE INDEX idx_intent_logs_date ON intent_logs(created_at);
 
--- 4. Example Analytic Query (for the Admin Dashboard)
--- "Which genres are trending this week?"
--- SELECT detected_genre, COUNT(*) as conversion_count 
--- FROM conversions 
--- WHERE converted_at > NOW() - INTERVAL '7 days' 
--- GROUP BY detected_genre 
--- ORDER BY conversion_count DESC;
+-- 5. Example Analytic Query (for the Admin Dashboard)
+-- "Which geo-locations convert the most high-fidelity intent?"
+-- SELECT geo_location, AVG(vinyl_compatibility_score) as avg_score, COUNT(*) 
+-- FROM intent_logs 
+-- WHERE created_at > NOW() - INTERVAL '30 days' AND clicked_affiliate = TRUE
+-- GROUP BY geo_location 
+-- ORDER BY avg_score DESC;

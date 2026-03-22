@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
         playerReady: false,
         knobs: { volume: 0.8, warmth: 0.5, crackle: 0.5 }
     };
+    
+    // Mount global state for React components
+    window.appState = state;
 
     // --- DOM Elements ---
     const vinylRecord = document.getElementById('vinylRecord');
@@ -21,11 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const pauseBtn = document.getElementById('pauseBtn');
     const youtubeUrlInput = document.getElementById('youtubeUrl');
     const statusMessage = document.getElementById('statusMessage');
-    const authGate = document.getElementById('authGate');
-    const signupForm = document.getElementById('signupForm');
-    const userEmailInput = document.getElementById('userEmail');
     const turntableHero = document.getElementById('turntableHero');
     const themeDots = document.querySelectorAll('.theme-dot');
+    const sleeveTitle = document.getElementById('sleeveTitle');
+    const sleeveArtist = document.getElementById('sleeveArtist');
+    const affiliateBtn = document.getElementById('affiliateBtn');
+    const proModeCheckbox = document.getElementById('proModeCheckbox');
 
     // --- Theme Logic ---
     themeDots.forEach(dot => {
@@ -125,8 +129,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const noiseFilter = state.audioContext.createBiquadFilter();
         noiseFilter.type = 'lowpass';
         noiseFilter.frequency.value = 10000 - (state.knobs.warmth * 8000); // 10k down to 2k
-        noiseFilter.connect(state.audioContext.destination);
+        
+        // --- Tube Amp Emulation (Pro Feature) ---
+        const tubeShaper = state.audioContext.createWaveShaper();
+        tubeShaper.curve = makeDistortionCurve(400); // Heavy soft-clipping saturation
+        tubeShaper.oversample = '4x';
+        
+        noiseFilter.connect(tubeShaper);
+        tubeShaper.connect(state.audioContext.destination);
         state.nodes.noiseFilter = noiseFilter;
+        state.nodes.tubeShaper = tubeShaper;
 
         // 3. Continuous Low Frequency Hum
         const humOsc = state.audioContext.createOscillator();
@@ -137,10 +149,22 @@ document.addEventListener('DOMContentLoaded', () => {
         humGain.gain.value = state.knobs.warmth * 0.15; // 3x Louder max amplitude
 
         humOsc.connect(humGain);
-        humGain.connect(state.audioContext.destination);
+        humGain.connect(tubeShaper); // Route hum through the tube amp
         state.nodes.humOsc = humOsc;
         state.nodes.humGain = humGain;
         humOsc.start();
+    }
+    
+    function makeDistortionCurve(amount) {
+        let k = typeof amount === 'number' ? amount : 50;
+        let n_samples = 44100;
+        let curve = new Float32Array(n_samples);
+        let deg = Math.PI / 180;
+        for (let i = 0; i < n_samples; ++i) {
+            let x = i * 2 / n_samples - 1;
+            curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
+        }
+        return curve;
     }
 
     function playNeedleDrop() {
@@ -284,15 +308,55 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    signupForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = userEmailInput.value;
-        if (email) {
-            state.isLoggedIn = true;
-            authGate.classList.add('hidden');
-            alert("Welcome to the club. Unlimited access granted.");
+    // Handle Pro Mode Toggle
+    proModeCheckbox.addEventListener('change', (e) => {
+        if (e.target.checked && !state.isLoggedIn) {
+            e.target.checked = false; // Revert visually
+            window.dispatchEvent(new Event('requestAuth')); // Trigger React Modal
+        } else if (e.target.checked) {
+            // Apply heavy tube distortion when PRO is enabled!
+            if (state.nodes.tubeShaper) state.nodes.tubeShaper.curve = makeDistortionCurve(400);
+            statusMessage.textContent = "[PRO] 1950s Tube Amp Emulation Active!";
+        } else {
+            // Bypass distortion
+            if (state.nodes.tubeShaper) state.nodes.tubeShaper.curve = makeDistortionCurve(0);
+            statusMessage.textContent = "Standard Fidelity Restored.";
         }
     });
+
+    // Listen for Auth Success from React
+    window.addEventListener('authSuccess', () => {
+        state.isLoggedIn = true;
+        proModeCheckbox.checked = true;
+        if (state.nodes.tubeShaper) state.nodes.tubeShaper.curve = makeDistortionCurve(400);
+        statusMessage.textContent = "Welcome PRO User. Audiophile Emulation Unlocked.";
+    });
+
+    affiliateBtn.addEventListener('click', () => {
+        // Log intent (In React Crate or natively)
+        window.dispatchEvent(new CustomEvent('addToCrate', { 
+            detail: { title: sleeveTitle.textContent, id: state.youtubeVideoId }
+        }));
+    });
+
+    async function fetchVideoMetadata(videoId) {
+        try {
+            const res = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`);
+            const data = await res.json();
+            if (data.title) {
+                sleeveTitle.textContent = data.title;
+                sleeveArtist.textContent = data.author_name || 'Unknown Artist';
+                
+                // Update affiliate link to search Discogs dynamically
+                affiliateBtn.href = "https://www.discogs.com/search?q=" + encodeURIComponent(data.title) + "&type=release";
+                affiliateBtn.classList.remove('hidden');
+            }
+        } catch (e) {
+            sleeveTitle.textContent = "Analog Track";
+            sleeveArtist.textContent = "Unknown Artist";
+            affiliateBtn.classList.remove('hidden');
+        }
+    }
 
     function handleConversion() {
         const url = youtubeUrlInput.value.trim();
@@ -304,11 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const videoId = extractVideoId(url);
         if (!videoId) {
             statusMessage.textContent = "Invalid YouTube URL.";
-            return;
-        }
-
-        if (state.plays >= 1 && !state.isLoggedIn) {
-            authGate.classList.remove('hidden');
             return;
         }
 
@@ -342,6 +401,9 @@ document.addEventListener('DOMContentLoaded', () => {
         state.isPaused = false;
         state.plays++;
         
+        // Fetch Metadata & Slide Out Sleeve
+        fetchVideoMetadata(videoId);
+
         // Immediately Swing the Arm & Spin the Vinyl
         document.querySelector('.turntable-hero').classList.add('playing');
         vinylRecord.classList.add('spinning');

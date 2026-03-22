@@ -8,7 +8,13 @@
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
      crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto+Mono:wght@400;700&family=Cedarville+Cursive&display=swap" rel="stylesheet">
+    
+    <!-- React & Supabase Ecosystem for Widgets -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 </head>
 <body>
 
@@ -21,6 +27,16 @@
         <main class="main-content">
             <header class="header">
                 <h1 class="logo">Vinyl Analog <span class="tagline">Authentic warmth for digital souls.</span></h1>
+                
+                <!-- Hi-Fi Pro Toggle -->
+                <div class="pro-toggle" id="proToggleBtn">
+                    <span class="pro-label">FREE</span>
+                    <label class="switch">
+                        <input type="checkbox" id="proModeCheckbox">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="pro-label pro-gold">PRO</span>
+                </div>
             </header>
 
             <section class="turntable-wrapper" id="turntableWrapper">
@@ -31,6 +47,15 @@
                     <button class="theme-dot alabaster" data-theme="theme-alabaster" title="Alabaster"></button>
                 </div>
                 
+                <!-- The Slide-out Record Sleeve for Metadata -->
+                <div class="record-sleeve" id="recordSleeve">
+                    <div class="sleeve-texture"></div>
+                    <div class="sleeve-metadata">
+                        <h2 class="handwritten" id="sleeveTitle">Unknown Track</h2>
+                        <p class="handwritten" id="sleeveArtist">Anonymous Label</p>
+                    </div>
+                </div>
+
                 <div class="turntable-hero" id="turntableHero">
                     <!-- The wood chassis -->
                     <div class="dust-cover-hinges">
@@ -94,29 +119,21 @@
                     </div>
                 </div>
                 <div id="statusMessage" class="status"></div>
+                
+                <!-- Affiliate Integration Button -->
+                <button id="affiliateBtn" class="affiliate-btn hidden">🔍 Find this on Real Vinyl</button>
+
                 <!-- YouTube IFrame Target -->
                 <div id="youtube-player-placeholder"></div>
             </section>
 
-            <!-- Sign Up Gate Modal (Hidden by default) -->
-            <div id="authGate" class="modal hidden">
-                <div class="modal-content wooden-frame">
-                    <h2>Unlock Unlimited Plays</h2>
-                    <p>Join our exclusive community of audiophiles.</p>
-                    <form id="signupForm">
-                        <input type="email" id="userEmail" placeholder="Enter your email" required>
-                        <button type="submit">Unlock Access</button>
-                    </form>
-                    <p class="small-text">One-time registration. No spam, just pure analog soul.</p>
-                </div>
-            </div>
+            <!-- React Auth Gate Root -->
+            <div id="react-auth-root"></div>
 
         </main>
 
-        <!-- Sidebar Ad Rail -->
-        <aside class="ad-rail right">
-            <div class="ad-placeholder">Ad Space</div>
-        </aside>
+        <!-- Sidebar React Crate Root -->
+        <aside class="react-crate-container" id="react-crate-root"></aside>
     </div>
 
     <footer class="sticky-footer">
@@ -131,6 +148,10 @@
         </div>
     </footer>
 
+    <!-- App Logic -->
     <script src="script.js"></script>
+    
+    <!-- React Components -->
+    <script type="text/babel" src="reactComponents.jsx"></script>
 </body>
 </html>
