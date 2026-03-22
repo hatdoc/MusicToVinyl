@@ -444,6 +444,11 @@ body {
 }
 
 /* Playing State: Swing the tonearm over the record */
+/* Pivot entire turntable right to make room for sleeve */
+.turntable-hero.playing {
+    transform: rotateX(45deg) rotateZ(0deg) translateX(150px);
+}
+
 .turntable-hero.playing .tonearm {
     transform: translate(-10px, -40px) translateZ(40px) rotateZ(35deg);
 }
@@ -738,7 +743,7 @@ input:checked+.slider:before {
 }
 
 .turntable-hero.playing .record-sleeve {
-    transform: translateX(-650px) translateY(-10px) rotate(-3deg); 
+    transform: translateX(-800px) translateY(-10px) rotate(-3deg); 
 }
 
 .sleeve-texture {
@@ -879,6 +884,10 @@ input:checked+.slider:before {
         margin: 0 auto;
         /* Pull controls up into the empty visual space left by scale() */
         margin-bottom: -100px; 
+    }
+
+    .turntable-hero.playing {
+        transform: rotateX(45deg) rotateZ(0deg) translateX(0) !important;
     }
 
     .turntable-hero.playing .record-sleeve {
