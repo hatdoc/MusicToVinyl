@@ -837,8 +837,16 @@ input:checked+.slider:before {
 
 /* --- MOBILE RESPONSIVENESS --- */
 @media (max-width: 768px) {
+    body {
+        height: auto !important;
+        min-height: 100vh;
+        overflow-y: auto !important;
+        overflow-x: hidden;
+    }
+
     .app-container {
         flex-direction: column;
+        height: auto;
     }
 
     .ad-rail.left {
@@ -850,33 +858,42 @@ input:checked+.slider:before {
         border-left: none;
         border-top: 1px solid #333;
         flex: none;
-        height: 500px;
+        height: auto !important;
+        min-height: 500px;
     }
 
     .main-content {
-        justify-content: flex-start;
-        padding-top: 10px;
+        display: block; /* Disable vertical flex centering */
+        overflow-y: visible;
+        padding-top: 20px;
+        padding-bottom: 30px;
+        height: auto;
+        width: 100%;
     }
 
     .turntable-wrapper {
         width: 100%;
-        height: 350px;
-        transform: scale(0.60);
+        height: 380px; 
+        transform: scale(0.65);
         transform-origin: top center;
-        margin-bottom: -50px;
+        margin: 0 auto;
+        /* Pull controls up into the empty visual space left by scale() */
+        margin-bottom: -100px; 
     }
 
     .turntable-hero.playing .record-sleeve {
-        transform: translateX(-100px) translateY(120px) rotate(-10deg) scale(0.9) !important;
+        transform: translateX(-50px) translateY(120px) rotate(-10deg) scale(0.85) !important;
     }
 
     .controls {
+        display: flex;
         flex-direction: column;
         width: 90%;
         max-width: 100%;
         gap: 15px;
         margin: 0 auto;
-        margin-bottom: 30px;
+        position: relative;
+        z-index: 10;
     }
 
     .mixer-board {
