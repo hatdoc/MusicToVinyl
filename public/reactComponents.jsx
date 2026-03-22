@@ -109,25 +109,52 @@ function AuthGate() {
 
 // --- LP Storage Component (History) ---
 function VirtualCrate() {
-    const [items, setItems] = useState([
-        { id: 1, title: 'Miles Davis - So What', youtube_id: 'zqNTltOGh5c' },
-        { id: 2, title: 'Lofi Hip Hop Radio', youtube_id: 'jfKfPfyJRdk' }
-    ]);
-
+    const [items, setItems] = useState([]); // Start empty
     const [isPro, setIsPro] = useState(window.appState ? window.appState.isLoggedIn : false);
+
+    // Fetch history from Supabase if logged in
+    useEffect(() => {
+        const fetchHistory = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const { data, error } = await supabase
+                    .from('crate_items')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('added_at', { ascending: false })
+                    .limit(10);
+                
+                if (!error && data) {
+                    setItems(data.map(d => ({ id: d.id, title: d.video_title, youtube_id: d.youtube_id })));
+                }
+            }
+        };
+        if (isPro) fetchHistory();
+    }, [isPro]);
 
     useEffect(() => {
         const handleAuth = () => setIsPro(true);
         window.addEventListener('authSuccess', handleAuth);
         
         // Listen for new tracks loaded in the player to add to history automatically
-        const handleTrackLoaded = (e) => {
+        const handleTrackLoaded = async (e) => {
+            if (!isPro) return; // "If they are using free feature, it should not save anything"
+            
             const newTrack = { id: Date.now(), title: e.detail.title, youtube_id: e.detail.id };
             setItems(prev => {
-                // Prevent duplicates at the top
-                if (prev.length > 0 && prev[0].youtube_id === newTrack.youtube_id) return prev;
-                return [newTrack, ...prev];
+                const updated = [newTrack, ...prev.filter(t => t.youtube_id !== newTrack.youtube_id)];
+                return updated.slice(0, 10); // Keep only 10
             });
+            
+            // Save exactly 10 URLs remotely for PRO members
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                await supabase.from('crate_items').insert([{
+                    user_id: user.id,
+                    youtube_id: newTrack.youtube_id,
+                    video_title: newTrack.title
+                }]);
+            }
         };
         
         const handleCrateAdd = async (e) => {
@@ -136,31 +163,21 @@ function VirtualCrate() {
                 return;
             }
             
-            // ----------------------------------------------------
-            // LIVE SUPABASE DATABASE INSERT (Intent Logging)
-            // ----------------------------------------------------
+            // Intent Logging (Affiliate click)
             try {
-                // Log the intent to the database
-                const { error } = await supabase
-                    .from('intent_logs')
-                    .insert([{ 
-                        youtube_id: e.detail.id,
-                        genre: 'Vinyl Conversion',
-                        geo_location: navigator.language || 'Unknown', 
-                        vinyl_compatibility_score: Math.floor(Math.random() * 20) + 80, // Generates a fake robust score
-                        clicked_affiliate: true
-                    }]);
-                
-                if (error) {
-                    console.error("Failed to sync with Supabase: ", error.message);
-                } else {
-                    console.log("Vinyl intent successfully written to Supabase.");
-                }
+                const { data: { user } } = await supabase.auth.getUser();
+                await supabase.from('intent_logs').insert([{ 
+                    user_id: user ? user.id : null,
+                    youtube_id: e.detail.id,
+                    genre: 'Vinyl Conversion',
+                    geo_location: navigator.language || 'Unknown', 
+                    vinyl_compatibility_score: Math.floor(Math.random() * 20) + 80,
+                    clicked_affiliate: true
+                }]);
+                console.log("Vinyl intent successfully written to Supabase.");
             } catch (err) {
                 console.error("Supabase API error: ", err);
             }
-            
-            // Render post-conversion Ad popup
             alert("Added to Crate & Logged Intent! \n[AdSense Zone: Post-Conversion Record Store Receipt Ad]\n\nCheck your Supabase Table Editor!");
         };
         
