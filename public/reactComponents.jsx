@@ -13,6 +13,7 @@ function AuthGate() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [authError, setAuthError] = useState(null);
 
     useEffect(() => {
         const handleAuthRequest = () => setIsVisible(true);
@@ -23,24 +24,23 @@ function AuthGate() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setAuthError(null);
         
         if (isLoginMode) {
             const { error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) {
-                alert("Login Error: " + error.message);
+                setAuthError("Login Error: " + error.message);
                 setLoading(false);
                 return;
             }
-            alert("Welcome back to PRO!");
             finalizeLogin();
         } else {
             const { error } = await supabase.auth.signUp({ email, password });
             if (error) {
-                alert("Sign Up Error: " + error.message);
+                setAuthError("Sign Up Error: " + error.message);
                 setLoading(false);
                 return;
             }
-            alert("Account created! Verify your email to complete setup (or enjoy immediate demo access).");
             finalizeLogin();
         }
     };
@@ -68,6 +68,12 @@ function AuthGate() {
                     <h2 style={{color: '#C5A059', fontFamily: 'var(--font-heading)', margin: '0 0 10px 0'}}>{isLoginMode ? 'Welcome Back' : 'Unlock PRO'}</h2>
                     <p style={{color: '#d4c5b0', fontSize: '0.85rem', margin: '0 0 15px 0'}}>Elevate your digital vinyl experience.</p>
                 </div>
+                
+                {authError && (
+                    <div style={{background: 'rgba(200, 50, 50, 0.1)', border: '1px dashed rgba(200, 50, 50, 0.4)', color: '#ff8888', padding: '10px 15px', borderRadius: '4px', marginBottom: '20px', fontSize: '0.85rem', textShadow: '0 1px 2px rgba(0,0,0,0.8)'}}>
+                        {authError}
+                    </div>
+                )}
 
                 {!isLoginMode && (
                     <div style={{background: 'rgba(0,0,0,0.3)', padding: '15px', borderRadius: '4px', border: '1px dashed #444', marginBottom: '20px', fontSize: '0.85rem', color: '#e0e0e0', textAlign: 'left', lineHeight: '1.4'}}>
