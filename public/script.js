@@ -288,22 +288,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Handle Pro Mode Toggle
-    proModeCheckbox.addEventListener('change', (e) => {
-        if (e.target.checked && !state.isLoggedIn) {
-            e.target.checked = false; // Revert visually
-            window.dispatchEvent(new Event('requestAuth')); // Trigger React Modal
-        } else if (e.target.checked) {
-            statusMessage.textContent = "[PRO] Premium Features Active!";
-        } else {
-            statusMessage.textContent = "Standard Fidelity Restored.";
-        }
-    });
-
     // Listen for Auth Success from React
     window.addEventListener('authSuccess', () => {
         state.isLoggedIn = true;
-        proModeCheckbox.checked = true;
         statusMessage.textContent = "Welcome PRO User. Premium Features Unlocked.";
     });
 

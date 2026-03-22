@@ -212,7 +212,17 @@ function VirtualCrate() {
 
     return (
         <div style={{padding: '20px', color: '#e0e0e0', height: '100%', borderLeft: '1px solid #333', background: '#0a0a0a', display: 'flex', flexDirection: 'column'}}>
-            <h3 style={{color: '#C5A059', borderBottom: '1px solid #333', paddingBottom: '10px', fontFamily: 'var(--font-heading)'}}>LP Storage</h3>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333', paddingBottom: '10px'}}>
+                <h3 style={{color: '#C5A059', margin: 0, fontFamily: 'var(--font-heading)'}}>LP Storage</h3>
+                {isPro ? (
+                    <button onClick={async () => {
+                        await supabase.auth.signOut();
+                        window.location.reload();
+                    }} style={{background: 'transparent', border: '1px solid #444', color: '#888', padding: '4px 10px', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer'}}>Log Out</button>
+                ) : (
+                    <button onClick={() => window.dispatchEvent(new Event('requestAuth'))} style={{background: 'transparent', border: '1px solid #C5A059', color: '#C5A059', padding: '4px 10px', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer'}}>Log In</button>
+                )}
+            </div>
             <p style={{fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '1px'}}>Listening History</p>
             
             {/* Sidebar AdSense placeholder */}
@@ -241,11 +251,6 @@ function VirtualCrate() {
                     </div>
                 ))}
             </div>
-            {!isPro && (
-                <button onClick={() => window.dispatchEvent(new Event('requestAuth'))} style={{marginTop: '10px', padding: '12px', background: 'transparent', border: '1px solid #C5A059', color: '#C5A059', cursor: 'pointer', fontFamily: 'var(--font-ui)', textTransform: 'uppercase', letterSpacing: '2px'}}>
-                    Sign Up for PRO Analytics
-                </button>
-            )}
         </div>
     );
 }
