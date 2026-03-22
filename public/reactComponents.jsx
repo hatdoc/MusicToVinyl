@@ -139,7 +139,10 @@ function VirtualCrate() {
     // Explicitly check Supabase auth upon React mounting to prevent Babel compile-delay race conditions
     useEffect(() => {
         supabase.auth.getSession().then(({data: { session }}) => {
-            if (session) setIsPro(true);
+            if (session) {
+                setIsPro(true);
+                window.dispatchEvent(new Event('authSuccess')); // Forces script.js to physically restore tactile knobs
+            }
         });
     }, []);
 
