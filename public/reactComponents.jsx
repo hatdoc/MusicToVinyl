@@ -85,7 +85,7 @@ function AuthGate() {
                         onChange={e => setPassword(e.target.value)}
                         placeholder="Password" 
                         required 
-                        minLength="6"
+                        minLength={!isLoginMode ? 6 : undefined}
                         style={{padding: '12px', background: 'rgba(0,0,0,0.5)', border: '1px solid #C5A059', color: '#fff', borderRadius: '4px'}}
                     />
                     <button type="submit" disabled={loading} style={{padding: '12px', background: 'linear-gradient(145deg, #C5A059, #8c6e33)', color: '#000', cursor: loading ? 'wait' : 'pointer', border: '1px solid #000', fontWeight: 'bold', borderRadius: '4px'}}>
