@@ -107,7 +107,7 @@ function AuthGate() {
     );
 }
 
-// --- Virtual Crate Component ---
+// --- LP Storage Component (History) ---
 function VirtualCrate() {
     const [items, setItems] = useState([
         { id: 1, title: 'Miles Davis - So What', youtube_id: 'zqNTltOGh5c' },
@@ -120,24 +120,31 @@ function VirtualCrate() {
         const handleAuth = () => setIsPro(true);
         window.addEventListener('authSuccess', handleAuth);
         
+        // Listen for new tracks loaded in the player to add to history automatically
+        const handleTrackLoaded = (e) => {
+            const newTrack = { id: Date.now(), title: e.detail.title, youtube_id: e.detail.id };
+            setItems(prev => {
+                // Prevent duplicates at the top
+                if (prev.length > 0 && prev[0].youtube_id === newTrack.youtube_id) return prev;
+                return [newTrack, ...prev];
+            });
+        };
+        
         const handleCrateAdd = async (e) => {
             if (!isPro) {
                 window.dispatchEvent(new Event('requestAuth'));
                 return;
             }
             
-            const newTrack = { id: Date.now(), title: e.detail.title, youtube_id: e.detail.id };
-            setItems(prev => [newTrack, ...prev]);
-            
             // ----------------------------------------------------
-            // LIVE SUPABASE DATABASE INSERT
+            // LIVE SUPABASE DATABASE INSERT (Intent Logging)
             // ----------------------------------------------------
             try {
                 // Log the intent to the database
                 const { error } = await supabase
                     .from('intent_logs')
                     .insert([{ 
-                        youtube_id: newTrack.youtube_id,
+                        youtube_id: e.detail.id,
                         genre: 'Vinyl Conversion',
                         geo_location: navigator.language || 'Unknown', 
                         vinyl_compatibility_score: Math.floor(Math.random() * 20) + 80, // Generates a fake robust score
@@ -154,20 +161,27 @@ function VirtualCrate() {
             }
             
             // Render post-conversion Ad popup
-            alert("Added to Crate! \n[AdSense Zone: Post-Conversion Record Store Receipt Ad]\n\nCheck your Supabase Table Editor!");
+            alert("Added to Crate & Logged Intent! \n[AdSense Zone: Post-Conversion Record Store Receipt Ad]\n\nCheck your Supabase Table Editor!");
         };
         
+        window.addEventListener('trackLoaded', handleTrackLoaded);
         window.addEventListener('addToCrate', handleCrateAdd);
+        
         return () => {
              window.removeEventListener('authSuccess', handleAuth);
              window.removeEventListener('addToCrate', handleCrateAdd);
+             window.removeEventListener('trackLoaded', handleTrackLoaded);
         };
     }, [isPro]);
 
+    const playHistoryTrack = (track) => {
+        window.dispatchEvent(new CustomEvent('playHistoryTrack', { detail: track }));
+    };
+
     return (
         <div style={{padding: '20px', color: '#e0e0e0', height: '100%', borderLeft: '1px solid #333', background: '#0a0a0a', display: 'flex', flexDirection: 'column'}}>
-            <h3 style={{color: '#C5A059', borderBottom: '1px solid #333', paddingBottom: '10px', fontFamily: 'var(--font-heading)'}}>Virtual Crate</h3>
-            <p style={{fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '1px'}}>High Intent Tracker</p>
+            <h3 style={{color: '#C5A059', borderBottom: '1px solid #333', paddingBottom: '10px', fontFamily: 'var(--font-heading)'}}>LP Storage</h3>
+            <p style={{fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '1px'}}>Listening History</p>
             
             {/* Sidebar AdSense placeholder */}
             <div style={{margin: '15px 0', padding: '30px', background: '#111', textAlign: 'center', border: '1px dashed #444', fontSize: '0.8rem', color: '#666'}}>
@@ -176,15 +190,29 @@ function VirtualCrate() {
             
             <div style={{flex: 1, overflowY: 'auto'}}>
                 {items.map(item => (
-                    <div key={item.id} style={{padding: '12px 0', borderBottom: '1px solid #1a1a1a'}}>
-                        <div style={{fontSize: '0.9rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{item.title}</div>
-                        <div style={{fontSize: '0.7rem', color: '#666', marginTop: '4px'}}>ID: {item.youtube_id}</div>
+                    <div 
+                        key={item.id} 
+                        onClick={() => playHistoryTrack(item)}
+                        style={{padding: '12px 0', borderBottom: '1px solid #1a1a1a', display: 'flex', gap: '10px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s'}}
+                        onMouseEnter={(e) => e.currentTarget.style.background = '#1a1a1a'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                        title="Click to play this LP"
+                    >
+                        <img 
+                            src={`https://img.youtube.com/vi/${item.youtube_id}/default.jpg`} 
+                            alt="Cover" 
+                            style={{width: '60px', height: '45px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #333'}}
+                        />
+                        <div style={{flex: 1, overflow: 'hidden'}}>
+                            <div style={{fontSize: '0.85rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: '#e0e0e0'}}>{item.title}</div>
+                            <div style={{fontSize: '0.65rem', color: '#666', marginTop: '4px'}}>ID: {item.youtube_id}</div>
+                        </div>
                     </div>
                 ))}
             </div>
             {!isPro && (
                 <button onClick={() => window.dispatchEvent(new Event('requestAuth'))} style={{marginTop: '10px', padding: '12px', background: 'transparent', border: '1px solid #C5A059', color: '#C5A059', cursor: 'pointer', fontFamily: 'var(--font-ui)', textTransform: 'uppercase', letterSpacing: '2px'}}>
-                    Login to Build Crate
+                    Sign Up for PRO Analytics
                 </button>
             )}
         </div>
