@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     let searchTimeout;
-    trackUrlInput.addEventListener('input', (e) => {
+    youtubeUrlInput.addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
         const val = e.target.value.trim();
         if (!val || val.includes('youtube.com') || val.includes('youtu.be')) {

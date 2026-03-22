@@ -112,8 +112,9 @@
             </section>
 
             <section class="converter-interface">
-                <div class="input-group">
-                    <input type="text" id="youtubeUrl" placeholder="Paste YouTube URL here...">
+                <div class="input-group" style="position: relative;">
+                    <input type="text" id="youtubeUrl" placeholder="Search track name or paste YouTube URL..." autocomplete="off">
+                    <div id="react-search-autocomplete" style="position: absolute; top: calc(100% + 5px); left: 0; width: 100%; z-index: 1000;"></div>
                     <div class="button-group">
                         <button id="convertBtn">Play on Vinyl</button>
                         <button id="pauseBtn" class="secondary hidden">Pause</button>

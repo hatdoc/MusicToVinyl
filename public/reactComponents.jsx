@@ -390,7 +390,7 @@ function SearchAutocomplete() {
                     onMouseEnter={e => e.currentTarget.style.background = '#2a2a2a'}
                     onMouseLeave={e => e.currentTarget.style.background = '#1a1a1a'}
                     onClick={() => {
-                        const input = document.getElementById('trackUrl');
+                        const input = document.getElementById('youtubeUrl');
                         input.value = `https://youtube.com/watch?v=${r.id}`;
                         setResults([]);
                         document.getElementById('convertBtn').click();
