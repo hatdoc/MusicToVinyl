@@ -4,7 +4,7 @@
 -- 1. Users Table
 -- Stores user data for the acquisition asset.
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     email VARCHAR(255) UNIQUE NOT NULL,
     tier VARCHAR(20) DEFAULT 'free', -- 'free' or 'pro'
     signup_ip VARCHAR(45),
@@ -15,7 +15,7 @@ CREATE TABLE users (
 -- 2. Crate Items (Want List)
 CREATE TABLE crate_items (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     youtube_id VARCHAR(50) NOT NULL,
     video_title VARCHAR(255),
     added_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -25,7 +25,7 @@ CREATE TABLE crate_items (
 -- Tracks what users are converting to physical intent
 CREATE TABLE intent_logs (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE SET NULL, -- Nullable for anon
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL, -- Nullable for anon
     youtube_id VARCHAR(50) NOT NULL,
     genre VARCHAR(100),
     geo_location VARCHAR(100), -- E.g. 'London, UK'
@@ -76,3 +76,26 @@ ON crate_items FOR ALL
 TO authenticated
 USING (true)
 WITH CHECK (true);
+
+-- ----------------------------------------------------
+-- AUTOMATED AUTH TRIGGER
+-- ----------------------------------------------------
+-- Automatically sync new signups into public.users
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger 
+LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO public.users (id, email)
+  VALUES (new.id, new.email);
+  RETURN new;
+END;
+$$;
+
+-- Trigger the function every time a user is created
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
