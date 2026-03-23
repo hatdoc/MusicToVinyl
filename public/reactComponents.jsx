@@ -134,6 +134,8 @@ function AuthGate() {
 function VirtualCrate() {
     const [isVisible, setIsVisible] = useState(false);
     const [items, setItems] = useState([]);
+    const [queue, setQueue] = useState([]);
+    const [view, setView] = useState('history'); // 'history' or 'queue'
     const [isPro, setIsPro] = useState(false);
 
     // Explicitly check Supabase auth upon React mounting to prevent Babel compile-delay race conditions
@@ -176,7 +178,12 @@ function VirtualCrate() {
 
     useEffect(() => {
         const handleAuth = () => setIsPro(true);
+        const handleQueueUpdate = () => {
+            setQueue([...window.appState.queue]);
+        };
+
         window.addEventListener('authSuccess', handleAuth);
+        window.addEventListener('queueUpdated', handleQueueUpdate);
         
         // Listen for new tracks loaded in the player to add to history automatically
         const handleTrackLoaded = async (e) => {
@@ -243,6 +250,7 @@ function VirtualCrate() {
         window.addEventListener('addToCrate', handleCrateAdd);
         return () => {
              window.removeEventListener('authSuccess', handleAuth);
+             window.removeEventListener('queueUpdated', handleQueueUpdate);
              window.removeEventListener('addToCrate', handleCrateAdd);
              window.removeEventListener('trackLoaded', handleTrackLoaded);
         };
@@ -255,6 +263,12 @@ function VirtualCrate() {
     const queueHistoryTrack = (track, e) => {
         e.stopPropagation();
         window.dispatchEvent(new CustomEvent('addToQueue', { detail: { id: track.youtube_id, title: track.title } }));
+    };
+
+    const removeFromQueue = (index, e) => {
+        e.stopPropagation();
+        window.appState.queue.splice(index, 1);
+        window.dispatchEvent(new Event('queueUpdated'));
     };
 
     return (
@@ -270,41 +284,79 @@ function VirtualCrate() {
                     <button onClick={() => window.dispatchEvent(new Event('requestAuth'))} style={{background: 'transparent', border: '1px solid #C5A059', color: '#C5A059', padding: '4px 10px', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer'}}>Log In</button>
                 )}
             </div>
-            <p style={{fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '1px'}}>Listening History</p>
+            
+            <div style={{display: 'flex', gap: '10px', margin: '15px 0'}}>
+                <button 
+                    onClick={() => setView('history')}
+                    style={{flex: 1, padding: '5px', fontSize: '0.65rem', background: view === 'history' ? '#C5A059' : '#222', color: view === 'history' ? '#000' : '#888', border: 'none', borderRadius: '4px', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 'bold'}}
+                >
+                    History
+                </button>
+                <button 
+                    onClick={() => setView('queue')}
+                    style={{flex: 1, padding: '5px', fontSize: '0.65rem', background: view === 'queue' ? '#C5A059' : '#222', color: view === 'queue' ? '#000' : '#888', border: 'none', borderRadius: '4px', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 'bold'}}
+                >
+                    Reserved ({queue.length})
+                </button>
+            </div>
             
             {/* Sidebar AdSense placeholder */}
-            <div style={{margin: '15px 0', padding: '30px', background: '#111', textAlign: 'center', border: '1px dashed #444', fontSize: '0.8rem', color: '#666'}}>
-                AdSense Zone (Square)
+            <div style={{margin: '10px 0', padding: '20px', background: '#111', textAlign: 'center', border: '1px dashed #444', fontSize: '0.7rem', color: '#666'}}>
+                AdSense Zone
             </div>
             
             <div style={{flex: 1, overflowY: 'auto'}}>
-                {items.map(item => (
-                    <div 
-                        key={item.id} 
-                        onClick={() => playHistoryTrack(item)}
-                        style={{padding: '10px 0', borderBottom: '1px solid #1a1a1a', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s', position: 'relative'}}
-                        onMouseEnter={(e) => e.currentTarget.style.background = '#1a1a1a'}
-                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                        title="Click to play this Vinyl"
-                    >
-                        <img 
-                            src={`https://img.youtube.com/vi/${item.youtube_id}/mqdefault.jpg`} 
-                            alt="Cover" 
-                            style={{width: '90px', height: '65px', minWidth: '90px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #333'}}
-                        />
-                        <div style={{flex: 1, overflow: 'hidden'}}>
-                            <div style={{fontSize: '0.9rem', lineHeight: '1.4', color: '#e0e0e0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>{item.title}</div>
-                            {isPro && (
-                                <button 
-                                    onClick={(e) => queueHistoryTrack(item, e)}
-                                    style={{marginTop: '5px', padding: '2px 8px', fontSize: '0.6rem', background: 'rgba(197, 160, 89, 0.2)', border: '1px solid #C5A059', color: '#C5A059', borderRadius: '3px', cursor: 'pointer'}}
-                                >
-                                    Reserve
-                                </button>
-                            )}
+                {view === 'history' ? (
+                    items.map(item => (
+                        <div 
+                            key={item.id} 
+                            onClick={() => playHistoryTrack(item)}
+                            style={{padding: '10px 0', borderBottom: '1px solid #1a1a1a', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s', position: 'relative'}}
+                            onMouseEnter={(e) => e.currentTarget.style.background = '#1a1a1a'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                            title="Click to play this Vinyl"
+                        >
+                            <img 
+                                src={`https://img.youtube.com/vi/${item.youtube_id}/mqdefault.jpg`} 
+                                alt="Cover" 
+                                style={{width: '80px', height: '55px', minWidth: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #333'}}
+                            />
+                            <div style={{flex: 1, overflow: 'hidden'}}>
+                                <div style={{fontSize: '0.85rem', lineHeight: '1.3', color: '#e0e0e0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>{item.title}</div>
+                                {isPro && (
+                                    <button 
+                                        onClick={(e) => queueHistoryTrack(item, e)}
+                                        style={{marginTop: '5px', padding: '2px 8px', fontSize: '0.6rem', background: 'rgba(197, 160, 89, 0.1)', border: '1px solid rgba(197, 160, 89, 0.4)', color: '#C5A059', borderRadius: '3px', cursor: 'pointer'}}
+                                    >
+                                        Reserve
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    queue.length === 0 ? (
+                        <div style={{textAlign: 'center', padding: '40px 20px', color: '#555', fontSize: '0.8rem'}}>No tracks reserved yet.</div>
+                    ) : (
+                        queue.map((item, index) => (
+                            <div 
+                                key={index}
+                                style={{padding: '10px 0', borderBottom: '1px solid #1a1a1a', display: 'flex', gap: '12px', alignItems: 'center'}}
+                            >
+                                <div style={{width: '20px', fontSize: '0.7rem', color: '#C5A059', fontWeight: 'bold'}}>{index + 1}</div>
+                                <div style={{flex: 1, overflow: 'hidden'}}>
+                                    <div style={{fontSize: '0.85rem', lineHeight: '1.3', color: '#e0e0e0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{item.title}</div>
+                                    <button 
+                                        onClick={(e) => removeFromQueue(index, e)}
+                                        style={{marginTop: '5px', padding: '2px 8px', fontSize: '0.6rem', background: 'rgba(200, 50, 50, 0.1)', border: '1px solid rgba(200, 50, 50, 0.3)', color: '#ff8888', borderRadius: '3px', cursor: 'pointer'}}
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    )
+                )}
             </div>
         </div>
     );
@@ -427,10 +479,14 @@ crateRoot.render(<VirtualCrate />);
 // --- Full-Screen Search Modal Component ---
 function SearchModal() {
     const [results, setResults] = useState([]);
+    const [isQueueAction, setIsQueueAction] = useState(false);
     const [isPro, setIsPro] = useState(false);
 
     useEffect(() => {
-        const handleSearch = (e) => setResults(e.detail);
+        const handleSearch = (e) => {
+            setResults(e.detail);
+            setIsQueueAction(e.isQueueAction || false);
+        };
         window.addEventListener('openSearchModal', handleSearch);
         
         supabase.auth.getSession().then(({data: { session }}) => {
@@ -456,7 +512,7 @@ function SearchModal() {
     };
 
     const queueTrack = (r, e) => {
-        e.stopPropagation();
+        if (e) e.stopPropagation();
         window.dispatchEvent(new CustomEvent('addToQueue', { detail: { id: r.id, title: r.title } }));
         setResults([]);
     };
@@ -465,7 +521,7 @@ function SearchModal() {
         <div className="modal">
             <div className="modal-content wooden-frame" style={{width: '600px', maxWidth: '90%', padding: '0', overflow: 'hidden'}}>
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px', background: '#0a0a0a', borderBottom: '1px solid #333'}}>
-                    <h2 style={{margin: 0, color: '#C5A059', fontFamily: "'Playfair Display', serif"}}>Select Archival Pressing</h2>
+                    <h2 style={{margin: 0, color: '#C5A059', fontFamily: "'Playfair Display', serif"}}>{isQueueAction ? 'Queue Archive' : 'Select Archival Pressing'}</h2>
                     <button className="btn" style={{padding: '5px 15px', width: 'auto'}} onClick={() => {
                         setResults([]);
                         document.getElementById('statusMessage').textContent = "Waiting for record...";
@@ -478,19 +534,26 @@ function SearchModal() {
                             style={{display: 'flex', gap: '15px', padding: '15px', borderBottom: '1px solid #222', cursor: 'pointer', transition: 'background 0.2s', alignItems: 'center'}}
                             onMouseEnter={e => e.currentTarget.style.background = '#1a1a1a'}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                            onClick={() => playTrack(r)}
+                            onClick={() => isQueueAction ? queueTrack(r) : playTrack(r)}
                         >
                             <img src={r.thumbnail} style={{width: '90px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #000'}} />
                             <div style={{flex: 1, overflow: 'hidden', textAlign: 'left'}}>
                                 <div style={{color: '#e0e0e0', fontSize: '1rem', lineHeight: '1.2', marginBottom: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} title={r.title}>{r.title}</div>
                                 <div style={{color: '#888', fontSize: '0.8rem'}}>{r.author}</div>
                             </div>
-                            {isPro && (
+                            {isPro && !isQueueAction && (
                                 <button 
                                     onClick={(e) => queueTrack(r, e)}
                                     style={{padding: '8px 15px', background: 'rgba(197, 160, 89, 0.2)', border: '1px solid #C5A059', color: '#C5A059', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem'}}
                                 >
                                     Reserve
+                                </button>
+                            )}
+                            {isQueueAction && (
+                                <button 
+                                    style={{padding: '8px 15px', background: '#C5A059', border: '1px solid #000', color: '#000', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 'bold'}}
+                                >
+                                    Queue ↵
                                 </button>
                             )}
                         </div>

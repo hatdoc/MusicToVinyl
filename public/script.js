@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tonearm = document.getElementById('tonearm');
     const albumArt = document.getElementById('albumArt');
     const convertBtn = document.getElementById('convertBtn');
+    const reserveBtn = document.getElementById('reserveBtn');
     const pauseBtn = document.getElementById('pauseBtn');
     const youtubeUrlInput = document.getElementById('youtubeUrl');
     const statusMessage = document.getElementById('statusMessage');
@@ -96,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (state.isLoggedIn && state.queue.length > 0) {
                 const nextTrack = state.queue.shift();
                 statusMessage.textContent = `Playing next from queue: ${nextTrack.title}`;
+                window.dispatchEvent(new Event('queueUpdated')); // Refresh React UI
                 handleConversion(nextTrack.id);
             } else {
                 stopPlayback();
@@ -116,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         state.queue.push(e.detail);
         statusMessage.textContent = `Queued: ${e.detail.title} (${state.queue.length} in crate)`;
+        window.dispatchEvent(new Event('queueUpdated')); // Notify React components
     });
 
     // --- Audio Engine ---
@@ -303,6 +306,14 @@ document.addEventListener('DOMContentLoaded', () => {
         handleConversion();
     });
 
+    reserveBtn.addEventListener('click', () => {
+        if (!state.isLoggedIn) {
+            window.dispatchEvent(new Event('requestAuth'));
+            return;
+        }
+        handleConversion(null, true); // true means add to queue
+    });
+
     pauseBtn.addEventListener('click', () => {
         if (state.isPlaying && !state.isPaused) {
             pausePlayback();
@@ -375,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
         startPlayback(track.youtube_id);
     });
 
-    async function handleConversion(explicitId = null) {
+    async function handleConversion(explicitId = null, addToQueue = false) {
         let videoId = explicitId;
         const url = youtubeUrlInput.value.trim();
         
@@ -396,7 +407,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     if (data && data.length > 0) {
                         statusMessage.textContent = "Select a pressing from the archives.";
-                        window.dispatchEvent(new CustomEvent('openSearchModal', { detail: data }));
+                        // Inform search modal if we are queueing
+                        window.dispatchEvent(new CustomEvent('openSearchModal', { 
+                            detail: data,
+                            isQueueAction: addToQueue 
+                        }));
                     } else {
                         statusMessage.textContent = "Error: No recordings found.";
                     }
@@ -406,6 +421,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 return;
             }
+        }
+
+        if (addToQueue) {
+            // Manual URL/ID queueing
+            try {
+                const res = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`);
+                const data = await res.json();
+                window.dispatchEvent(new CustomEvent('addToQueue', { 
+                    detail: { id: videoId, title: data.title || videoId }
+                }));
+                youtubeUrlInput.value = ""; // Clear input on success
+            } catch (e) {
+                window.dispatchEvent(new CustomEvent('addToQueue', { detail: { id: videoId, title: videoId } }));
+            }
+            return;
         }
 
         if (!state.playerReady) {
@@ -444,6 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Immediately Swing the Arm & Spin the Vinyl
         document.querySelector('.turntable-hero').classList.add('playing');
         vinylRecord.classList.add('spinning');
+        reserveBtn.classList.remove('hidden'); // Show reserve button once playing
 
         initAudioEngine();
         playNeedleDrop(); // Trigger the initial "buzzing" and needle drop thump
@@ -495,6 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         vinylRecord.classList.remove('spinning');
         document.querySelector('.turntable-hero').classList.remove('playing');
+        reserveBtn.classList.add('hidden'); // Hide reserve when stopped
 
         stopVinylNoise();
         if (state.youtubePlayer && state.youtubePlayer.stopVideo) {
