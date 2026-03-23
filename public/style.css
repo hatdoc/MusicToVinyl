@@ -627,7 +627,8 @@ body {
     margin-bottom: 2vh;
 }
 
-#convertBtn, #reserveBtn {
+#convertBtn,
+#reserveBtn {
     flex: 1;
     max-width: 220px;
     min-width: 140px;
@@ -658,10 +659,11 @@ body {
 
 .piano-key-deck.left-edge {
     position: absolute;
-    bottom: -50px; /* Pull up slightly */
-    left: 20px;
+    /* Never move this position*/
+    bottom: -60px;
+    left: 25px;
     transform-style: preserve-3d;
-    transform: translateZ(90px); /* Lift even higher */
+    transform: translateZ(90px);
     z-index: 5000;
     pointer-events: auto !important;
 }
@@ -675,7 +677,8 @@ body {
 }
 
 .lever-key {
-    width: 36px; /* Slightly wider hitbox */
+    width: 36px;
+    /* Slightly wider hitbox */
     height: 58px;
     background: linear-gradient(to bottom, #2a2a2a, #0a0a0a);
     border: 1px solid #1a1a1a;
