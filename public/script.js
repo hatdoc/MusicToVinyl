@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const albumArt = document.getElementById('albumArt');
     const convertBtn = document.getElementById('convertBtn');
     const reserveBtn = document.getElementById('reserveBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
     const plinthPlayBtn = document.getElementById('plinthPlayBtn');
     const plinthSkipBtn = document.getElementById('plinthSkipBtn');
     const youtubeUrlInput = document.getElementById('youtubeUrl');
@@ -33,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const sleeveTitle = document.getElementById('sleeveTitle');
     const sleeveArtist = document.getElementById('sleeveArtist');
     const affiliateBtn = document.getElementById('affiliateBtn');
-    const proModeCheckbox = document.getElementById('proModeCheckbox');
 
     // --- Theme Logic ---
     themeDots.forEach(dot => {
@@ -51,17 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Initialize with Walnut (Espresso Brown) as requested
-    document.body.classList.add('theme-walnut');
-
-    // --- Initialization ---
-    // Load YouTube IFrame API
-    if (!window.YT) {
-        const tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    }
+    // --- YouTube API Integration ---
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
     window.onYouTubeIframeAPIReady = () => {
         state.youtubePlayer = new YT.Player('youtube-player-placeholder', {
@@ -70,33 +62,24 @@ document.addEventListener('DOMContentLoaded', () => {
             playerVars: {
                 'autoplay': 0,
                 'controls': 0,
-                'disablekb': 1,
-                'fs': 0,
+                'showinfo': 0,
                 'rel': 0,
-                'showinfo': 0
+                'modestbranding': 1
             },
             events: {
                 'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange,
-                'onError': onPlayerError
+                'onStateChange': onPlayerStateChange
             }
         });
     };
 
     function onPlayerReady(event) {
         state.playerReady = true;
-        console.log("YouTube Player Ready");
-    }
-
-    function onPlayerError(event) {
-        console.error("YouTube Player Error:", event.data);
-        statusMessage.textContent = "Error: This video may not be available for embedding.";
-        stopPlayback();
     }
 
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.ENDED) {
-            if (state.isLoggedIn && state.queue.length > 0) {
+            if (state.queue.length > 0) {
                 skipToNext();
             } else {
                 stopPlayback();
@@ -131,280 +114,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         state.queue.push(e.detail);
-        statusMessage.textContent = `Queued: ${e.detail.title} (${state.queue.length} in crate)`;
-        window.dispatchEvent(new Event('queueUpdated')); // Notify React components
+        window.dispatchEvent(new Event('queueUpdated')); // Inform React
+        statusMessage.textContent = `Reserved: ${e.detail.title}`;
     });
 
-    // --- Audio Engine ---
-    function initAudioEngine() {
-        if (state.audioContext) return;
-
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        state.audioContext = new AudioContext();
-
-        // 1. Vinyl Noise Buffer (Enhanced Crackles, Hiss, and Rumble)
-        const bufferSize = state.audioContext.sampleRate * 6; // 6 seconds for less repetition
-        const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
-        const data = buffer.getChannelData(0);
-
-        for (let i = 0; i < bufferSize; i++) {
-            const white = (Math.random() * 2 - 1) * 0.025;
-            let crackle = 0;
-            if (Math.random() < 0.0015) { crackle = (Math.random() * 2 - 1) * 0.45; }
-            let pop = 0;
-            if (Math.random() < 0.0002) { pop = (Math.random() * 2 - 1) * 0.6; }
-            const rumble = Math.sin(i * 0.002) * 0.008;
-
-            data[i] = white + crackle + pop + rumble;
-        }
-        state.nodes.noiseBuffer = buffer;
-
-        // 2. Global Noise Filter (Controlled by Warmth)
-        const noiseFilter = state.audioContext.createBiquadFilter();
-        noiseFilter.type = 'lowpass';
-        noiseFilter.frequency.value = 10000 - (state.knobs.warmth * 8000); // 10k down to 2k
-        
-        state.nodes.noiseFilter = noiseFilter;
-
-        // 3. Continuous Low Frequency Hum
-        const humOsc = state.audioContext.createOscillator();
-        humOsc.type = 'sine'; // Smooth subtle sine
-        humOsc.frequency.value = 50; // Deep 50Hz hum
-        
-        const humGain = state.audioContext.createGain();
-        humGain.gain.value = state.knobs.warmth * 0.08; // Softer max amplitude
-
-        humOsc.connect(humGain);
-        
-        state.nodes.humOsc = humOsc;
-        state.nodes.humGain = humGain;
-        
-        // Always route directly to destination for clean LP sound
-        noiseFilter.connect(state.audioContext.destination);
-        humGain.connect(state.audioContext.destination);
-        
-        humOsc.start();
-    }
-
-    function playNeedleDrop() {
-        if (!state.audioContext) initAudioEngine();
-        const ctx = state.audioContext;
-
-        // A short burst of loud crackle and a thump
-        const thump = ctx.createOscillator();
-        thump.type = 'sine';
-        thump.frequency.setValueAtTime(150, ctx.currentTime);
-        thump.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.1);
-
-        const thumpGain = ctx.createGain();
-        thumpGain.gain.setValueAtTime(0.6, ctx.currentTime);
-        thumpGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.2);
-
-        thump.connect(thumpGain);
-        thumpGain.connect(ctx.destination);
-        thump.start();
-        thump.stop(ctx.currentTime + 0.2);
-
-        // Buzzing/Crackle burst - Extended to 2 seconds - Louder initial burst
-        const burstSource = ctx.createBufferSource();
-        burstSource.buffer = state.nodes.noiseBuffer;
-        const burstGain = ctx.createGain();
-
-        burstGain.gain.setValueAtTime(0.4, ctx.currentTime);
-        burstGain.gain.exponentialRampToValueAtTime(0.1, ctx.currentTime + 2.0);
-
-        burstSource.connect(burstGain);
-        burstGain.connect(state.nodes.noiseFilter); // Route through warmth filter
-        burstSource.start();
-    }
-
-    function playVinylNoise() {
-        if (!state.audioContext) initAudioEngine();
-        if (state.audioContext.state === 'suspended') {
-            state.audioContext.resume();
-        }
-
-        // Loop the character noise
-        const source = state.audioContext.createBufferSource();
-        source.buffer = state.nodes.noiseBuffer;
-        source.loop = true;
-
-        const gainNode = state.audioContext.createGain();
-        gainNode.gain.value = Math.pow(state.knobs.crackle, 0.5) * 0.8;
-
-        source.connect(gainNode);
-        gainNode.connect(state.nodes.noiseFilter); // Route through warmth filter
-
-        state.nodes.noiseSource = source;
-        state.nodes.noiseGain = gainNode;
-        source.start();
-
-        // Ensure hum is active
-        if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(state.knobs.warmth, 0.5) * 0.25;
-    }
-
-    function stopVinylNoise() {
-        if (state.nodes.noiseSource) {
-            try { state.nodes.noiseSource.stop(); } catch (e) { }
-            state.nodes.noiseSource = null;
-        }
-        if (state.nodes.humGain) {
-            state.nodes.humGain.gain.value = 0;
-        }
-    }
-
-    // --- UI Interactions ---
-
-    // --- Knobs Logic ---
-    const knobs = document.querySelectorAll('.knob');
-    knobs.forEach(knob => {
-        const controlType = knob.getAttribute('data-control');
-        const indicator = knob.querySelector('.indicator');
-
-        let isDragging = false;
-        let startY = 0;
-        let startVal = state.knobs[controlType];
-
-        function updateVisual(val) {
-            // -135deg to +135deg coverage
-            const degrees = -135 + (val * 270);
-            indicator.style.transform = `translateX(-50%) rotate(${degrees}deg)`;
-        }
-        updateVisual(startVal);
-
-        function setAudioParameter(type, val) {
-            state.knobs[type] = val;
-            if (type === 'volume' && state.youtubePlayer && state.youtubePlayer.setVolume) {
-                state.youtubePlayer.setVolume(val * 100);
-            }
-            if (type === 'warmth') {
-                if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 0.5) * 0.25; 
-                if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 9600); // Drastically muffle high-end to 400Hz
-            }
-            if (type === 'crackle' && state.nodes.noiseGain) {
-                state.nodes.noiseGain.gain.value = Math.pow(val, 0.5) * 0.8; 
-            }
-            
-        }
-
-        knob.addEventListener('mousedown', (e) => {
-            if (!state.isLoggedIn) {
-                statusMessage.textContent = "Sign up for PRO to customize the tactile audio mix.";
-                window.dispatchEvent(new Event('requestAuth')); // Trigger Login Modal
-                return;
-            }
-            isDragging = true;
-            startY = e.clientY;
-            startVal = state.knobs[controlType];
-            document.body.style.cursor = 'ns-resize';
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            const deltaY = startY - e.clientY;
-            let newVal = startVal + (deltaY / 150); // 150px drag for full sweep
-            newVal = Math.max(0, Math.min(1, newVal));
-            updateVisual(newVal);
-            setAudioParameter(controlType, newVal);
-        });
-
-        window.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                document.body.style.cursor = 'default';
-            }
-        });
-    });
-
-    // Handle Plinth Play Lever
-    plinthPlayBtn.addEventListener('click', () => {
-        if (state.isPlaying && !state.isPaused) {
-            pausePlayback();
-        } else if (state.isPaused) {
-            resumePlayback();
-        } else if (!state.isPlaying) {
-            handleConversion();
-        }
-    });
-
-    // Handle Skip from Plinth
-    plinthSkipBtn.addEventListener('click', () => {
-        if (!state.isLoggedIn) {
-            window.dispatchEvent(new Event('requestAuth'));
-            return;
-        }
-        skipToNext();
-    });
-
-    convertBtn.addEventListener('click', () => {
-        handleConversion();
-    });
-
-    reserveBtn.addEventListener('click', () => {
-        if (!state.isLoggedIn) {
-            window.dispatchEvent(new Event('requestAuth'));
-            return;
-        }
-        handleConversion(null, true); // true means add to queue
-    });
-
-    pauseBtn.addEventListener('click', () => {
-        if (state.isPlaying && !state.isPaused) {
-            pausePlayback();
-        } else if (state.isPaused) {
-            resumePlayback();
-        }
-    });
-
-    // Listen for Auth Success from React
-    window.addEventListener('authSuccess', () => {
-        state.isLoggedIn = true;
-        statusMessage.textContent = "Welcome PRO User. Premium Features Unlocked.";
-    });
-
-    affiliateBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        // Log intent (In React Crate or natively)
-        window.dispatchEvent(new CustomEvent('addToCrate', { 
-            detail: { title: sleeveTitle.textContent, id: state.youtubeVideoId }
-        }));
-        // Show shopping modal
-        window.dispatchEvent(new CustomEvent('showShoppingModal', {
-            detail: { title: sleeveTitle.textContent, id: state.youtubeVideoId }
-        }));
-    });
-
-    async function fetchVideoMetadata(videoId) {
-        try {
-            const res = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`);
-            const data = await res.json();
-            if (data.title) {
-                sleeveTitle.textContent = data.title;
-                sleeveArtist.textContent = data.author_name || 'Unknown Artist';
-
-                affiliateBtn.href = "#";
-                affiliateBtn.classList.remove('hidden');
-
-                // Inform React Vinyl Crate that a track successfully loaded
-                window.dispatchEvent(new CustomEvent('trackLoaded', {
-                    detail: { title: data.title, id: videoId }
-                }));
-            }
-        } catch (e) {
-            sleeveTitle.textContent = "Analog Track";
-            sleeveArtist.textContent = "Unknown Artist";
-            affiliateBtn.classList.remove('hidden');
-        }
-    }
-
-    // --- Vinyl Crate Click-to-Play ---
+    // Custom Event from React History
     window.addEventListener('playHistoryTrack', (e) => {
         const track = e.detail;
-
-        // Update input visually
-        youtubeUrlInput.value = `https://youtube.com/watch?v=${track.youtube_id}`;
-        statusMessage.textContent = "Pulling vinyl from the crate...";
-
+        
+        // Anti-piracy gate: Limit free plays
         if (state.plays >= 1 && !state.isLoggedIn) {
             window.dispatchEvent(new Event('requestAuth')); // Trigger React Modal
             return;
@@ -458,22 +176,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (addToQueue) {
-            // Manual URL/ID queueing
+            // Fetch title if we only have URL
+            statusMessage.textContent = "Adding to archives...";
             try {
-                const res = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`);
+                const res = await fetch('/api/search?q=' + videoId);
                 const data = await res.json();
-                window.dispatchEvent(new CustomEvent('addToQueue', { 
-                    detail: { id: videoId, title: data.title || videoId }
-                }));
-                youtubeUrlInput.value = ""; // Clear input on success
-            } catch (e) {
-                window.dispatchEvent(new CustomEvent('addToQueue', { detail: { id: videoId, title: videoId } }));
+                const title = data[0]?.title || "Unknown Track";
+                state.queue.push({ id: videoId, title });
+                window.dispatchEvent(new Event('queueUpdated'));
+                statusMessage.textContent = `Reserved: ${title}`;
+            } catch(e) {
+                state.queue.push({ id: videoId, title: "Direct URL Import" });
+                window.dispatchEvent(new Event('queueUpdated'));
             }
             return;
         }
 
-        if (!state.playerReady) {
-            statusMessage.textContent = "Player is initializing... please wait.";
+        // Anti-piracy gate: Limit free plays
+        if (state.plays >= 1 && !state.isLoggedIn) {
+            window.dispatchEvent(new Event('requestAuth')); // Trigger React Modal
             return;
         }
 
@@ -483,40 +204,215 @@ document.addEventListener('DOMContentLoaded', () => {
             albumArt.src = thumbnail;
             albumArt.classList.remove('hidden');
         }
-        statusMessage.textContent = "Dropping the needle...";
 
         startPlayback(videoId);
     }
 
     function extractVideoId(url) {
-        if (url.length === 11 && !url.includes(' ') && !url.includes('/')) return url;
-        const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
-        return match ? match[1] : null;
+        return (match && match[2].length == 11) ? match[2] : null;
     }
 
-    function startPlayback(videoId) {
-        stopPlayback(); // Clean up existing
+    // --- Audio Engine (Web Audio API) ---
+    function initAudio() {
+        if (state.audioContext) return;
+        state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Crackle & Surface Noise
+        const crackleBuffer = createNoiseBuffer(2);
+        const crackleSource = state.audioContext.createBufferSource();
+        crackleSource.buffer = crackleBuffer;
+        crackleSource.loop = true;
+        
+        const crackleGain = state.audioContext.createGain();
+        crackleGain.gain.value = state.knobs.crackle * 0.15;
+        
+        crackleSource.connect(crackleGain);
+        crackleGain.connect(state.audioContext.destination);
+        crackleSource.start();
+        
+        state.nodes.crackleGain = crackleGain;
+        
+        // Warmth (Tube Saturation Simulation via Low Pass & Gain)
+        const filter = state.audioContext.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 20000 - (state.knobs.warmth * 15000);
+        
+        state.nodes.filter = filter;
+    }
 
+    function createNoiseBuffer(duration) {
+        const bufferSize = state.audioContext.sampleRate * duration;
+        const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
+        const output = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            output[i] = Math.random() * 2 - 1;
+        }
+        return buffer;
+    }
+
+    function playVinylNoise() {
+        initAudio();
+        
+        // Low Frequency Hum
+        const humOsc = state.audioContext.createOscillator();
+        humOsc.type = 'sine';
+        humOsc.frequency.value = 60; // 60Hz hum
+        
+        const humGain = state.audioContext.createGain();
+        humGain.gain.value = 0.02;
+        
+        humOsc.connect(humGain);
+        humGain.connect(state.audioContext.destination);
+        humOsc.start();
+        
+        // Initial Needle Drop "Thump"
+        const thump = state.audioContext.createOscillator();
+        thump.type = 'sine';
+        thump.frequency.setValueAtTime(100, state.audioContext.currentTime);
+        thump.frequency.exponentialRampToValueAtTime(0.01, state.audioContext.currentTime + 0.5);
+        
+        const thumpGain = state.audioContext.createGain();
+        thumpGain.gain.setValueAtTime(0.5, state.audioContext.currentTime);
+        thumpGain.gain.exponentialRampToValueAtTime(0.01, state.audioContext.currentTime + 0.5);
+        
+        thump.connect(thumpGain);
+        thumpGain.connect(state.audioContext.destination);
+        thump.start();
+        thump.stop(state.audioContext.currentTime + 0.5);
+
+        // Burst of static
+        const burstSource = state.audioContext.createBufferSource();
+        burstSource.buffer = createNoiseBuffer(0.2);
+        const burstGain = state.audioContext.createGain();
+        burstGain.gain.value = 0.3;
+        burstSource.connect(burstGain);
+        burstGain.connect(state.audioContext.destination);
+        burstSource.start();
+    }
+
+    // --- Knob & Tactile UI Logic ---
+    const knobs = document.querySelectorAll('.knob');
+    knobs.forEach(knob => {
+        let isDragging = false;
+        let startY = 0;
+        let startVal = 0;
+        const controlType = knob.getAttribute('data-control');
+
+        function updateVisual(val) {
+            const rotation = (val * 270) - 135; // -135 to +135 degrees
+            knob.style.transform = `translateZ(6px) rotate(${rotation}deg)`;
+        }
+
+        // Initialize positions
+        updateVisual(state.knobs[controlType]);
+
+        knob.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startY = e.clientY;
+            startVal = state.knobs[controlType];
+            document.body.style.cursor = 'ns-resize';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const deltaY = startY - e.clientY;
+            let newVal = startVal + (deltaY / 150); // 150px drag for full sweep
+            newVal = Math.max(0, Math.min(1, newVal));
+            
+            state.knobs[controlType] = newVal;
+            updateVisual(newVal);
+            applyAudioParams(controlType, newVal);
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                document.body.style.cursor = 'default';
+            }
+        });
+    });
+
+    // Handle Plinth Play Lever
+    plinthPlayBtn.addEventListener('click', () => {
+        if (state.isPlaying && !state.isPaused) {
+            pausePlayback();
+        } else if (state.isPaused) {
+            resumePlayback();
+        } else if (!state.isPlaying) {
+            handleConversion();
+        }
+    });
+
+    // Handle Skip from Plinth
+    plinthSkipBtn.addEventListener('click', () => {
+        if (!state.isLoggedIn) {
+            window.dispatchEvent(new Event('requestAuth'));
+            return;
+        }
+        skipToNext();
+    });
+
+    convertBtn.addEventListener('click', () => {
+        handleConversion();
+    });
+
+    reserveBtn.addEventListener('click', () => {
+        if (!state.isLoggedIn) {
+            window.dispatchEvent(new Event('requestAuth'));
+            return;
+        }
+        handleConversion(null, true);
+    });
+
+    function applyAudioParams(type, val) {
+        if (!state.audioContext) return;
+        
+        if (type === 'volume' && state.youtubePlayer) {
+            state.youtubePlayer.setVolume(val * 100);
+        } else if (type === 'crackle' && state.nodes.crackleGain) {
+            state.nodes.crackleGain.gain.setTargetAtTime(val * 0.15, state.audioContext.currentTime, 0.1);
+        } else if (type === 'warmth' && state.nodes.filter) {
+            state.nodes.filter.frequency.setTargetAtTime(20000 - (val * 15000), state.audioContext.currentTime, 0.1);
+        }
+    }
+
+    // --- Playback State Machine ---
+    function startPlayback(videoId) {
         state.isPlaying = true;
         state.isPaused = false;
         state.plays++;
 
-        // Fetch Metadata & Slide Out Sleeve
-        fetchVideoMetadata(videoId);
-
-        // Immediately Swing the Arm & Spin the Vinyl
-        document.querySelector('.turntable-hero').classList.add('playing');
+        // Visuals
         vinylRecord.classList.add('spinning');
+        turntableHero.classList.add('playing');
+        tonearm.style.transform = "translate(-10px, -40px) translateZ(40px) rotateZ(35deg)";
         
-        // UI Updates
-        reserveBtn.classList.remove('hidden'); 
+        plinthSkipBtn.classList.remove('hidden');
         plinthPlayBtn.textContent = "⏸";
         plinthPlayBtn.classList.add('active');
-        plinthSkipBtn.classList.remove('hidden');
 
-        initAudioEngine();
-        playNeedleDrop(); // Trigger the initial "buzzing" and needle drop thump
+        statusMessage.textContent = "Dropping needle...";
+
+        // Metadata handling
+        try {
+            fetch('/api/search?q=' + videoId)
+                .then(res => res.json())
+                .then(data => {
+                    const info = data[0];
+                    if (info) {
+                        sleeveTitle.textContent = info.title;
+                        sleeveArtist.textContent = info.author;
+                        affiliateBtn.classList.remove('hidden');
+                        affiliateBtn.onclick = () => {
+                            window.dispatchEvent(new CustomEvent('showShoppingModal', { detail: { title: info.title, id: videoId } }));
+                        };
+                        // Inform React
+                        window.dispatchEvent(new CustomEvent('trackLoaded', { detail: { id: videoId, title: info.title } }));
+                    }
+                });
+        } catch(e) {}
 
         // Wait 2 seconds for the needle drop and buzzing to complete before starting the music
         setTimeout(() => {
@@ -530,8 +426,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 2000);
 
-        pauseBtn.classList.remove('hidden');
-        pauseBtn.textContent = "Pause";
         convertBtn.textContent = "Change Record";
     }
 
@@ -543,7 +437,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.audioContext) {
             state.audioContext.suspend();
         }
-        pauseBtn.textContent = "Resume";
         plinthPlayBtn.textContent = "⏵";
         plinthPlayBtn.classList.remove('active');
         statusMessage.textContent = "Playback Paused.";
@@ -557,7 +450,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.audioContext) {
             state.audioContext.resume();
         }
-        pauseBtn.textContent = "Pause";
         plinthPlayBtn.textContent = "⏸";
         plinthPlayBtn.classList.add('active');
         statusMessage.textContent = "Resuming warmth...";
@@ -566,23 +458,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopPlayback() {
         state.isPlaying = false;
         state.isPaused = false;
-
+        if (state.youtubePlayer) {
+            state.youtubePlayer.stopVideo();
+        }
         vinylRecord.classList.remove('spinning');
-        document.querySelector('.turntable-hero').classList.remove('playing');
-        
-        // UI Reset
-        reserveBtn.classList.add('hidden'); 
+        turntableHero.classList.remove('playing');
+        tonearm.style.transform = "translate(-10px, -40px) translateZ(40px) rotateZ(-12deg)";
         plinthPlayBtn.textContent = "⏵";
         plinthPlayBtn.classList.remove('active');
         plinthSkipBtn.classList.add('hidden');
-
-        stopVinylNoise();
-        if (state.youtubePlayer && state.youtubePlayer.stopVideo) {
-            state.youtubePlayer.stopVideo();
-        }
-
-        pauseBtn.classList.add('hidden');
-        pauseBtn.textContent = "Pause";
-        convertBtn.textContent = "Play on Vinyl";
+        statusMessage.textContent = "Waiting for record...";
     }
 });
