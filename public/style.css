@@ -7,6 +7,59 @@
 }
 
 /* -------------------------------------------------------------------------- */
+/* MAIN NAVIGATION                                                            */
+/* -------------------------------------------------------------------------- */
+.main-nav {
+    width: 100%;
+    background: rgba(10, 10, 10, 0.95);
+    border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.nav-brand {
+    font-family: var(--font-heading);
+    font-style: italic;
+    color: var(--copper);
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: #e8decc;
+    text-decoration: none;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--copper);
+}
+
+/* -------------------------------------------------------------------------- */
 /* EDITORIAL / PUBLISHER CONTENT (SEO & AdSense Compliance)                   */
 /* -------------------------------------------------------------------------- */
 .editorial-content {
@@ -573,13 +626,12 @@ body {
 
 .piano-key-deck.left-edge {
     position: absolute;
-    bottom: -60px;
-    left: 25px;
+    bottom: -40px;
+    left: 15px;
     transform-style: preserve-3d;
-    transform: translateZ(80px);
-    /* Lift even higher to clear any potential 3D overlaps */
-    z-index: 100;
-    /* Ensure it stays above everything, including the converter interface */
+    transform: translateZ(80px); /* Lift even higher to clear any potential 3D overlaps */
+    z-index: 2000; /* Ensure it stays above everything, including the converter interface */
+    pointer-events: auto !important;
 }
 
 .lever-group {
@@ -706,7 +758,7 @@ input[type="text"]:focus {
     border-bottom-color: var(--accent-color);
 }
 
-button:not(.lever-key):not(.knob):not(.theme-dot) {
+button:not(.lever-key):not(.knob):not(.theme-dot):not(.close-modal) {
     padding: 12px 30px;
     background: linear-gradient(145deg, #333, #111);
     color: var(--accent-color);
@@ -721,12 +773,12 @@ button:not(.lever-key):not(.knob):not(.theme-dot) {
     transition: all 0.2s;
 }
 
-button:not(.lever-key):hover {
+button:not(.lever-key):not(.knob):not(.theme-dot):not(.close-modal):hover {
     transform: translateY(-1px);
     box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.9);
 }
 
-button:not(.lever-key):active {
+button:not(.lever-key):not(.knob):not(.theme-dot):not(.close-modal):active {
     transform: translateY(1px);
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
 }
@@ -744,19 +796,26 @@ button:not(.lever-key):active {
 }
 
 .sticky-footer {
-    height: 10vh;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    opacity: 0.3;
+    opacity: 0.8;
+    background: #050505;
+    border-top: 1px solid #222;
 }
 
 .footer-links a {
-    color: var(--accent-color);
+    color: #888;
     text-decoration: none;
     margin: 0 15px;
     font-size: 0.8rem;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--copper);
 }
 
 /* --- REACT COMPONENT & NEW UI STYLES --- */
@@ -911,6 +970,7 @@ input:checked+.slider:before {
     padding: 10px;
     border-top: 1px solid #333;
     border-bottom: 1px solid #333;
+    margin-bottom: 15px;
 }
 
 .ad-placeholder {
@@ -920,7 +980,7 @@ input:checked+.slider:before {
     letter-spacing: 2px;
 }
 
-/* React Containers */
+/* React Containers & Modals */
 .react-crate-container {
     width: 300px;
     background: #0a0a0a;
@@ -945,68 +1005,36 @@ input:checked+.slider:before {
 .modal-content.wooden-frame {
     background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
     padding: 40px;
-    border: 2px solid var(--accent-color);
+    border: 2px solid var(--copper);
     border-radius: 8px;
     text-align: center;
-    max-width: 400px;
+    max-width: 500px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
+    position: relative;
 }
 
-/* -------------------------------------------------------------------------- */
-/* EDITORIAL / PUBLISHER CONTENT (SEO & AdSense Compliance)                   */
-/* -------------------------------------------------------------------------- */
-.editorial-content {
-    background: #0f0f0f;
-    border-top: 1px solid rgba(197, 160, 89, 0.3);
-    padding: 80px 20px;
-    font-family: 'Georgia', serif;
-}
-
-.editorial-container {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.editorial-header {
-    text-align: center;
-    margin-bottom: 50px;
-    border-bottom: 1px solid #333;
-    padding-bottom: 30px;
-}
-
-.editorial-header h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.2rem;
-    color: var(--accent-light);
-    font-weight: normal;
-    letter-spacing: 1.5px;
-    margin-bottom: 15px;
-}
-
-.editorial-header p {
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
     color: #888;
-    font-size: 1.1rem;
-    font-style: italic;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
 }
 
-.prose-block {
-    margin-bottom: 50px;
+.close-modal:hover {
+    color: var(--copper);
 }
 
-.prose-block h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    color: var(--accent-color);
-    margin-bottom: 20px;
-    font-weight: normal;
+.guide-steps p {
+    margin-bottom: 15px;
+    font-family: var(--font-ui);
+    font-size: 0.95rem;
 }
 
-.prose-block p {
-    font-size: 1.05rem;
-    line-height: 1.8;
-    color: #a4a4a4;
-    margin-bottom: 25px;
-    text-align: justify;
+.guide-steps strong {
+    color: #e8decc;
 }
 
 /* --- MOBILE RESPONSIVENESS --- */
@@ -1021,6 +1049,11 @@ input:checked+.slider:before {
     .app-container {
         flex-direction: column;
         height: auto;
+    }
+
+    .nav-container {
+        flex-direction: column;
+        gap: 10px;
     }
 
     .ad-rail.left {

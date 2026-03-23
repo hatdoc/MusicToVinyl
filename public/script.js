@@ -32,6 +32,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const sleeveTitle = document.getElementById('sleeveTitle');
     const sleeveArtist = document.getElementById('sleeveArtist');
     const affiliateBtn = document.getElementById('affiliateBtn');
+    
+    // User Guide Modal Elements
+    const userGuideModal = document.getElementById('userGuideModal');
+    const openUserGuideNav = document.getElementById('openUserGuideNav');
+    const closeUserGuide = document.getElementById('closeUserGuide');
+    const gotItBtn = document.getElementById('gotItBtn');
+
+    // --- User Guide Logic ---
+    function showUserGuide() {
+        if(userGuideModal) userGuideModal.classList.remove('hidden');
+    }
+
+    function hideUserGuide() {
+        if(userGuideModal) userGuideModal.classList.add('hidden');
+    }
+
+    if(openUserGuideNav) {
+        openUserGuideNav.addEventListener('click', (e) => {
+            e.preventDefault();
+            showUserGuide();
+        });
+    }
+
+    if(closeUserGuide) closeUserGuide.addEventListener('click', hideUserGuide);
+    if(gotItBtn) gotItBtn.addEventListener('click', hideUserGuide);
+
+    // Show on first visit
+    if (!localStorage.getItem('vinyl_guide_seen')) {
+        showUserGuide();
+        localStorage.setItem('vinyl_guide_seen', 'true');
+    }
 
     // --- Theme Logic ---
     themeDots.forEach(dot => {

@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-8983851567536524">
-    <title>Vinyl Analog - Authentic Sound</title>
+    <title>Vinyl Analog - Authentic Sound & Digital Turnable Simulator</title>
+    <meta name="description" content="Experience the authentic warmth of vinyl records with our digital turntable simulator. Convert digital tracks into rich, analog audio experiences.">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCY60G7C8B"></script>
@@ -15,7 +16,7 @@
 
       gtag('config', 'G-JCY60G7C8B');
     </script>
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=8">
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8983851567536524"
      crossorigin="anonymous"></script>
@@ -28,6 +29,18 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 </head>
 <body class="theme-walnut">
+
+    <!-- Main Navigation Bar -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">Vinyl Analog</a>
+            <ul class="nav-links">
+                <li><a href="#" id="openUserGuideNav">How to Use</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="journal.html">Journal</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <div class="app-container">
         <!-- Sidebar Ad Rail -->
@@ -140,6 +153,31 @@
                 <div id="youtube-player-placeholder"></div>
             </section>
 
+            <!-- EDITORIAL CONTENT SECTION (For SEO & AdSense Quality Guidelines) -->
+            <section class="editorial-content">
+                <div class="editorial-container">
+                    <div class="editorial-header">
+                        <h2>The Magic of Analog Sound in a Digital Age</h2>
+                        <p>Rediscovering the depth, imperfection, and tactile joy of vinyl records.</p>
+                    </div>
+                    
+                    <div class="prose-block">
+                        <h3>Why Simulate Vinyl?</h3>
+                        <p>In an era of hyper-compressed, perfectly sterile digital audio streams, our ears often crave the organic imperfections of the past. The physical medium of vinyl records isn't just a nostalgic artifact; it introduces a unique sonic signature. The subtle low-frequency rumble of the turntable motor, the soft hiss of the stylus riding in the groove, and the occasional warm crackle of dust particles all contribute to an active, engaging listening experience. Vinyl Analog bridges the gap, allowing you to wrap your favorite digital tracks in this comforting auditory blanket.</p>
+                    </div>
+
+                    <div class="prose-block">
+                        <h3>How Our Audio Engine Works</h3>
+                        <p>This simulator goes beyond simply overlaying a static sound file. When you drop the needle, our Web Audio API engine spins up a dynamic, generative noise floor. We synthesize authentic 50Hz hum to replicate grounding characteristics of vintage amplifiers. The "Warmth" control actively drives a Biquad low-pass filter, rolling off harsh digital high-end frequencies to mimic the natural compression of tube saturation and physical pressing limitations. Meanwhile, the "Crackle" dial dictates the frequency and amplitude of generative pops and hisses, calculated in real-time to ensure no two playback sessions are ever exactly the same.</p>
+                    </div>
+
+                    <div class="prose-block">
+                        <h3>Building Your Digital Collection</h3>
+                        <p>By connecting to vast digital libraries via URL or search, you can immediately preview how any modern track would sound pressed to wax. If you fall in love with a particular sound, our platform helps you search global vinyl archives to find real, physical pressings of the music you're listening to, encouraging the ongoing support of physical media formats and independent record stores.</p>
+                    </div>
+                </div>
+            </section>
+
             <!-- React Auth Gate Root -->
             <div id="react-auth-root"></div>
             <div id="react-shopping-root"></div>
@@ -151,7 +189,23 @@
         <aside class="react-crate-container" id="react-crate-root"></aside>
     </div>
 
-
+    <!-- User Guide Modal -->
+    <div id="userGuideModal" class="modal hidden">
+        <div class="modal-content wooden-frame user-guide-content">
+            <span class="close-modal" id="closeUserGuide">&times;</span>
+            <h2 class="handwritten" style="color: var(--accent-color); font-size: 2rem; margin-bottom: 20px;">How to Play Records</h2>
+            
+            <div class="guide-steps" style="text-align: left; color: #a4a4a4; line-height: 1.6;">
+                <p><strong>1. Find Music:</strong> Paste a YouTube URL or type a song name into the search bar.</p>
+                <p><strong>2. Draw Record:</strong> Click the button to pull the track from the digital ether and press it onto our virtual vinyl.</p>
+                <p><strong>3. Drop the Needle:</strong> Use the <strong>⏵ (Play)</strong> lever on the bottom-left edge of the turntable to start the motor and drop the stylus.</p>
+                <p><strong>4. Dial in the Mix:</strong> Adjust the <strong>Volume</strong>, <strong>Warmth</strong> (muffles harsh digital highs), and <strong>Crackle</strong> (adds surface noise) using the dials on the right.</p>
+                <p><strong>5. Reserve:</strong> Create an account to save tracks to your personal crate for later listening.</p>
+            </div>
+            
+            <button id="gotItBtn" class="btn" style="margin-top: 25px;">Let's Spin</button>
+        </div>
+    </div>
 
     <footer class="sticky-footer">
         <div class="ad-banner">
@@ -159,6 +213,7 @@
             <div class="ad-placeholder">Wide Skyscraper Ad</div>
         </div>
         <div class="footer-links">
+            <a href="about.html">About Us</a>
             <a href="terms.html">Terms</a>
             <a href="privacy.html">Privacy</a>
             <a href="/admin" class="hidden">Admin Dashboard</a>
@@ -166,7 +221,7 @@
     </footer>
 
     <!-- App Logic -->
-    <script src="script.js?v=10"></script>
+    <script src="script.js?v=11"></script>
     
     <!-- React Components -->
     <script type="text/babel" src="reactComponents.jsx?v=6"></script>
