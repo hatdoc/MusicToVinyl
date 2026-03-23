@@ -551,21 +551,11 @@ body {
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Controls Panel */
+/* Integrated Controls Panel (Right Side) */
 .panel-controls {
     position: absolute;
-    bottom: 30px;
-    right: 30px;
-    display: flex;
-    gap: 15px;
-    transform-style: preserve-3d;
-    transform: translateZ(5px);
-}
-
-.playback-deck {
-    position: absolute;
-    bottom: 30px;
-    left: 30px;
+    bottom: 25px;
+    right: 20px;
     display: flex;
     align-items: flex-end;
     gap: 20px;
@@ -573,118 +563,65 @@ body {
     transform: translateZ(5px);
 }
 
-.selector-group {
+/* Piano Key Lever Actions */
+.piano-key-deck {
+    display: flex;
+    gap: 12px;
+    margin-right: 15px;
+    padding-bottom: 5px;
+}
+
+.lever-group {
     display: flex;
     flex-direction: column;
     align-items: center;
-    transform-style: preserve-3d;
+    gap: 10px;
 }
 
-.selector-group label {
-    font-size: 0.5rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--accent-color);
-    opacity: 0.6;
-    margin-top: 10px;
-}
-
-/* The fancy new mode dial */
-.mode-dial {
-    width: 60px;
-    height: 60px;
-    position: relative;
-    transform-style: preserve-3d;
-}
-
-.dial-indicators {
-    position: absolute;
-    inset: -25px;
-    pointer-events: none;
-}
-
-.dial-indicators span {
-    position: absolute;
-    font-size: 0.5rem;
-    font-weight: bold;
-    color: #444;
-    transition: color 0.3s, text-shadow 0.3s;
-}
-
-/* Position indicators around the dial */
-.ind-stop { top: 10px; left: 5px; transform: rotate(-45deg); }
-.ind-play { top: -5px; left: 50%; transform: translateX(-50%); }
-.ind-pause { top: 10px; right: 5px; transform: rotate(45deg); }
-
-/* Glowing active states */
-[data-state="stop"] .ind-stop { color: #fff; text-shadow: 0 0 5px #fff; }
-[data-state="play"] .ind-play { color: var(--copper); text-shadow: 0 0 8px var(--copper-glow); }
-[data-state="pause"] .ind-pause { color: #fff; text-shadow: 0 0 5px #fff; }
-
-.dial-knob {
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 30% 30%, #222, #000);
-    border-radius: 50%;
-    border: 1px solid #111;
-    cursor: pointer;
-    box-shadow: 
-        0px 1px 0 #1a1a1a,
-        0px 2px 0 #151515,
-        0px 3px 0 #111,
-        0px 4px 0 #0a0a0a,
-        0px 10px 15px rgba(0, 0, 0, 0.8),
-        inset 0 1px 1px rgba(255,255,255,0.05);
-    /* Textured grip edge (knurling) */
-    background-image: 
-        radial-gradient(circle at 30% 30%, #222, #000),
-        repeating-conic-gradient(from 0deg, rgba(0,0,0,0.3) 0deg 2deg, transparent 2deg 4deg);
-    background-blend-mode: multiply;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateZ(8px);
-}
-
-.dial-indicator {
-    width: 2px;
-    height: 15px;
-    background: var(--copper);
-    position: absolute;
-    top: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 1px;
-    box-shadow: 0 0 5px var(--copper-glow);
-}
-
-/* Dial rotation based on state */
-[data-state="stop"] .dial-knob { transform: translateZ(8px) rotate(-45deg); }
-[data-state="play"] .dial-knob { transform: translateZ(8px) rotate(0deg); }
-[data-state="pause"] .dial-knob { transform: translateZ(8px) rotate(45deg); }
-
-.tactile-btn {
+.lever-key {
     width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #222, #000);
+    height: 55px;
+    background: linear-gradient(to bottom, #222, #050505);
     border: 1px solid #111;
-    color: var(--accent-color);
-    font-size: 0.8rem;
+    border-radius: 3px;
     cursor: pointer;
+    position: relative;
+    transform-origin: top center;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+    box-shadow: 
+        0 4px 0 #000,
+        0 10px 15px rgba(0,0,0,0.6);
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 
-        0 3px 0 #000, 
-        0 6px 10px rgba(0,0,0,0.6),
-        inset 0 1px 1px rgba(255,255,255,0.05);
-    transition: all 0.1s;
+    color: var(--copper);
+    font-size: 1rem;
+    padding: 0;
     outline: none;
-    text-shadow: 0 0 3px var(--accent-color);
+    text-shadow: 0 0 5px var(--copper-glow);
 }
 
-.tactile-btn:active {
-    transform: translateY(2px);
-    box-shadow: 0 1px 0 #000, 0 2px 5px rgba(0,0,0,0.8);
+.lever-key:hover {
+    background: linear-gradient(to bottom, #333, #0a0a0a);
+}
+
+/* Active Lever Action (Pushed down) */
+.lever-key:active, .lever-key.active {
+    transform: rotateX(-25deg) translateY(4px);
+    box-shadow: 
+        0 1px 0 #000,
+        0 4px 8px rgba(0,0,0,0.8);
+    color: #fff;
+    text-shadow: 0 0 10px var(--accent-color);
+}
+
+.lever-group label {
+    font-size: 0.45rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent-color);
+    opacity: 0.5;
+    font-weight: bold;
 }
 
 .knob-group {
@@ -766,7 +703,7 @@ input[type="text"]:focus {
     border-bottom-color: var(--accent-color);
 }
 
-button {
+button:not(.lever-key):not(.knob):not(.theme-dot) {
     padding: 12px 30px;
     background: linear-gradient(145deg, #333, #111);
     color: var(--accent-color);
@@ -781,12 +718,12 @@ button {
     transition: all 0.2s;
 }
 
-button:hover {
+button:not(.lever-key):hover {
     transform: translateY(-1px);
     box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.9);
 }
 
-button:active {
+button:not(.lever-key):active {
     transform: translateY(1px);
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
 }

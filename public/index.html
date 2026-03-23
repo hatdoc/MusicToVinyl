@@ -63,24 +63,6 @@
                         <div class="hinge left"></div>
                         <div class="hinge right"></div>
                     </div>
-
-                    <!-- Playback Controls Deck (Left Side) -->
-                    <div class="playback-deck" id="playbackDeck">
-                        <div class="selector-group">
-                            <div class="mode-dial" id="modeDial" data-state="stop">
-                                <div class="dial-indicators">
-                                    <span class="ind-stop">OFF</span>
-                                    <span class="ind-play">PLAY</span>
-                                    <span class="ind-pause">PAUSE</span>
-                                </div>
-                                <div class="dial-knob">
-                                    <div class="dial-indicator"></div>
-                                </div>
-                            </div>
-                            <label>MOTOR</label>
-                        </div>
-                        <button id="plinthSkipBtn" class="tactile-btn hidden" title="Skip to Next Reserved">⏭</button>
-                    </div>
                     
                     <div class="turntable-platter">
                         <div class="platter-edge"></div>
@@ -112,7 +94,21 @@
                     <!-- Arm Rest -->
                     <div class="arm-rest"></div>
                     
+                    <!-- Integrated Controls Deck (Right Side) -->
                     <div class="controls panel-controls">
+                        <!-- Playback Keys (Piano Style) -->
+                        <div class="piano-key-deck">
+                            <div class="lever-group">
+                                <button id="plinthPlayBtn" class="lever-key" title="Play/Pause">⏵</button>
+                                <label>MOTOR</label>
+                            </div>
+                            <div class="lever-group">
+                                <button id="plinthSkipBtn" class="lever-key hidden" title="Skip to Next">⏭</button>
+                                <label>SKIP</label>
+                            </div>
+                        </div>
+
+                        <!-- Audio Dials -->
                         <div class="knob-group">
                             <div class="knob" data-control="volume"><div class="indicator"></div></div>
                             <label>Vol</label>

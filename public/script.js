@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const convertBtn = document.getElementById('convertBtn');
     const reserveBtn = document.getElementById('reserveBtn');
     const pauseBtn = document.getElementById('pauseBtn');
-    const modeDial = document.getElementById('modeDial');
+    const plinthPlayBtn = document.getElementById('plinthPlayBtn');
     const plinthSkipBtn = document.getElementById('plinthSkipBtn');
     const youtubeUrlInput = document.getElementById('youtubeUrl');
     const statusMessage = document.getElementById('statusMessage');
@@ -103,9 +103,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else if (event.data == YT.PlayerState.PLAYING) {
             statusMessage.textContent = "Now Playing: Analog Stream";
+            plinthPlayBtn.textContent = "⏸";
+            plinthPlayBtn.classList.add('active');
         } else if (event.data == YT.PlayerState.PAUSED) {
             vinylRecord.classList.remove('spinning');
             document.querySelector('.turntable-hero').classList.remove('playing');
+            plinthPlayBtn.textContent = "⏵";
+            plinthPlayBtn.classList.remove('active');
         }
     }
 
@@ -312,35 +316,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Handle Mode Dial selector (Stop -> Play -> Pause)
-    modeDial.addEventListener('click', () => {
-        const currentState = modeDial.getAttribute('data-state');
-        let nextState = 'stop';
-
-        if (currentState === 'stop') nextState = 'play';
-        else if (currentState === 'play') nextState = 'pause';
-        else if (currentState === 'pause') nextState = 'stop';
-
-        setPlaybackMode(nextState);
-    });
-
-    function setPlaybackMode(mode) {
-        modeDial.setAttribute('data-state', mode);
-        
-        if (mode === 'stop') {
-            stopPlayback();
-        } else if (mode === 'play') {
-            if (state.isPlaying && state.isPaused) {
-                resumePlayback();
-            } else if (!state.isPlaying) {
-                handleConversion();
-            }
-        } else if (mode === 'pause') {
-            if (state.isPlaying && !state.isPaused) {
-                pausePlayback();
-            }
+    // Handle Plinth Play Lever
+    plinthPlayBtn.addEventListener('click', () => {
+        if (state.isPlaying && !state.isPaused) {
+            pausePlayback();
+        } else if (state.isPaused) {
+            resumePlayback();
+        } else if (!state.isPlaying) {
+            handleConversion();
         }
-    }
+    });
 
     // Handle Skip from Plinth
     plinthSkipBtn.addEventListener('click', () => {
@@ -365,9 +350,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     pauseBtn.addEventListener('click', () => {
         if (state.isPlaying && !state.isPaused) {
-            setPlaybackMode('pause');
+            pausePlayback();
         } else if (state.isPaused) {
-            setPlaybackMode('play');
+            resumePlayback();
         }
     });
 
@@ -432,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
             albumArt.classList.remove('hidden');
         }
 
-        setPlaybackMode('play');
+        startPlayback(track.youtube_id);
     });
 
     async function handleConversion(explicitId = null, addToQueue = false) {
@@ -526,7 +511,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // UI Updates
         reserveBtn.classList.remove('hidden'); 
-        modeDial.setAttribute('data-state', 'play');
+        plinthPlayBtn.textContent = "⏸";
+        plinthPlayBtn.classList.add('active');
         plinthSkipBtn.classList.remove('hidden');
 
         initAudioEngine();
@@ -558,6 +544,8 @@ document.addEventListener('DOMContentLoaded', () => {
             state.audioContext.suspend();
         }
         pauseBtn.textContent = "Resume";
+        plinthPlayBtn.textContent = "⏵";
+        plinthPlayBtn.classList.remove('active');
         statusMessage.textContent = "Playback Paused.";
     }
 
@@ -570,6 +558,8 @@ document.addEventListener('DOMContentLoaded', () => {
             state.audioContext.resume();
         }
         pauseBtn.textContent = "Pause";
+        plinthPlayBtn.textContent = "⏸";
+        plinthPlayBtn.classList.add('active');
         statusMessage.textContent = "Resuming warmth...";
     }
 
@@ -582,7 +572,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // UI Reset
         reserveBtn.classList.add('hidden'); 
-        modeDial.setAttribute('data-state', 'stop');
+        plinthPlayBtn.textContent = "⏵";
+        plinthPlayBtn.classList.remove('active');
         plinthSkipBtn.classList.add('hidden');
 
         stopVinylNoise();
