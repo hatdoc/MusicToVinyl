@@ -410,7 +410,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle Plinth Play Lever
     if (plinthPlayBtn) {
-        plinthPlayBtn.addEventListener('click', () => {
+        plinthPlayBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             console.log("Play lever toggled. Current state:", { isPlaying: state.isPlaying, isPaused: state.isPaused });
             
             // Add temporary active class for tactile feedback
@@ -435,7 +436,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle Skip from Plinth
     if (plinthSkipBtn) {
-        plinthSkipBtn.addEventListener('click', () => {
+        plinthSkipBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             console.log("Skip lever toggled.");
             
             // Add temporary active class for tactile feedback
@@ -455,13 +457,16 @@ document.addEventListener('DOMContentLoaded', () => {
         handleConversion();
     });
 
-    reserveBtn.addEventListener('click', () => {
-        if (!state.isLoggedIn) {
-            window.dispatchEvent(new Event('requestAuth'));
-            return;
-        }
-        handleConversion(null, true);
-    });
+    if (reserveBtn) {
+        reserveBtn.addEventListener('click', () => {
+            if (!state.isLoggedIn) {
+                statusMessage.textContent = "Log in to reserve this to your crate.";
+                window.dispatchEvent(new Event('requestAuth'));
+                return;
+            }
+            handleConversion(null, true);
+        });
+    }
 
     function applyAudioParams(type, val) {
         if (!state.audioContext) return;
@@ -527,6 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
 
         convertBtn.textContent = "Change Record";
+        if (reserveBtn) reserveBtn.classList.remove('hidden');
     }
 
     function pausePlayback() {

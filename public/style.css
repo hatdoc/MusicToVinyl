@@ -619,22 +619,50 @@ body {
     transform: translateZ(5px);
 }
 
+.button-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 2vh;
+}
+
+#convertBtn, #reserveBtn {
+    flex: 1;
+    max-width: 220px;
+    min-width: 140px;
+}
+
+#reserveBtn {
+    background: linear-gradient(145deg, #1a1512, #0a0807);
+    border: 1px solid rgba(197, 160, 89, 0.4);
+    color: #C5A059;
+}
+
+#reserveBtn:hover {
+    background: #2a1b16;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(197, 160, 89, 0.2);
+}
+
+#reserveBtn:active {
+    transform: translateY(1px);
+}
+
 /* Piano Key Lever Actions */
 .piano-key-deck {
     display: flex;
-    gap: 12px;
+    gap: 15px;
     padding-bottom: 5px;
 }
 
 .piano-key-deck.left-edge {
     position: absolute;
-    bottom: -60px;
-    left: 25px;
+    bottom: -50px; /* Pull up slightly */
+    left: 20px;
     transform-style: preserve-3d;
-    transform: translateZ(80px);
-    /* Lift even higher to clear any potential 3D overlaps */
-    z-index: 2000;
-    /* Ensure it stays above everything, including the converter interface */
+    transform: translateZ(90px); /* Lift even higher */
+    z-index: 5000;
     pointer-events: auto !important;
 }
 
@@ -642,19 +670,20 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    pointer-events: auto !important;
 }
 
 .lever-key {
-    width: 32px;
-    height: 55px;
-    background: linear-gradient(to bottom, #222, #050505);
-    border: 1px solid #111;
-    border-radius: 3px;
+    width: 36px; /* Slightly wider hitbox */
+    height: 58px;
+    background: linear-gradient(to bottom, #2a2a2a, #0a0a0a);
+    border: 1px solid #1a1a1a;
+    border-radius: 4px;
     cursor: pointer;
     position: relative;
     transform-origin: top center;
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s, background 0.2s;
     box-shadow:
         0 4px 0 #000,
         0 10px 15px rgba(0, 0, 0, 0.6);
@@ -662,10 +691,12 @@ body {
     justify-content: center;
     align-items: center;
     color: var(--copper);
-    font-size: 1rem;
+    font-size: 1.1rem;
     padding: 0;
     outline: none;
     text-shadow: 0 0 5px var(--copper-glow);
+    pointer-events: auto !important;
+    user-select: none;
 }
 
 .lever-key:hover {
