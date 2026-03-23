@@ -219,20 +219,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.audioContext) return;
         state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
         
-        // Crackle & Surface Noise
-        const crackleBuffer = createNoiseBuffer(2);
-        const crackleSource = state.audioContext.createBufferSource();
-        crackleSource.buffer = crackleBuffer;
-        crackleSource.loop = true;
+        // Hiss & Surface Noise
+        const noiseBuffer = createNoiseBuffer(2);
+        const hissSource = state.audioContext.createBufferSource();
+        hissSource.buffer = noiseBuffer;
+        hissSource.loop = true;
         
-        const crackleGain = state.audioContext.createGain();
-        crackleGain.gain.value = state.knobs.crackle * 0.15;
+        const hissGain = state.audioContext.createGain();
+        hissGain.gain.value = 0.05 + (state.knobs.crackle * 0.1);
         
-        crackleSource.connect(crackleGain);
-        crackleGain.connect(state.audioContext.destination);
-        crackleSource.start();
+        hissSource.connect(hissGain);
+        hissGain.connect(state.audioContext.destination);
+        hissSource.start();
         
-        state.nodes.crackleGain = crackleGain;
+        state.nodes.hissGain = hissGain;
         
         // Warmth (Tube Saturation Simulation via Low Pass & Gain)
         const filter = state.audioContext.createBiquadFilter();
@@ -371,8 +371,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (type === 'volume' && state.youtubePlayer) {
             state.youtubePlayer.setVolume(val * 100);
-        } else if (type === 'crackle' && state.nodes.crackleGain) {
-            state.nodes.crackleGain.gain.setTargetAtTime(val * 0.15, state.audioContext.currentTime, 0.1);
+        } else if (type === 'crackle' && state.nodes.hissGain) {
+            state.nodes.hissGain.gain.setTargetAtTime(0.05 + (val * 0.1), state.audioContext.currentTime, 0.1);
         } else if (type === 'warmth' && state.nodes.filter) {
             state.nodes.filter.frequency.setTargetAtTime(20000 - (val * 15000), state.audioContext.currentTime, 0.1);
         }
@@ -389,7 +389,6 @@ document.addEventListener('DOMContentLoaded', () => {
         turntableHero.classList.add('playing');
         tonearm.style.transform = "translate(-10px, -40px) translateZ(40px) rotateZ(35deg)";
         
-        plinthSkipBtn.classList.remove('hidden');
         plinthPlayBtn.textContent = "⏸";
         plinthPlayBtn.classList.add('active');
 
@@ -466,7 +465,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tonearm.style.transform = "translate(-10px, -40px) translateZ(40px) rotateZ(-12deg)";
         plinthPlayBtn.textContent = "⏵";
         plinthPlayBtn.classList.remove('active');
-        plinthSkipBtn.classList.add('hidden');
         statusMessage.textContent = "Waiting for record...";
     }
 });

@@ -576,9 +576,10 @@ body {
     bottom: -40px;
     left: 15px;
     transform-style: preserve-3d;
-    transform: translateZ(80px); /* Lift even higher to clear any potential 3D overlaps */
-    z-index: 2000; /* Ensure it stays above everything, including the converter interface */
-    pointer-events: auto !important;
+    transform: translateZ(80px);
+    /* Lift even higher to clear any potential 3D overlaps */
+    z-index: 100;
+    /* Ensure it stays above everything, including the converter interface */
 }
 
 .lever-group {
