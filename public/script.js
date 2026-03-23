@@ -515,7 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // UI Updates
         reserveBtn.classList.remove('hidden'); 
-        plinthPlayBtn.textContent = "STOP";
+        plinthPlayBtn.textContent = "⏹";
         plinthPauseBtn.classList.remove('hidden');
         plinthSkipBtn.classList.remove('hidden');
 
@@ -548,7 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
             state.audioContext.suspend();
         }
         pauseBtn.textContent = "Resume";
-        plinthPauseBtn.textContent = "RESUME";
+        plinthPauseBtn.textContent = "⏵";
         statusMessage.textContent = "Playback Paused.";
     }
 
@@ -561,7 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
             state.audioContext.resume();
         }
         pauseBtn.textContent = "Pause";
-        plinthPauseBtn.textContent = "PAUSE";
+        plinthPauseBtn.textContent = "⏸";
         statusMessage.textContent = "Resuming warmth...";
     }
 
@@ -574,10 +574,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // UI Reset
         reserveBtn.classList.add('hidden'); 
-        plinthPlayBtn.textContent = "START";
+        plinthPlayBtn.textContent = "⏵";
         plinthPauseBtn.classList.add('hidden');
         plinthSkipBtn.classList.add('hidden');
-        plinthPauseBtn.textContent = "PAUSE";
+        plinthPauseBtn.textContent = "⏸";
 
         stopVinylNoise();
         if (state.youtubePlayer && state.youtubePlayer.stopVideo) {
