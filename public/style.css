@@ -572,10 +572,10 @@ body {
 
 .piano-key-deck.left-edge {
     position: absolute;
-    bottom: 10px; /* At the very bottom edge */
+    bottom: 5px; /* At the very bottom edge */
     left: 10px; /* At the very left edge */
     transform-style: preserve-3d;
-    transform: translateZ(5px);
+    transform: translateZ(50px);
     z-index: 100;
 }
 
@@ -621,15 +621,6 @@ body {
         0 4px 8px rgba(0,0,0,0.8);
     color: #fff;
     text-shadow: 0 0 10px var(--accent-color);
-}
-
-.lever-group label {
-    font-size: 0.45rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--accent-color);
-    opacity: 0.5;
-    font-weight: bold;
 }
 
 .knob-group {
