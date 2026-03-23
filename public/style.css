@@ -574,12 +574,11 @@ body {
 .piano-key-deck.left-edge {
     position: absolute;
     bottom: -40px;
-    /* At the very bottom edge */
     left: 15px;
-    /* At the very left edge */
     transform-style: preserve-3d;
-    transform: translateZ(50px);
-    z-index: 100;
+    transform: translateZ(80px); /* Lift even higher to clear any potential 3D overlaps */
+    z-index: 2000; /* Ensure it stays above everything, including the converter interface */
+    pointer-events: auto !important;
 }
 
 .lever-group {
