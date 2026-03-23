@@ -567,8 +567,15 @@ body {
 .piano-key-deck {
     display: flex;
     gap: 12px;
-    margin-right: 15px;
     padding-bottom: 5px;
+}
+
+.piano-key-deck.left-edge {
+    position: absolute;
+    bottom: 25px;
+    left: 20px;
+    transform-style: preserve-3d;
+    transform: translateZ(5px);
 }
 
 .lever-group {
