@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
         youtubePlayer: null,
         youtubeVideoId: null,
         playerReady: false,
-        knobs: { volume: 0.8, warmth: 0.5, crackle: 0.5 }
+        knobs: { volume: 0.8, warmth: 0.5, crackle: 0.5 },
+        queue: []
     };
 
     // Mount global state for React components
