@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         youtubePlayer: null,
         youtubeVideoId: null,
         playerReady: false,
-        knobs: { volume: 0.5, warmth: 0.5, crackle: 0.3 },
+        knobs: { volume: 0.5, warmth: 0.5, crackle: 0.5 },
         queue: []
     };
 
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sleeveTitle = document.getElementById('sleeveTitle');
     const sleeveArtist = document.getElementById('sleeveArtist');
     const affiliateBtn = document.getElementById('affiliateBtn');
-    
+
     // User Guide Modal Elements
     const userGuideModal = document.getElementById('userGuideModal');
     const openUserGuideNav = document.getElementById('openUserGuideNav');
@@ -41,22 +41,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- User Guide Logic ---
     function showUserGuide() {
-        if(userGuideModal) userGuideModal.classList.remove('hidden');
+        if (userGuideModal) userGuideModal.classList.remove('hidden');
     }
 
     function hideUserGuide() {
-        if(userGuideModal) userGuideModal.classList.add('hidden');
+        if (userGuideModal) userGuideModal.classList.add('hidden');
     }
 
-    if(openUserGuideNav) {
+    if (openUserGuideNav) {
         openUserGuideNav.addEventListener('click', (e) => {
             e.preventDefault();
             showUserGuide();
         });
     }
 
-    if(closeUserGuide) closeUserGuide.addEventListener('click', hideUserGuide);
-    if(gotItBtn) gotItBtn.addEventListener('click', hideUserGuide);
+    if (closeUserGuide) closeUserGuide.addEventListener('click', hideUserGuide);
+    if (gotItBtn) gotItBtn.addEventListener('click', hideUserGuide);
 
     // Show on first visit
     if (!localStorage.getItem('vinyl_guide_seen')) {
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Custom Event from React History
     window.addEventListener('playHistoryTrack', (e) => {
         const track = e.detail;
-        
+
         // Anti-piracy gate: Limit free plays
         if (state.plays >= 1 && !state.isLoggedIn) {
             window.dispatchEvent(new Event('requestAuth')); // Trigger React Modal
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function handleConversion(explicitId = null, addToQueue = false) {
         let videoId = explicitId;
         const url = youtubeUrlInput.value.trim();
-        
+
         if (!videoId) {
             if (!url) {
                 statusMessage.textContent = "Please enter a valid YouTube URL or song name.";
@@ -183,25 +183,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             videoId = extractVideoId(url);
-            
+
             if (!videoId) {
                 statusMessage.textContent = "Searching global vinyl archives...";
                 try {
                     const res = await fetch('/api/search?q=' + encodeURIComponent(url));
                     if (!res.ok) throw new Error("Search failed");
                     const data = await res.json();
-                    
+
                     if (data && data.length > 0) {
                         statusMessage.textContent = "Select a pressing from the archives.";
                         // Inform search modal if we are queueing
-                        window.dispatchEvent(new CustomEvent('openSearchModal', { 
+                        window.dispatchEvent(new CustomEvent('openSearchModal', {
                             detail: data,
-                            isQueueAction: addToQueue 
+                            isQueueAction: addToQueue
                         }));
                     } else {
                         statusMessage.textContent = "Error: No recordings found.";
                     }
-                } catch(e) {
+                } catch (e) {
                     console.error(e);
                     statusMessage.textContent = "Search Error. Try pasting a direct URL.";
                 }
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.queue.push({ id: videoId, title });
                 window.dispatchEvent(new Event('queueUpdated'));
                 statusMessage.textContent = `Reserved: ${title}`;
-            } catch(e) {
+            } catch (e) {
                 state.queue.push({ id: videoId, title: "Direct URL Import" });
                 window.dispatchEvent(new Event('queueUpdated'));
             }
@@ -276,26 +276,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const noiseFilter = state.audioContext.createBiquadFilter();
         noiseFilter.type = 'lowpass';
         noiseFilter.frequency.value = 10000 - (state.knobs.warmth * 8000); // 10k down to 2k
-        
+
         state.nodes.noiseFilter = noiseFilter;
 
         // 3. Continuous Low Frequency Hum
         const humOsc = state.audioContext.createOscillator();
         humOsc.type = 'sine'; // Smooth subtle sine
         humOsc.frequency.value = 50; // Deep 50Hz hum
-        
+
         const humGain = state.audioContext.createGain();
         humGain.gain.value = state.knobs.warmth * 0.08; // Softer max amplitude
 
         humOsc.connect(humGain);
-        
+
         state.nodes.humOsc = humOsc;
         state.nodes.humGain = humGain;
-        
+
         // Always route directly to destination for clean LP sound
         noiseFilter.connect(state.audioContext.destination);
         humGain.connect(state.audioContext.destination);
-        
+
         humOsc.start();
     }
 
@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const deltaY = startY - e.clientY;
             let newVal = startVal + (deltaY / 150); // 150px drag for full sweep
             newVal = Math.max(0, Math.min(1, newVal));
-            
+
             state.knobs[controlType] = newVal;
             updateVisual(newVal);
             applyAudioParams(controlType, newVal);
@@ -442,14 +442,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function applyAudioParams(type, val) {
         if (!state.audioContext) return;
-        
+
         if (type === 'volume' && state.youtubePlayer) {
             state.youtubePlayer.setVolume(val * 100);
         } else if (type === 'warmth') {
-            if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 0.5) * 0.08; 
+            if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 0.5) * 0.08;
             if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 9000); // Deeply muffle high-end
         } else if (type === 'crackle' && state.nodes.noiseGain) {
-            state.nodes.noiseGain.gain.value = Math.pow(val, 0.5) * 0.25; 
+            state.nodes.noiseGain.gain.value = Math.pow(val, 0.5) * 0.25;
         }
     }
 
@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
         vinylRecord.classList.add('spinning');
         turntableHero.classList.add('playing');
         tonearm.style.transform = "translate(-10px, -40px) translateZ(40px) rotateZ(35deg)";
-        
+
         plinthPlayBtn.textContent = "⏸";
         plinthPlayBtn.classList.add('active');
 
@@ -489,7 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.dispatchEvent(new CustomEvent('trackLoaded', { detail: { id: videoId, title: info.title } }));
                     }
                 });
-        } catch(e) {}
+        } catch (e) { }
 
         // Wait 2 seconds for the needle drop and buzzing to complete before starting the music
         setTimeout(() => {
