@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         youtubePlayer: null,
         youtubeVideoId: null,
         playerReady: false,
-        knobs: { volume: 0.5, warmth: 0.5, crackle: 0.65 },
+        knobs: { volume: 0.4, warmth: 0.65, crackle: 0.7 },
         queue: []
     };
 
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
         humOsc.frequency.value = 50; // Deep 50Hz hum
 
         const humGain = state.audioContext.createGain();
-        humGain.gain.value = state.knobs.warmth * 0.08; // Softer max amplitude
+        humGain.gain.value = Math.pow(state.knobs.warmth, 3) * 0.4; // Cubic curve for massive max limit
 
         humOsc.connect(humGain);
 
@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.loop = true;
 
         const gainNode = state.audioContext.createGain();
-        gainNode.gain.value = Math.pow(state.knobs.crackle, 0.5) * 0.25;
+        gainNode.gain.value = Math.pow(state.knobs.crackle, 3) * 1.0; // Cubic curve for massive max limit
 
         source.connect(gainNode);
         gainNode.connect(state.nodes.noiseFilter); // Route through warmth filter
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.start();
 
         // Ensure hum is active
-        if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(state.knobs.warmth, 0.5) * 0.08;
+        if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(state.knobs.warmth, 3) * 0.4;
     }
 
     function stopVinylNoise() {
@@ -474,10 +474,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'volume' && state.youtubePlayer) {
             state.youtubePlayer.setVolume(val * 100);
         } else if (type === 'warmth') {
-            if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 0.5) * 0.08;
+            if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 3) * 0.4;
             if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 9000); // Deeply muffle high-end
         } else if (type === 'crackle' && state.nodes.noiseGain) {
-            state.nodes.noiseGain.gain.value = Math.pow(val, 0.5) * 0.25;
+            state.nodes.noiseGain.gain.value = Math.pow(val, 3) * 1.0;
         }
     }
 
