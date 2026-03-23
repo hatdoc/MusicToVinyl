@@ -573,7 +573,7 @@ body {
 
 .piano-key-deck.left-edge {
     position: absolute;
-    bottom: -15px;
+    bottom: -50px;
     /* At the very bottom edge */
     left: 10px;
     /* At the very left edge */
