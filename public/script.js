@@ -49,6 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Initialize with Walnut (Espresso Brown) as requested
+    document.body.classList.add('theme-walnut');
+
     // --- YouTube API Integration ---
     const tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
@@ -214,82 +217,122 @@ document.addEventListener('DOMContentLoaded', () => {
         return (match && match[2].length == 11) ? match[2] : null;
     }
 
-    // --- Audio Engine (Web Audio API) ---
-    function initAudio() {
+    // --- Audio Engine (Reverted to Perfect Hiss Logic) ---
+    function initAudioEngine() {
         if (state.audioContext) return;
-        state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        state.audioContext = new AudioContext();
+
+        // 1. Vinyl Noise Buffer (Enhanced Crackles, Hiss, and Rumble)
+        const bufferSize = state.audioContext.sampleRate * 6; // 6 seconds for less repetition
+        const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+
+        for (let i = 0; i < bufferSize; i++) {
+            const white = (Math.random() * 2 - 1) * 0.025;
+            let crackle = 0;
+            if (Math.random() < 0.0015) { crackle = (Math.random() * 2 - 1) * 0.45; }
+            let pop = 0;
+            if (Math.random() < 0.0002) { pop = (Math.random() * 2 - 1) * 0.6; }
+            const rumble = Math.sin(i * 0.002) * 0.008;
+
+            data[i] = white + crackle + pop + rumble;
+        }
+        state.nodes.noiseBuffer = buffer;
+
+        // 2. Global Noise Filter (Controlled by Warmth)
+        const noiseFilter = state.audioContext.createBiquadFilter();
+        noiseFilter.type = 'lowpass';
+        noiseFilter.frequency.value = 10000 - (state.knobs.warmth * 8000); // 10k down to 2k
         
-        // Hiss & Surface Noise
-        const noiseBuffer = createNoiseBuffer(2);
-        const hissSource = state.audioContext.createBufferSource();
-        hissSource.buffer = noiseBuffer;
-        hissSource.loop = true;
+        state.nodes.noiseFilter = noiseFilter;
+
+        // 3. Continuous Low Frequency Hum
+        const humOsc = state.audioContext.createOscillator();
+        humOsc.type = 'sine'; // Smooth subtle sine
+        humOsc.frequency.value = 50; // Deep 50Hz hum
         
-        const hissGain = state.audioContext.createGain();
-        hissGain.gain.value = 0.05 + (state.knobs.crackle * 0.1);
+        const humGain = state.audioContext.createGain();
+        humGain.gain.value = state.knobs.warmth * 0.08; // Softer max amplitude
+
+        humOsc.connect(humGain);
         
-        hissSource.connect(hissGain);
-        hissGain.connect(state.audioContext.destination);
-        hissSource.start();
+        state.nodes.humOsc = humOsc;
+        state.nodes.humGain = humGain;
         
-        state.nodes.hissGain = hissGain;
+        // Always route directly to destination for clean LP sound
+        noiseFilter.connect(state.audioContext.destination);
+        humGain.connect(state.audioContext.destination);
         
-        // Warmth (Tube Saturation Simulation via Low Pass & Gain)
-        const filter = state.audioContext.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 20000 - (state.knobs.warmth * 15000);
-        
-        state.nodes.filter = filter;
+        humOsc.start();
     }
 
-    function createNoiseBuffer(duration) {
-        const bufferSize = state.audioContext.sampleRate * duration;
-        const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
-        const output = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            output[i] = Math.random() * 2 - 1;
-        }
-        return buffer;
+    function playNeedleDrop() {
+        if (!state.audioContext) initAudioEngine();
+        const ctx = state.audioContext;
+
+        // A short burst of loud crackle and a thump
+        const thump = ctx.createOscillator();
+        thump.type = 'sine';
+        thump.frequency.setValueAtTime(150, ctx.currentTime);
+        thump.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.1);
+
+        const thumpGain = ctx.createGain();
+        thumpGain.gain.setValueAtTime(0.6, ctx.currentTime);
+        thumpGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.2);
+
+        thump.connect(thumpGain);
+        thumpGain.connect(ctx.destination);
+        thump.start();
+        thump.stop(ctx.currentTime + 0.2);
+
+        // Buzzing/Crackle burst - Extended to 2 seconds - Louder initial burst
+        const burstSource = ctx.createBufferSource();
+        burstSource.buffer = state.nodes.noiseBuffer;
+        const burstGain = ctx.createGain();
+
+        burstGain.gain.setValueAtTime(0.4, ctx.currentTime);
+        burstGain.gain.exponentialRampToValueAtTime(0.1, ctx.currentTime + 2.0);
+
+        burstSource.connect(burstGain);
+        burstGain.connect(state.nodes.noiseFilter); // Route through warmth filter
+        burstSource.start();
     }
 
     function playVinylNoise() {
-        initAudio();
-        
-        // Low Frequency Hum
-        const humOsc = state.audioContext.createOscillator();
-        humOsc.type = 'sine';
-        humOsc.frequency.value = 60; // 60Hz hum
-        
-        const humGain = state.audioContext.createGain();
-        humGain.gain.value = 0.02;
-        
-        humOsc.connect(humGain);
-        humGain.connect(state.audioContext.destination);
-        humOsc.start();
-        
-        // Initial Needle Drop "Thump"
-        const thump = state.audioContext.createOscillator();
-        thump.type = 'sine';
-        thump.frequency.setValueAtTime(100, state.audioContext.currentTime);
-        thump.frequency.exponentialRampToValueAtTime(0.01, state.audioContext.currentTime + 0.5);
-        
-        const thumpGain = state.audioContext.createGain();
-        thumpGain.gain.setValueAtTime(0.5, state.audioContext.currentTime);
-        thumpGain.gain.exponentialRampToValueAtTime(0.01, state.audioContext.currentTime + 0.5);
-        
-        thump.connect(thumpGain);
-        thumpGain.connect(state.audioContext.destination);
-        thump.start();
-        thump.stop(state.audioContext.currentTime + 0.5);
+        if (!state.audioContext) initAudioEngine();
+        if (state.audioContext.state === 'suspended') {
+            state.audioContext.resume();
+        }
 
-        // Burst of static
-        const burstSource = state.audioContext.createBufferSource();
-        burstSource.buffer = createNoiseBuffer(0.2);
-        const burstGain = state.audioContext.createGain();
-        burstGain.gain.value = 0.3;
-        burstSource.connect(burstGain);
-        burstGain.connect(state.audioContext.destination);
-        burstSource.start();
+        // Loop the character noise
+        const source = state.audioContext.createBufferSource();
+        source.buffer = state.nodes.noiseBuffer;
+        source.loop = true;
+
+        const gainNode = state.audioContext.createGain();
+        gainNode.gain.value = Math.pow(state.knobs.crackle, 0.5) * 0.8;
+
+        source.connect(gainNode);
+        gainNode.connect(state.nodes.noiseFilter); // Route through warmth filter
+
+        state.nodes.noiseSource = source;
+        state.nodes.noiseGain = gainNode;
+        source.start();
+
+        // Ensure hum is active
+        if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(state.knobs.warmth, 0.5) * 0.25;
+    }
+
+    function stopVinylNoise() {
+        if (state.nodes.noiseSource) {
+            try { state.nodes.noiseSource.stop(); } catch (e) { }
+            state.nodes.noiseSource = null;
+        }
+        if (state.nodes.humGain) {
+            state.nodes.humGain.gain.value = 0;
+        }
     }
 
     // --- Knob & Tactile UI Logic ---
@@ -371,10 +414,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (type === 'volume' && state.youtubePlayer) {
             state.youtubePlayer.setVolume(val * 100);
-        } else if (type === 'crackle' && state.nodes.hissGain) {
-            state.nodes.hissGain.gain.setTargetAtTime(0.05 + (val * 0.1), state.audioContext.currentTime, 0.1);
-        } else if (type === 'warmth' && state.nodes.filter) {
-            state.nodes.filter.frequency.setTargetAtTime(20000 - (val * 15000), state.audioContext.currentTime, 0.1);
+        } else if (type === 'warmth') {
+            if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 0.5) * 0.25; 
+            if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 9600); // Drastically muffle high-end to 400Hz
+        } else if (type === 'crackle' && state.nodes.noiseGain) {
+            state.nodes.noiseGain.gain.value = Math.pow(val, 0.5) * 0.8; 
         }
     }
 
@@ -393,6 +437,9 @@ document.addEventListener('DOMContentLoaded', () => {
         plinthPlayBtn.classList.add('active');
 
         statusMessage.textContent = "Dropping needle...";
+
+        initAudioEngine();
+        playNeedleDrop(); // Trigger the initial "buzzing" and needle drop thump
 
         // Metadata handling
         try {
@@ -465,6 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tonearm.style.transform = "translate(-10px, -40px) translateZ(40px) rotateZ(-12deg)";
         plinthPlayBtn.textContent = "⏵";
         plinthPlayBtn.classList.remove('active');
+        stopVinylNoise();
         statusMessage.textContent = "Waiting for record...";
     }
 });
