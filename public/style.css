@@ -2,6 +2,8 @@
     --transition-speed: 0.8s;
     --font-heading: 'Playfair Display', serif;
     --font-ui: 'Roboto Mono', monospace;
+    --copper: #b87333;
+    --copper-glow: rgba(184, 115, 51, 0.4);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -565,59 +567,124 @@ body {
     bottom: 30px;
     left: 30px;
     display: flex;
-    gap: 15px;
+    align-items: flex-end;
+    gap: 20px;
     transform-style: preserve-3d;
     transform: translateZ(5px);
 }
 
-.tactile-btn {
-    width: 36px;
-    height: 36px;
+.selector-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform-style: preserve-3d;
+}
+
+.selector-group label {
+    font-size: 0.5rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent-color);
+    opacity: 0.6;
+    margin-top: 10px;
+}
+
+/* The fancy new mode dial */
+.mode-dial {
+    width: 60px;
+    height: 60px;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.dial-indicators {
+    position: absolute;
+    inset: -25px;
+    pointer-events: none;
+}
+
+.dial-indicators span {
+    position: absolute;
+    font-size: 0.5rem;
+    font-weight: bold;
+    color: #444;
+    transition: color 0.3s, text-shadow 0.3s;
+}
+
+/* Position indicators around the dial */
+.ind-stop { top: 10px; left: 5px; transform: rotate(-45deg); }
+.ind-play { top: -5px; left: 50%; transform: translateX(-50%); }
+.ind-pause { top: 10px; right: 5px; transform: rotate(45deg); }
+
+/* Glowing active states */
+[data-state="stop"] .ind-stop { color: #fff; text-shadow: 0 0 5px #fff; }
+[data-state="play"] .ind-play { color: var(--copper); text-shadow: 0 0 8px var(--copper-glow); }
+[data-state="pause"] .ind-pause { color: #fff; text-shadow: 0 0 5px #fff; }
+
+.dial-knob {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 30%, #222, #000);
     border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #333, #000);
+    border: 1px solid #111;
+    cursor: pointer;
+    box-shadow: 
+        0px 1px 0 #1a1a1a,
+        0px 2px 0 #151515,
+        0px 3px 0 #111,
+        0px 4px 0 #0a0a0a,
+        0px 10px 15px rgba(0, 0, 0, 0.8),
+        inset 0 1px 1px rgba(255,255,255,0.05);
+    /* Textured grip edge (knurling) */
+    background-image: 
+        radial-gradient(circle at 30% 30%, #222, #000),
+        repeating-conic-gradient(from 0deg, rgba(0,0,0,0.3) 0deg 2deg, transparent 2deg 4deg);
+    background-blend-mode: multiply;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(8px);
+}
+
+.dial-indicator {
+    width: 2px;
+    height: 15px;
+    background: var(--copper);
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 1px;
+    box-shadow: 0 0 5px var(--copper-glow);
+}
+
+/* Dial rotation based on state */
+[data-state="stop"] .dial-knob { transform: translateZ(8px) rotate(-45deg); }
+[data-state="play"] .dial-knob { transform: translateZ(8px) rotate(0deg); }
+[data-state="pause"] .dial-knob { transform: translateZ(8px) rotate(45deg); }
+
+.tactile-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #222, #000);
     border: 1px solid #111;
     color: var(--accent-color);
-    font-size: 1rem;
+    font-size: 0.8rem;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     box-shadow: 
-        0 4px 0 #000, 
-        0 8px 15px rgba(0,0,0,0.6),
-        inset 0 1px 1px rgba(255,255,255,0.1);
-    transition: all 0.15s;
+        0 3px 0 #000, 
+        0 6px 10px rgba(0,0,0,0.6),
+        inset 0 1px 1px rgba(255,255,255,0.05);
+    transition: all 0.1s;
     outline: none;
-    text-shadow: 0 0 5px var(--accent-color);
-}
-
-.tactile-btn:hover {
-    background: radial-gradient(circle at 30% 30%, #444, #0a0a0a);
-    box-shadow: 
-        0 4px 0 #000, 
-        0 10px 20px rgba(0,0,0,0.7),
-        inset 0 1px 1px rgba(255,255,255,0.2);
+    text-shadow: 0 0 3px var(--accent-color);
 }
 
 .tactile-btn:active {
-    transform: translateY(3px) translateZ(2px);
-    box-shadow: 
-        0 1px 0 #000, 
-        0 2px 5px rgba(0,0,0,0.8);
-}
-
-/* Glowing Indicator for Active State */
-.turntable-hero.playing #plinthPlayBtn {
-    box-shadow: 
-        0 4px 0 #000, 
-        0 0 15px var(--accent-color),
-        inset 0 1px 1px rgba(255,255,255,0.1);
-    color: #fff;
-    text-shadow: 0 0 10px var(--accent-color);
-}
-
-.tactile-btn.hidden {
-    display: none !important;
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #000, 0 2px 5px rgba(0,0,0,0.8);
 }
 
 .knob-group {
@@ -630,49 +697,36 @@ body {
 .knob {
     width: 35px;
     height: 35px;
-    background: var(--knob-main);
+    background: radial-gradient(circle at 30% 30%, #222, #000);
     border-radius: 50%;
     position: relative;
     margin-bottom: 12px;
     cursor: pointer;
     transform-style: preserve-3d;
     transform: translateZ(6px);
-    /* Pop up */
     box-shadow:
         0px 1px 0 #1a1a1a,
         0px 2px 0 #151515,
         0px 3px 0 #111,
         0px 4px 0 #0a0a0a,
-        0px 5px 0 #0a0a0a,
-        0px 6px 0 #000,
-        0px 7px 0 #000,
         0px 12px 15px rgba(0, 0, 0, 0.8);
-}
-
-.knob::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 25px;
-    height: 25px;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
-    box-shadow: inset 0px 1px 2px rgba(255, 255, 255, 0.2), 0px 1px 2px rgba(0, 0, 0, 0.6);
+    /* Knurled edge */
+    background-image: 
+        radial-gradient(circle at 30% 30%, #222, #000),
+        repeating-conic-gradient(from 0deg, rgba(0,0,0,0.2) 0deg 1deg, transparent 1deg 2deg);
 }
 
 .knob .indicator {
-    width: 3px;
-    height: 12px;
-    background: var(--accent-color);
+    width: 2px;
+    height: 10px;
+    background: var(--copper);
     position: absolute;
-    top: 5px;
+    top: 4px;
     left: 50%;
     transform: translateX(-50%) rotate(0deg);
-    transform-origin: 50% 12.5px;
-    /* Pivot firmly around the absolute 17.5px center of the 35px knob */
-    border-radius: 2px;
+    transform-origin: 50% 13.5px;
+    border-radius: 1px;
+    box-shadow: 0 0 3px var(--copper-glow);
 }
 
 .knob-group label {

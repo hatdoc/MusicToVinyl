@@ -64,10 +64,21 @@
                         <div class="hinge right"></div>
                     </div>
 
-                    <!-- Playback Controls Deck -->
+                    <!-- Playback Controls Deck (Left Side) -->
                     <div class="playback-deck" id="playbackDeck">
-                        <button id="plinthPlayBtn" class="tactile-btn" title="Start/Stop Turntable">⏵</button>
-                        <button id="plinthPauseBtn" class="tactile-btn hidden" title="Pause/Resume">⏸</button>
+                        <div class="selector-group">
+                            <div class="mode-dial" id="modeDial" data-state="stop">
+                                <div class="dial-indicators">
+                                    <span class="ind-stop">OFF</span>
+                                    <span class="ind-play">PLAY</span>
+                                    <span class="ind-pause">PAUSE</span>
+                                </div>
+                                <div class="dial-knob">
+                                    <div class="dial-indicator"></div>
+                                </div>
+                            </div>
+                            <label>MOTOR</label>
+                        </div>
                         <button id="plinthSkipBtn" class="tactile-btn hidden" title="Skip to Next Reserved">⏭</button>
                     </div>
                     

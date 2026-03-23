@@ -24,8 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const convertBtn = document.getElementById('convertBtn');
     const reserveBtn = document.getElementById('reserveBtn');
     const pauseBtn = document.getElementById('pauseBtn');
-    const plinthPlayBtn = document.getElementById('plinthPlayBtn');
-    const plinthPauseBtn = document.getElementById('plinthPauseBtn');
+    const modeDial = document.getElementById('modeDial');
     const plinthSkipBtn = document.getElementById('plinthSkipBtn');
     const youtubeUrlInput = document.getElementById('youtubeUrl');
     const statusMessage = document.getElementById('statusMessage');
@@ -313,23 +312,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Handle Start/Stop from Plinth
-    plinthPlayBtn.addEventListener('click', () => {
-        if (state.isPlaying) {
-            stopPlayback();
-        } else {
-            handleConversion();
-        }
+    // Handle Mode Dial selector (Stop -> Play -> Pause)
+    modeDial.addEventListener('click', () => {
+        const currentState = modeDial.getAttribute('data-state');
+        let nextState = 'stop';
+
+        if (currentState === 'stop') nextState = 'play';
+        else if (currentState === 'play') nextState = 'pause';
+        else if (currentState === 'pause') nextState = 'stop';
+
+        setPlaybackMode(nextState);
     });
 
-    // Handle Pause/Resume from Plinth
-    plinthPauseBtn.addEventListener('click', () => {
-        if (state.isPlaying && !state.isPaused) {
-            pausePlayback();
-        } else if (state.isPaused) {
-            resumePlayback();
+    function setPlaybackMode(mode) {
+        modeDial.setAttribute('data-state', mode);
+        
+        if (mode === 'stop') {
+            stopPlayback();
+        } else if (mode === 'play') {
+            if (state.isPlaying && state.isPaused) {
+                resumePlayback();
+            } else if (!state.isPlaying) {
+                handleConversion();
+            }
+        } else if (mode === 'pause') {
+            if (state.isPlaying && !state.isPaused) {
+                pausePlayback();
+            }
         }
-    });
+    }
 
     // Handle Skip from Plinth
     plinthSkipBtn.addEventListener('click', () => {
@@ -354,9 +365,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     pauseBtn.addEventListener('click', () => {
         if (state.isPlaying && !state.isPaused) {
-            pausePlayback();
+            setPlaybackMode('pause');
         } else if (state.isPaused) {
-            resumePlayback();
+            setPlaybackMode('play');
         }
     });
 
@@ -421,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
             albumArt.classList.remove('hidden');
         }
 
-        startPlayback(track.youtube_id);
+        setPlaybackMode('play');
     });
 
     async function handleConversion(explicitId = null, addToQueue = false) {
@@ -515,8 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // UI Updates
         reserveBtn.classList.remove('hidden'); 
-        plinthPlayBtn.textContent = "⏹";
-        plinthPauseBtn.classList.remove('hidden');
+        modeDial.setAttribute('data-state', 'play');
         plinthSkipBtn.classList.remove('hidden');
 
         initAudioEngine();
@@ -548,7 +558,6 @@ document.addEventListener('DOMContentLoaded', () => {
             state.audioContext.suspend();
         }
         pauseBtn.textContent = "Resume";
-        plinthPauseBtn.textContent = "⏵";
         statusMessage.textContent = "Playback Paused.";
     }
 
@@ -561,7 +570,6 @@ document.addEventListener('DOMContentLoaded', () => {
             state.audioContext.resume();
         }
         pauseBtn.textContent = "Pause";
-        plinthPauseBtn.textContent = "⏸";
         statusMessage.textContent = "Resuming warmth...";
     }
 
@@ -574,10 +582,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // UI Reset
         reserveBtn.classList.add('hidden'); 
-        plinthPlayBtn.textContent = "⏵";
-        plinthPauseBtn.classList.add('hidden');
+        modeDial.setAttribute('data-state', 'stop');
         plinthSkipBtn.classList.add('hidden');
-        plinthPauseBtn.textContent = "⏸";
 
         stopVinylNoise();
         if (state.youtubePlayer && state.youtubePlayer.stopVideo) {
