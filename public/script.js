@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 affiliateBtn.href = "#";
                 affiliateBtn.classList.remove('hidden');
 
-                // Inform React LP Storage that a track successfully loaded
+                // Inform React Vinyl Crate that a track successfully loaded
                 window.dispatchEvent(new CustomEvent('trackLoaded', {
                     detail: { title: data.title, id: videoId }
                 }));
@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- LP Storage Click-to-Play ---
+    // --- Vinyl Crate Click-to-Play ---
     window.addEventListener('playHistoryTrack', (e) => {
         const track = e.detail;
 

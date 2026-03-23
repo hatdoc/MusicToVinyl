@@ -86,7 +86,7 @@ function AuthGate() {
                 {!isLoginMode && (
                     <div style={{background: 'rgba(0,0,0,0.3)', padding: '15px', borderRadius: '4px', border: '1px dashed #444', marginBottom: '20px', fontSize: '0.85rem', color: '#e0e0e0', textAlign: 'left', lineHeight: '1.4'}}>
                         <ul style={{listStyleType: 'none', padding: 0, margin: 0}}>
-                            <li style={{marginBottom: '10px'}}><strong style={{color: '#C5A059'}}>💾 LP Storage History:</strong> Automatically save and resume your entire listening history.</li>
+                            <li style={{marginBottom: '10px'}}><strong style={{color: '#C5A059'}}>💾 Vinyl Crate History:</strong> Automatically save and resume your entire listening history.</li>
                             <li style={{marginBottom: '10px'}}><strong style={{color: '#C5A059'}}>🛒 Live Marketplace:</strong> Instantly cross-reference global stores to buy the physical record you are playing.</li>
                             <li><strong style={{color: '#C5A059'}}>✨ Pristine Engine:</strong> Guaranteed pure analog noise floor.</li>
                         </ul>
@@ -130,7 +130,7 @@ function AuthGate() {
     );
 }
 
-// --- LP Storage Component (History) ---
+// --- Vinyl Crate Component ---
 function VirtualCrate() {
     const [isVisible, setIsVisible] = useState(false);
     const [items, setItems] = useState([]);
@@ -255,7 +255,7 @@ function VirtualCrate() {
     return (
         <div style={{padding: '20px', color: '#e0e0e0', height: '100%', borderLeft: '1px solid #333', background: '#0a0a0a', display: 'flex', flexDirection: 'column'}}>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333', paddingBottom: '10px'}}>
-                <h3 style={{color: '#C5A059', margin: 0, fontFamily: 'var(--font-heading)'}}>LP Storage</h3>
+                <h3 style={{color: '#C5A059', margin: 0, fontFamily: 'var(--font-heading)'}}>Vinyl Crate</h3>
                 {isPro ? (
                     <button onClick={async () => {
                         await supabase.auth.signOut();
@@ -280,7 +280,7 @@ function VirtualCrate() {
                         style={{padding: '10px 0', borderBottom: '1px solid #1a1a1a', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s'}}
                         onMouseEnter={(e) => e.currentTarget.style.background = '#1a1a1a'}
                         onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                        title="Click to play this LP"
+                        title="Click to play this Vinyl"
                     >
                         <img 
                             src={`https://img.youtube.com/vi/${item.youtube_id}/mqdefault.jpg`} 

@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const ytSearch = require('yt-search');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -16,11 +17,34 @@ const conversions = [
     { genre: 'Pop', count: 60 }
 ];
 
+// Routes for AdSense Compliance
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public/index.html')));
+app.get('/about', (req, res) => res.sendFile(path.join(__dirname, 'public/about.html')));
+app.get('/privacy', (req, res) => res.sendFile(path.join(__dirname, 'public/privacy.html')));
+app.get('/terms', (req, res) => res.sendFile(path.join(__dirname, 'public/terms.html')));
+app.get('/journal', (req, res) => res.sendFile(path.join(__dirname, 'public/journal.html')));
+
+// YouTube Search Proxy API
+app.get('/api/search', async (req, res) => {
+    try {
+        const query = req.query.q;
+        if (!query) return res.status(400).json({ error: "Missing query parameter" });
+        const r = await ytSearch(query);
+        const videos = r.videos.slice(0, 5).map(v => ({
+            id: v.videoId,
+            title: v.title,
+            thumbnail: v.thumbnail,
+            author: v.author.name
+        }));
+        res.json(videos);
+    } catch (err) {
+        console.error("Search API Error:", err);
+        res.status(500).json({ error: "Failed to fetch search results from YouTube." });
+    }
+});
+
 // Admin Dashboard Route
 app.get('/admin', (req, res) => {
-    // In a real app, you would query the database here:
-    // SELECT genre, COUNT(*) as count FROM conversions GROUP BY genre ORDER BY count DESC;
-    
     let rows = conversions.map(c => `
         <tr>
             <td style="padding: 10px; border: 1px solid #444;">${c.genre}</td>
@@ -33,12 +57,12 @@ app.get('/admin', (req, res) => {
     <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>VinylSoul Admin</title>
+        <title>Vinyl Analog Admin</title>
         <style>
-            body { background: #121212; color: #e0e0e0; font-family: monospace; padding: 40px; }
+            body { background: #0a0a0a; color: #e0e0e0; font-family: monospace; padding: 40px; }
             table { width: 100%; max-width: 600px; border-collapse: collapse; margin-top: 20px; }
-            th { text-align: left; padding: 10px; border: 1px solid #FFBF00; color: #FFBF00; }
-            h1 { color: #FFBF00; }
+            th { text-align: left; padding: 10px; border: 1px solid #C5A059; color: #C5A059; }
+            h1 { color: #C5A059; }
         </style>
     </head>
     <body>
@@ -56,7 +80,7 @@ app.get('/admin', (req, res) => {
             </tbody>
         </table>
         <p style="margin-top: 20px; color: #888;">Data ready for export.</p>
-        <a href="/" style="color: #FFBF00;">Back to App</a>
+        <a href="/" style="color: #C5A059;">Back to App</a>
     </body>
     </html>
     `;
@@ -65,5 +89,5 @@ app.get('/admin', (req, res) => {
 
 // Start Server
 app.listen(PORT, () => {
-    console.log(`VinylSoul Server running on http://localhost:${PORT}`);
+    console.log(`Vinyl Analog Server running on http://localhost:${PORT}`);
 });

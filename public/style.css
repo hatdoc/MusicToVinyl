@@ -114,8 +114,8 @@ body {
     font-family: var(--font-ui);
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-x: hidden;
     transition: background-color var(--transition-speed);
 }
 
