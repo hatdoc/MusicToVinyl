@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return (match && match[2].length == 11) ? match[2] : null;
     }
 
-    // --- Audio Engine (Reverted to Perfect Hiss Logic) ---
+    // --- Audio Engine (Reverted to Perfect Hiss Logic from 01edf1c9d) ---
     function initAudioEngine() {
         if (state.audioContext) return;
 
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.loop = true;
 
         const gainNode = state.audioContext.createGain();
-        gainNode.gain.value = Math.pow(state.knobs.crackle, 0.5) * 0.8;
+        gainNode.gain.value = Math.pow(state.knobs.crackle, 0.5) * 0.25;
 
         source.connect(gainNode);
         gainNode.connect(state.nodes.noiseFilter); // Route through warmth filter
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.start();
 
         // Ensure hum is active
-        if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(state.knobs.warmth, 0.5) * 0.25;
+        if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(state.knobs.warmth, 0.5) * 0.08;
     }
 
     function stopVinylNoise() {
@@ -415,10 +415,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'volume' && state.youtubePlayer) {
             state.youtubePlayer.setVolume(val * 100);
         } else if (type === 'warmth') {
-            if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 0.5) * 0.25; 
-            if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 9600); // Drastically muffle high-end to 400Hz
+            if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 0.5) * 0.08; 
+            if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 9000); // Deeply muffle high-end
         } else if (type === 'crackle' && state.nodes.noiseGain) {
-            state.nodes.noiseGain.gain.value = Math.pow(val, 0.5) * 0.8; 
+            state.nodes.noiseGain.gain.value = Math.pow(val, 0.5) * 0.25; 
         }
     }
 
