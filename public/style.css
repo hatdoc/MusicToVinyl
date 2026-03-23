@@ -560,6 +560,48 @@ body {
     transform: translateZ(5px);
 }
 
+.playback-deck {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    display: flex;
+    gap: 10px;
+    transform-style: preserve-3d;
+    transform: translateZ(5px);
+}
+
+.tactile-btn {
+    width: 50px;
+    height: 30px;
+    background: linear-gradient(145deg, #222, #000);
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: var(--accent-color);
+    font-size: 0.6rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 0 #000, 0 8px 10px rgba(0,0,0,0.5);
+    transition: all 0.1s;
+    outline: none;
+}
+
+.tactile-btn:hover {
+    background: linear-gradient(145deg, #333, #111);
+}
+
+.tactile-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #000, 0 4px 5px rgba(0,0,0,0.5);
+}
+
+.tactile-btn.hidden {
+    display: none !important;
+}
+
 .knob-group {
     display: flex;
     flex-direction: column;

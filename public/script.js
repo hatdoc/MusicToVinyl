@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const convertBtn = document.getElementById('convertBtn');
     const reserveBtn = document.getElementById('reserveBtn');
     const pauseBtn = document.getElementById('pauseBtn');
+    const plinthPlayBtn = document.getElementById('plinthPlayBtn');
+    const plinthPauseBtn = document.getElementById('plinthPauseBtn');
+    const plinthSkipBtn = document.getElementById('plinthSkipBtn');
     const youtubeUrlInput = document.getElementById('youtubeUrl');
     const statusMessage = document.getElementById('statusMessage');
     const turntableHero = document.getElementById('turntableHero');
@@ -95,10 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.ENDED) {
             if (state.isLoggedIn && state.queue.length > 0) {
-                const nextTrack = state.queue.shift();
-                statusMessage.textContent = `Playing next from queue: ${nextTrack.title}`;
-                window.dispatchEvent(new Event('queueUpdated')); // Refresh React UI
-                handleConversion(nextTrack.id);
+                skipToNext();
             } else {
                 stopPlayback();
             }
@@ -107,6 +107,17 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (event.data == YT.PlayerState.PAUSED) {
             vinylRecord.classList.remove('spinning');
             document.querySelector('.turntable-hero').classList.remove('playing');
+        }
+    }
+
+    function skipToNext() {
+        if (state.queue.length > 0) {
+            const nextTrack = state.queue.shift();
+            statusMessage.textContent = `Skipping to: ${nextTrack.title}`;
+            window.dispatchEvent(new Event('queueUpdated')); // Refresh React UI
+            handleConversion(nextTrack.id);
+        } else {
+            statusMessage.textContent = "No more reserved tracks in queue.";
         }
     }
 
@@ -302,6 +313,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Handle Start/Stop from Plinth
+    plinthPlayBtn.addEventListener('click', () => {
+        if (state.isPlaying) {
+            stopPlayback();
+        } else {
+            handleConversion();
+        }
+    });
+
+    // Handle Pause/Resume from Plinth
+    plinthPauseBtn.addEventListener('click', () => {
+        if (state.isPlaying && !state.isPaused) {
+            pausePlayback();
+        } else if (state.isPaused) {
+            resumePlayback();
+        }
+    });
+
+    // Handle Skip from Plinth
+    plinthSkipBtn.addEventListener('click', () => {
+        if (!state.isLoggedIn) {
+            window.dispatchEvent(new Event('requestAuth'));
+            return;
+        }
+        skipToNext();
+    });
+
     convertBtn.addEventListener('click', () => {
         handleConversion();
     });
@@ -474,7 +512,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Immediately Swing the Arm & Spin the Vinyl
         document.querySelector('.turntable-hero').classList.add('playing');
         vinylRecord.classList.add('spinning');
-        reserveBtn.classList.remove('hidden'); // Show reserve button once playing
+        
+        // UI Updates
+        reserveBtn.classList.remove('hidden'); 
+        plinthPlayBtn.textContent = "STOP";
+        plinthPauseBtn.classList.remove('hidden');
+        plinthSkipBtn.classList.remove('hidden');
 
         initAudioEngine();
         playNeedleDrop(); // Trigger the initial "buzzing" and needle drop thump
@@ -505,6 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
             state.audioContext.suspend();
         }
         pauseBtn.textContent = "Resume";
+        plinthPauseBtn.textContent = "RESUME";
         statusMessage.textContent = "Playback Paused.";
     }
 
@@ -517,6 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
             state.audioContext.resume();
         }
         pauseBtn.textContent = "Pause";
+        plinthPauseBtn.textContent = "PAUSE";
         statusMessage.textContent = "Resuming warmth...";
     }
 
@@ -526,7 +571,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         vinylRecord.classList.remove('spinning');
         document.querySelector('.turntable-hero').classList.remove('playing');
-        reserveBtn.classList.add('hidden'); // Hide reserve when stopped
+        
+        // UI Reset
+        reserveBtn.classList.add('hidden'); 
+        plinthPlayBtn.textContent = "START";
+        plinthPauseBtn.classList.add('hidden');
+        plinthSkipBtn.classList.add('hidden');
+        plinthPauseBtn.textContent = "PAUSE";
 
         stopVinylNoise();
         if (state.youtubePlayer && state.youtubePlayer.stopVideo) {
