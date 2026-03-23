@@ -409,24 +409,47 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Handle Plinth Play Lever
-    plinthPlayBtn.addEventListener('click', () => {
-        if (state.isPlaying && !state.isPaused) {
-            pausePlayback();
-        } else if (state.isPaused) {
-            resumePlayback();
-        } else if (!state.isPlaying) {
-            handleConversion();
-        }
-    });
+    if (plinthPlayBtn) {
+        plinthPlayBtn.addEventListener('click', () => {
+            console.log("Play lever toggled. Current state:", { isPlaying: state.isPlaying, isPaused: state.isPaused });
+            
+            // Add temporary active class for tactile feedback
+            plinthPlayBtn.classList.add('pushed');
+            setTimeout(() => plinthPlayBtn.classList.remove('pushed'), 200);
+
+            if (state.isPlaying && !state.isPaused) {
+                pausePlayback();
+            } else if (state.isPaused) {
+                resumePlayback();
+            } else {
+                // Not currently playing anything - try to load from input or resume last video
+                if (state.youtubeVideoId && !youtubeUrlInput.value.trim()) {
+                    // Resume previous record if it exists and input is empty
+                    startPlayback(state.youtubeVideoId);
+                } else {
+                    handleConversion();
+                }
+            }
+        });
+    }
 
     // Handle Skip from Plinth
-    plinthSkipBtn.addEventListener('click', () => {
-        if (!state.isLoggedIn) {
-            window.dispatchEvent(new Event('requestAuth'));
-            return;
-        }
-        skipToNext();
-    });
+    if (plinthSkipBtn) {
+        plinthSkipBtn.addEventListener('click', () => {
+            console.log("Skip lever toggled.");
+            
+            // Add temporary active class for tactile feedback
+            plinthSkipBtn.classList.add('pushed');
+            setTimeout(() => plinthSkipBtn.classList.remove('pushed'), 200);
+
+            if (!state.isLoggedIn) {
+                statusMessage.textContent = "Log in to skip between archives.";
+                window.dispatchEvent(new Event('requestAuth'));
+                return;
+            }
+            skipToNext();
+        });
+    }
 
     convertBtn.addEventListener('click', () => {
         handleConversion();

@@ -278,6 +278,8 @@ body {
     align-items: center;
     margin-top: 10px;
     margin-bottom: 20px;
+    position: relative;
+    z-index: 150;
 }
 
 /* The actual wooden base */
@@ -672,7 +674,8 @@ body {
 
 /* Active Lever Action (Pushed down) */
 .lever-key:active,
-.lever-key.active {
+.lever-key.active,
+.lever-key.pushed {
     transform: rotateX(-25deg) translateY(4px);
     box-shadow:
         0 1px 0 #000,
