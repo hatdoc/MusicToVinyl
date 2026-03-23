@@ -252,6 +252,11 @@ function VirtualCrate() {
         window.dispatchEvent(new CustomEvent('playHistoryTrack', { detail: track }));
     };
 
+    const queueHistoryTrack = (track, e) => {
+        e.stopPropagation();
+        window.dispatchEvent(new CustomEvent('addToQueue', { detail: { id: track.youtube_id, title: track.title } }));
+    };
+
     return (
         <div style={{padding: '20px', color: '#e0e0e0', height: '100%', borderLeft: '1px solid #333', background: '#0a0a0a', display: 'flex', flexDirection: 'column'}}>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333', paddingBottom: '10px'}}>
@@ -277,7 +282,7 @@ function VirtualCrate() {
                     <div 
                         key={item.id} 
                         onClick={() => playHistoryTrack(item)}
-                        style={{padding: '10px 0', borderBottom: '1px solid #1a1a1a', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s'}}
+                        style={{padding: '10px 0', borderBottom: '1px solid #1a1a1a', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s', position: 'relative'}}
                         onMouseEnter={(e) => e.currentTarget.style.background = '#1a1a1a'}
                         onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                         title="Click to play this Vinyl"
@@ -289,6 +294,14 @@ function VirtualCrate() {
                         />
                         <div style={{flex: 1, overflow: 'hidden'}}>
                             <div style={{fontSize: '0.9rem', lineHeight: '1.4', color: '#e0e0e0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>{item.title}</div>
+                            {isPro && (
+                                <button 
+                                    onClick={(e) => queueHistoryTrack(item, e)}
+                                    style={{marginTop: '5px', padding: '2px 8px', fontSize: '0.6rem', background: 'rgba(197, 160, 89, 0.2)', border: '1px solid #C5A059', color: '#C5A059', borderRadius: '3px', cursor: 'pointer'}}
+                                >
+                                    Reserve
+                                </button>
+                            )}
                         </div>
                     </div>
                 ))}
@@ -414,14 +427,39 @@ crateRoot.render(<VirtualCrate />);
 // --- Full-Screen Search Modal Component ---
 function SearchModal() {
     const [results, setResults] = useState([]);
-    
+    const [isPro, setIsPro] = useState(false);
+
     useEffect(() => {
         const handleSearch = (e) => setResults(e.detail);
         window.addEventListener('openSearchModal', handleSearch);
-        return () => window.removeEventListener('openSearchModal', handleSearch);
+        
+        supabase.auth.getSession().then(({data: { session }}) => {
+            if (session) setIsPro(true);
+        });
+
+        const handleAuth = () => setIsPro(true);
+        window.addEventListener('authSuccess', handleAuth);
+
+        return () => {
+            window.removeEventListener('openSearchModal', handleSearch);
+            window.removeEventListener('authSuccess', handleAuth);
+        };
     }, []);
 
     if (results.length === 0) return null;
+
+    const playTrack = (r) => {
+        const input = document.getElementById('youtubeUrl');
+        input.value = `https://youtube.com/watch?v=${r.id}`;
+        setResults([]);
+        document.getElementById('convertBtn').click();
+    };
+
+    const queueTrack = (r, e) => {
+        e.stopPropagation();
+        window.dispatchEvent(new CustomEvent('addToQueue', { detail: { id: r.id, title: r.title } }));
+        setResults([]);
+    };
 
     return (
         <div className="modal">
@@ -440,18 +478,21 @@ function SearchModal() {
                             style={{display: 'flex', gap: '15px', padding: '15px', borderBottom: '1px solid #222', cursor: 'pointer', transition: 'background 0.2s', alignItems: 'center'}}
                             onMouseEnter={e => e.currentTarget.style.background = '#1a1a1a'}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                            onClick={() => {
-                                const input = document.getElementById('youtubeUrl');
-                                input.value = `https://youtube.com/watch?v=${r.id}`;
-                                setResults([]);
-                                document.getElementById('convertBtn').click();
-                            }}
+                            onClick={() => playTrack(r)}
                         >
                             <img src={r.thumbnail} style={{width: '90px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #000'}} />
                             <div style={{flex: 1, overflow: 'hidden', textAlign: 'left'}}>
                                 <div style={{color: '#e0e0e0', fontSize: '1rem', lineHeight: '1.2', marginBottom: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} title={r.title}>{r.title}</div>
                                 <div style={{color: '#888', fontSize: '0.8rem'}}>{r.author}</div>
                             </div>
+                            {isPro && (
+                                <button 
+                                    onClick={(e) => queueTrack(r, e)}
+                                    style={{padding: '8px 15px', background: 'rgba(197, 160, 89, 0.2)', border: '1px solid #C5A059', color: '#C5A059', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem'}}
+                                >
+                                    Reserve
+                                </button>
+                            )}
                         </div>
                     ))}
                 </div>

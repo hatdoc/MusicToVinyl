@@ -93,7 +93,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.ENDED) {
-            stopPlayback();
+            if (state.isLoggedIn && state.queue.length > 0) {
+                const nextTrack = state.queue.shift();
+                statusMessage.textContent = `Playing next from queue: ${nextTrack.title}`;
+                handleConversion(nextTrack.id);
+            } else {
+                stopPlayback();
+            }
         } else if (event.data == YT.PlayerState.PLAYING) {
             statusMessage.textContent = "Now Playing: Analog Stream";
         } else if (event.data == YT.PlayerState.PAUSED) {
@@ -101,6 +107,16 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.turntable-hero').classList.remove('playing');
         }
     }
+
+    // --- Queue Management ---
+    window.addEventListener('addToQueue', (e) => {
+        if (!state.isLoggedIn) {
+            window.dispatchEvent(new Event('requestAuth'));
+            return;
+        }
+        state.queue.push(e.detail);
+        statusMessage.textContent = `Queued: ${e.detail.title} (${state.queue.length} in crate)`;
+    });
 
     // --- Audio Engine ---
     function initAudioEngine() {
