@@ -197,7 +197,7 @@ function VirtualCrate() {
                     video_title: newTrack.title
                 }]);
                 
-                // Enforce maximum 10 LPs limit in database
+                // Enforce maximum 10 Vinyls limit in database
                 const { data: keepData } = await supabase
                     .from('crate_items')
                     .select('id')

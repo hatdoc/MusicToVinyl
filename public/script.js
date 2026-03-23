@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update input visually
         youtubeUrlInput.value = `https://youtube.com/watch?v=${track.youtube_id}`;
-        statusMessage.textContent = "Pulling vinyl from storage...";
+        statusMessage.textContent = "Pulling vinyl from the crate...";
 
         if (state.plays >= 1 && !state.isLoggedIn) {
             window.dispatchEvent(new Event('requestAuth')); // Trigger React Modal
