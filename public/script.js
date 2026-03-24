@@ -374,8 +374,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const knobs = document.querySelectorAll('.knob');
     knobs.forEach(knob => {
         let isDragging = false;
-        let startY = 0;
-        let startVal = 0;
+        let centerX = 0;
+        let centerY = 0;
         const controlType = knob.getAttribute('data-control');
 
         function updateVisual(val) {
@@ -388,20 +388,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
         knob.addEventListener('mousedown', (e) => {
             isDragging = true;
-            startY = e.clientY;
-            startVal = state.knobs[controlType];
-            document.body.style.cursor = 'ns-resize';
+            const rect = knob.getBoundingClientRect();
+            centerX = rect.left + rect.width / 2;
+            centerY = rect.top + rect.height / 2;
+            document.body.style.cursor = 'grabbing';
+            e.preventDefault(); // Prevent text selection
+            updateRotation(e);
         });
 
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            const deltaY = startY - e.clientY;
-            let newVal = startVal + (deltaY / 150); // 150px drag for full sweep
+        function updateRotation(e) {
+            const x = e.clientX - centerX;
+            const y = e.clientY - centerY;
+
+            // Un-squash the Y axis to match the CSS rotateX(45deg) perspective correctly
+            const unSquashedY = y / Math.cos(45 * Math.PI / 180);
+            
+            let angle = Math.atan2(unSquashedY, x) * (180 / Math.PI); 
+            
+            // Map angle so Top (-90) becomes 0, Right (0) becomes 90
+            let adjustedAngle = angle + 90;
+            if (adjustedAngle > 180) adjustedAngle -= 360;
+            if (adjustedAngle < -180) adjustedAngle += 360;
+            
+            // Physical hard stops (clamp at bottom dead zone)
+            if (adjustedAngle > 135 && adjustedAngle <= 180) adjustedAngle = 135;
+            if (adjustedAngle < -135 && adjustedAngle > -180) adjustedAngle = -135;
+
+            let newVal = (adjustedAngle + 135) / 270;
             newVal = Math.max(0, Math.min(1, newVal));
 
             state.knobs[controlType] = newVal;
             updateVisual(newVal);
             applyAudioParams(controlType, newVal);
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            updateRotation(e);
         });
 
         window.addEventListener('mouseup', () => {
