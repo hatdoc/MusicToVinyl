@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeTourBtn = document.getElementById('closeTour');
 
     let currentTourStep = 0;
-    
+
     const tourSteps = [
         {
             title: "Find & Draw Record",
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             title: "Reserve (PRO)",
-            text: "Instead of playing immediately, click Reserve to add the track to your Crate queue. Requires a free account.",
+            text: "Instead of playing immediately, click Reserve to add the track to your Crate queue. Requires a PRO account.",
             target: "#reserveBtn",
             placement: "top",
             offsetY: -80
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 el.removeAttribute('data-tour-pos');
             }
         });
-        
+
         if (index >= tourSteps.length) {
             endTour();
             return;
@@ -106,31 +106,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const step = tourSteps[index];
         const targetEl = document.querySelector(step.target);
-        
+
         if (!targetEl) {
             showTourStep(index + 1);
             return;
         }
-        
+
         // Ensure z-index works without breaking absolute layouts
         const compStyle = window.getComputedStyle(targetEl);
         if (compStyle.position === 'static') {
             targetEl.setAttribute('data-tour-pos', 'true');
             targetEl.style.position = 'relative';
         }
-        
+
         targetEl.classList.add('tour-highlight');
         tourTitle.textContent = step.title;
         tourText.textContent = step.text;
         tourCounter.textContent = `${index + 1}/${tourSteps.length}`;
         nextTourBtn.textContent = index === tourSteps.length - 1 ? "Start Listening" : "Next ➔";
-        
+
         tourTooltip.setAttribute('data-placement', step.placement);
-        
+
         // Exact positional tracking
         const rect = targetEl.getBoundingClientRect();
         let top = 0, left = 0;
-        
+
         // Account for current rotation/transform scaling context
         if (step.placement === 'top') {
             top = rect.top - tourTooltip.offsetHeight + (step.offsetY || -20);
@@ -145,11 +145,11 @@ document.addEventListener('DOMContentLoaded', () => {
             top = rect.top + (rect.height / 2) - (tourTooltip.offsetHeight / 2);
             left = rect.right + (step.offsetX || 20);
         }
-        
+
         // Window bounding collision guard
         top = Math.max(10, Math.min(top, window.innerHeight - tourTooltip.offsetHeight - 10));
         left = Math.max(10, Math.min(left, window.innerWidth - tourTooltip.offsetWidth - 10));
-        
+
         tourTooltip.style.top = `${top}px`;
         tourTooltip.style.left = `${left}px`;
     }
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             startTour();
         });
     }
-    
+
     if (nextTourBtn) {
         nextTourBtn.addEventListener('click', () => {
             currentTourStep++;
@@ -531,14 +531,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Un-squash the Y axis to match the CSS rotateX(45deg) perspective correctly
             const unSquashedY = y / Math.cos(45 * Math.PI / 180);
-            
-            let angle = Math.atan2(unSquashedY, x) * (180 / Math.PI); 
-            
+
+            let angle = Math.atan2(unSquashedY, x) * (180 / Math.PI);
+
             // Map angle so Top (-90) becomes 0, Right (0) becomes 90
             let adjustedAngle = angle + 90;
             if (adjustedAngle > 180) adjustedAngle -= 360;
             if (adjustedAngle < -180) adjustedAngle += 360;
-            
+
             // Physical hard stops (clamp at bottom dead zone)
             if (adjustedAngle > 135 && adjustedAngle <= 180) adjustedAngle = 135;
             if (adjustedAngle < -135 && adjustedAngle > -180) adjustedAngle = -135;
@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
         plinthPlayBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             console.log("Play lever toggled. Current state:", { isPlaying: state.isPlaying, isPaused: state.isPaused });
-            
+
             // Add temporary active class for tactile feedback
             plinthPlayBtn.classList.add('pushed');
             setTimeout(() => plinthPlayBtn.classList.remove('pushed'), 200);
@@ -595,7 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
         plinthSkipBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             console.log("Skip lever toggled.");
-            
+
             // Add temporary active class for tactile feedback
             plinthSkipBtn.classList.add('pushed');
             setTimeout(() => plinthSkipBtn.classList.remove('pushed'), 200);
@@ -611,6 +611,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     convertBtn.addEventListener('click', () => {
         handleConversion();
+    });
+
+    document.querySelectorAll('.suggestion-tag').forEach(tag => {
+        tag.addEventListener('click', () => {
+            youtubeUrlInput.value = tag.getAttribute('data-query');
+            convertBtn.click();
+        });
+    });
+
+    document.querySelectorAll('.suggestion-tag').forEach(tag => {
+        tag.addEventListener('click', () => {
+            youtubeUrlInput.value = tag.getAttribute('data-query');
+            convertBtn.click();
+        });
     });
 
     if (reserveBtn) {

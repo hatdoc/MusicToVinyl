@@ -663,6 +663,41 @@ body {
     transform: translateY(1px);
 }
 
+.suggestions-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.suggestion-label {
+    font-size: 0.75rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-right: 5px;
+}
+
+.suggestion-tag {
+    background: rgba(197, 160, 89, 0.1);
+    border: 1px solid rgba(197, 160, 89, 0.3);
+    color: var(--copper);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.suggestion-tag:hover {
+    background: rgba(197, 160, 89, 0.25);
+    border-color: rgba(197, 160, 89, 0.6);
+    transform: translateY(-1px);
+}
+
 /* Piano Key Lever Actions */
 .piano-key-deck {
     display: flex;
