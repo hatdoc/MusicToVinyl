@@ -613,18 +613,63 @@ document.addEventListener('DOMContentLoaded', () => {
         handleConversion();
     });
 
-    document.querySelectorAll('.suggestion-tag').forEach(tag => {
-        tag.addEventListener('click', () => {
-            youtubeUrlInput.value = tag.getAttribute('data-query');
-            convertBtn.click();
-        });
-    });
+    // --- Curated Track Suggestions (Randomized) ---
+    const curatedMusic = {
+        "R&B / Soul": [
+            { id: "uQFVqltOXRg", title: "Daniel Caesar", sub: "Get You" },
+            { id: "uzS3WG6__G4", title: "Frank Ocean", sub: "Pink + White" },
+            { id: "U1wFjItE2y0", title: "Steve Lacy", sub: "Dark Red" },
+            { id: "r9hEDhyt_Lg", title: "Mac Ayres", sub: "Easy" }
+        ],
+        "Indie / Acoustic": [
+            { id: "n-ccgXyAxcY", title: "The Black Skirts", sub: "Everything" },
+            { id: "j4Xw5O0wKqA", title: "Lamp", sub: "11/34" },
+            { id: "FrcrYQ-3SCA", title: "Phum Viphurit", sub: "La La La" },
+            { id: "tO4dxvguQDk", title: "Norah Jones", sub: "Don't Know Why" }
+        ],
+        "Lofi / Jazz": [
+            { id: "3zsQsKjIuWM", title: "Chet Baker", sub: "I Fall In Love Too Easily" },
+            { id: "Hrr3dp7zHQY", title: "Ryo Fukui", sub: "Scenery" },
+            { id: "r-Z8KuwI7Gc", title: "Bill Evans", sub: "Autumn Leaves" },
+            { id: "NEqH1S2L8A4", title: "Lofi Jazz", sub: "Cafe Playlist" }
+        ]
+    };
 
-    document.querySelectorAll('.suggestion-tag').forEach(tag => {
-        tag.addEventListener('click', () => {
+    const curatedContainer = document.getElementById('curatedLists');
+    if (curatedContainer) {
+        for (const [genre, tracks] of Object.entries(curatedMusic)) {
+            // Shuffle and pick 2 per category
+            const shuffled = [...tracks].sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, 2);
+            
+            let html = `<div class="curated-genre">
+                <h4 class="genre-title">${genre}</h4>
+                <div class="genre-list">`;
+                
+            selected.forEach(t => {
+                html += `
+                <div class="rec-card suggestion-tag" data-query="${t.title} - ${t.sub}" title="Play: ${t.title} - ${t.sub}">
+                    <img src="https://img.youtube.com/vi/${t.id}/mqdefault.jpg" alt="${t.title}">
+                    <div class="rec-info">
+                        <span class="rec-title">${t.title}</span>
+                        <span class="rec-sub">${t.sub}</span>
+                    </div>
+                </div>
+                `;
+            });
+            
+            html += `</div></div>`;
+            curatedContainer.innerHTML += html;
+        }
+    }
+
+    // Use event delegation so dynamic elements trigger correctly
+    document.body.addEventListener('click', (e) => {
+        const tag = e.target.closest('.suggestion-tag');
+        if (tag) {
             youtubeUrlInput.value = tag.getAttribute('data-query');
             convertBtn.click();
-        });
+        }
     });
 
     if (reserveBtn) {

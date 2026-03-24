@@ -663,28 +663,51 @@ body {
     transform: translateY(1px);
 }
 
-/* Curated Suggestions Grid */
-.curated-suggestions {
-    margin-top: 30px;
-    width: 100%;
+/* Curated Sidebar */
+.curated-sidebar {
+    width: 280px;
+    background: #0a0a0a;
+    border-right: 1px solid #222;
+    padding: 20px 15px;
+    overflow-y: auto;
+    flex-shrink: 0;
+    height: 100%;
 }
 
-.curated-suggestions .suggestion-label {
-    display: block;
-    margin-bottom: 15px;
-    font-size: 0.85rem;
+.curated-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.curated-sidebar::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 3px;
+}
+
+.curated-title {
     color: var(--copper);
-    text-transform: uppercase;
-    letter-spacing: 2px;
     font-family: var(--font-heading);
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    text-align: center;
     border-bottom: 1px dashed #333;
-    padding-bottom: 8px;
+    padding-bottom: 12px;
 }
 
-.suggestions-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+.curated-genre {
+    margin-bottom: 25px;
+}
+
+.genre-title {
+    color: #e0e0e0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+}
+
+.genre-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .rec-card {
@@ -741,9 +764,9 @@ body {
     text-overflow: ellipsis;
 }
 
-@media (max-width: 600px) {
-    .suggestions-grid {
-        grid-template-columns: 1fr;
+@media (max-width: 1000px) {
+    .curated-sidebar {
+        display: none;
     }
 }
 
