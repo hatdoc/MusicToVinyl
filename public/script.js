@@ -54,6 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
             offsetY: -80
         },
         {
+            title: "Reserve (PRO)",
+            text: "Instead of playing immediately, click Reserve to add the track to your Crate queue. Requires a free account.",
+            target: "#reserveBtn",
+            placement: "top",
+            offsetY: -80
+        },
+        {
             title: "Play (⏵) Lever",
             text: "Flick this lever down to start the motor and seamlessly drop the stylus onto your record.",
             target: "#plinthPlayBtn",
