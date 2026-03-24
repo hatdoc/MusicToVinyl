@@ -43,42 +43,7 @@
     </nav>
 
     <div class="app-container">
-        <!-- Sidebar Ad Rail -->
-        <aside class="ad-rail left" style="padding: 15px;">
-            <h3 class="rail-title">Curated for Vinyl</h3>
-            <div class="rail-recommendations">
-                <div class="rec-card suggestion-tag" data-query="Daniel Caesar - Get You" title="Play: Daniel Caesar - Get You">
-                    <img src="https://img.youtube.com/vi/uQFVqltOXRg/mqdefault.jpg" alt="Daniel Caesar">
-                    <div class="rec-info">
-                        <span class="rec-title">Daniel Caesar</span>
-                        <span class="rec-sub">Get You</span>
-                    </div>
-                </div>
-                <div class="rec-card suggestion-tag" data-query="The Black Skirts - Everything" title="Play: The Black Skirts - Everything">
-                    <img src="https://img.youtube.com/vi/n-ccgXyAxcY/mqdefault.jpg" alt="The Black Skirts">
-                    <div class="rec-info">
-                        <span class="rec-title">The Black Skirts</span>
-                        <span class="rec-sub">Everything</span>
-                    </div>
-                </div>
-                <div class="rec-card suggestion-tag" data-query="Norah Jones - Don't Know Why" title="Play: Norah Jones - Don't Know Why">
-                    <img src="https://img.youtube.com/vi/tO4dxvguQDk/mqdefault.jpg" alt="Norah Jones">
-                    <div class="rec-info">
-                        <span class="rec-title">Norah Jones</span>
-                        <span class="rec-sub">Don't Know Why</span>
-                    </div>
-                </div>
-                <div class="rec-card suggestion-tag" data-query="Lofi Jazz Cafe Playlist" title="Play: Jazz Cafe">
-                    <img src="https://img.youtube.com/vi/NEqH1S2L8A4/mqdefault.jpg" alt="Jazz Cafe">
-                    <div class="rec-info">
-                        <span class="rec-title">Lo-Fi Jazz</span>
-                        <span class="rec-sub">Cafe Playlist</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ad-placeholder" style="margin-top: 30px;">Ad Space</div>
-        </aside>
+        <!-- Sidebar Ad Rail removed per user request to free screen space/visibility -->
 
         <main class="main-content">
             <header class="header">
@@ -179,6 +144,40 @@
                 
                 <div id="statusMessage" class="status"></div>
                 
+                <div class="curated-suggestions">
+                    <span class="suggestion-label">Curated for Vinyl</span>
+                    <div class="suggestions-grid">
+                        <div class="rec-card suggestion-tag" data-query="Daniel Caesar - Get You" title="Play: Daniel Caesar - Get You">
+                            <img src="https://img.youtube.com/vi/uQFVqltOXRg/mqdefault.jpg" alt="Daniel Caesar">
+                            <div class="rec-info">
+                                <span class="rec-title">Daniel Caesar</span>
+                                <span class="rec-sub">Get You</span>
+                            </div>
+                        </div>
+                        <div class="rec-card suggestion-tag" data-query="The Black Skirts - Everything" title="Play: The Black Skirts - Everything">
+                            <img src="https://img.youtube.com/vi/n-ccgXyAxcY/mqdefault.jpg" alt="The Black Skirts">
+                            <div class="rec-info">
+                                <span class="rec-title">The Black Skirts</span>
+                                <span class="rec-sub">Everything</span>
+                            </div>
+                        </div>
+                        <div class="rec-card suggestion-tag" data-query="Norah Jones - Don't Know Why" title="Play: Norah Jones - Don't Know Why">
+                            <img src="https://img.youtube.com/vi/tO4dxvguQDk/mqdefault.jpg" alt="Norah Jones">
+                            <div class="rec-info">
+                                <span class="rec-title">Norah Jones</span>
+                                <span class="rec-sub">Don't Know Why</span>
+                            </div>
+                        </div>
+                        <div class="rec-card suggestion-tag" data-query="Lofi Jazz Cafe Playlist" title="Play: Jazz Cafe">
+                            <img src="https://img.youtube.com/vi/NEqH1S2L8A4/mqdefault.jpg" alt="Jazz Cafe">
+                            <div class="rec-info">
+                                <span class="rec-title">Lo-Fi Jazz</span>
+                                <span class="rec-sub">Cafe Playlist</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Affiliate Integration Button -->
                 <button id="affiliateBtn" class="affiliate-btn hidden">🔍 Find this on Real Vinyl</button>
 
@@ -186,30 +185,7 @@
                 <div id="youtube-player-placeholder"></div>
             </section>
 
-            <!-- EDITORIAL CONTENT SECTION (For SEO & AdSense Quality Guidelines) -->
-            <section class="editorial-content">
-                <div class="editorial-container">
-                    <div class="editorial-header">
-                        <h2>The Magic of Analog Sound in a Digital Age</h2>
-                        <p>Rediscovering the depth, imperfection, and tactile joy of vinyl records.</p>
-                    </div>
-                    
-                    <div class="prose-block">
-                        <h3>Why Simulate Vinyl?</h3>
-                        <p>In an era of hyper-compressed, perfectly sterile digital audio streams, our ears often crave the organic imperfections of the past. The physical medium of vinyl records isn't just a nostalgic artifact; it introduces a unique sonic signature. The subtle low-frequency rumble of the turntable motor, the soft hiss of the stylus riding in the groove, and the occasional warm crackle of dust particles all contribute to an active, engaging listening experience. Vinyl Analog bridges the gap, allowing you to wrap your favorite digital tracks in this comforting auditory blanket.</p>
-                    </div>
 
-                    <div class="prose-block">
-                        <h3>How Our Audio Engine Works</h3>
-                        <p>This simulator goes beyond simply overlaying a static sound file. When you drop the needle, our Web Audio API engine spins up a dynamic, generative noise floor. We synthesize authentic 50Hz hum to replicate grounding characteristics of vintage amplifiers. The "Warmth" control actively drives a Biquad low-pass filter, rolling off harsh digital high-end frequencies to mimic the natural compression of tube saturation and physical pressing limitations. Meanwhile, the "Crackle" dial dictates the frequency and amplitude of generative pops and hisses, calculated in real-time to ensure no two playback sessions are ever exactly the same.</p>
-                    </div>
-
-                    <div class="prose-block">
-                        <h3>Building Your Digital Collection</h3>
-                        <p>By connecting to vast digital libraries via URL or search, you can immediately preview how any modern track would sound pressed to wax. If you fall in love with a particular sound, our platform helps you search global vinyl archives to find real, physical pressings of the music you're listening to, encouraging the ongoing support of physical media formats and independent record stores.</p>
-                    </div>
-                </div>
-            </section>
 
             <!-- React Auth Gate Root -->
             <div id="react-auth-root"></div>

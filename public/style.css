@@ -663,26 +663,34 @@ body {
     transform: translateY(1px);
 }
 
-/* Sidebar Recommendations */
-.rail-title {
-    color: var(--copper);
-    font-family: var(--font-heading);
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-    text-align: center;
-    border-bottom: 1px dashed #333;
-    padding-bottom: 10px;
+/* Curated Suggestions Grid */
+.curated-suggestions {
+    margin-top: 30px;
+    width: 100%;
 }
 
-.rail-recommendations {
-    display: flex;
-    flex-direction: column;
+.curated-suggestions .suggestion-label {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 0.85rem;
+    color: var(--copper);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-family: var(--font-heading);
+    border-bottom: 1px dashed #333;
+    padding-bottom: 8px;
+}
+
+.suggestions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 15px;
 }
 
 .rec-card {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
     border: 1px solid #222;
     border-radius: 6px;
@@ -690,6 +698,7 @@ body {
     cursor: pointer;
     transition: all 0.2s;
     text-align: left;
+    height: 70px;
 }
 
 .rec-card:hover {
@@ -699,16 +708,19 @@ body {
 }
 
 .rec-card img {
-    width: 100%;
-    height: 90px;
+    width: 90px;
+    height: 100%;
     object-fit: cover;
-    border-bottom: 2px solid #000;
+    border-right: 2px solid #000;
 }
 
 .rec-card .rec-info {
-    padding: 10px;
+    padding: 0 12px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    overflow: hidden;
 }
 
 .rec-card .rec-title {
@@ -724,6 +736,15 @@ body {
 .rec-card .rec-sub {
     color: #888;
     font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+    .suggestions-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Piano Key Lever Actions */
