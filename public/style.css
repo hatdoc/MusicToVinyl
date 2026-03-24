@@ -320,6 +320,19 @@ body {
     pointer-events: none;
 }
 
+/* Safari/WebKit 3D Hit-Test Workaround: 
+   Extend the parent's bounds so children placed outside the 2D box are still clickable */
+.turntable-hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -100px; /* Encompass the piano keys */
+    opacity: 0;
+    pointer-events: auto;
+}
+
 /* Dust Cover Hinges */
 .dust-cover-hinges {
     position: absolute;
@@ -662,7 +675,6 @@ body {
     /* Never move this position*/
     bottom: -70px;
     left: 25px;
-    transform-style: preserve-3d;
     transform: translateZ(90px);
     z-index: 5000;
     pointer-events: auto !important;
@@ -775,6 +787,11 @@ body {
     text-align: center;
     position: relative;
     z-index: 100;
+    pointer-events: none;
+}
+
+.converter-interface > * {
+    pointer-events: auto;
 }
 
 input[type="text"] {
