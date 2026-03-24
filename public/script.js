@@ -84,7 +84,13 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     function showTourStep(index) {
-        document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+        document.querySelectorAll('.tour-highlight').forEach(el => {
+            el.classList.remove('tour-highlight');
+            if (el.getAttribute('data-tour-pos')) {
+                el.style.position = '';
+                el.removeAttribute('data-tour-pos');
+            }
+        });
         
         if (index >= tourSteps.length) {
             endTour();
@@ -97,6 +103,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!targetEl) {
             showTourStep(index + 1);
             return;
+        }
+        
+        // Ensure z-index works without breaking absolute layouts
+        const compStyle = window.getComputedStyle(targetEl);
+        if (compStyle.position === 'static') {
+            targetEl.setAttribute('data-tour-pos', 'true');
+            targetEl.style.position = 'relative';
         }
         
         targetEl.classList.add('tour-highlight');
@@ -142,7 +155,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function endTour() {
         if (tourContainer) tourContainer.classList.add('hidden');
-        document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+        document.querySelectorAll('.tour-highlight').forEach(el => {
+            el.classList.remove('tour-highlight');
+            if (el.getAttribute('data-tour-pos')) {
+                el.style.position = '';
+                el.removeAttribute('data-tour-pos');
+            }
+        });
     }
 
     if (openUserGuideNav) {

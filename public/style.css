@@ -1162,7 +1162,6 @@ input:checked+.slider:before {
 }
 
 .tour-highlight {
-    position: relative;
     z-index: 10002 !important;
     box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.7), 0 0 30px rgba(197, 160, 89, 0.5) !important;
     border-radius: 8px;
