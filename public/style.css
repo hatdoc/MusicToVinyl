@@ -663,39 +663,67 @@ body {
     transform: translateY(1px);
 }
 
-.suggestions-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 15px;
-    justify-content: center;
-    align-items: center;
-}
-
-.suggestion-label {
-    font-size: 0.75rem;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-right: 5px;
-}
-
-.suggestion-tag {
-    background: rgba(197, 160, 89, 0.1);
-    border: 1px solid rgba(197, 160, 89, 0.3);
+/* Sidebar Recommendations */
+.rail-title {
     color: var(--copper);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    text-align: center;
+    border-bottom: 1px dashed #333;
+    padding-bottom: 10px;
+}
+
+.rail-recommendations {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.rec-card {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+    border: 1px solid #222;
+    border-radius: 6px;
+    overflow: hidden;
     cursor: pointer;
     transition: all 0.2s;
-    font-family: inherit;
+    text-align: left;
 }
 
-.suggestion-tag:hover {
-    background: rgba(197, 160, 89, 0.25);
-    border-color: rgba(197, 160, 89, 0.6);
-    transform: translateY(-1px);
+.rec-card:hover {
+    border-color: var(--copper);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(197, 160, 89, 0.15);
+}
+
+.rec-card img {
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+    border-bottom: 2px solid #000;
+}
+
+.rec-card .rec-info {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.rec-card .rec-title {
+    color: #e0e0e0;
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rec-card .rec-sub {
+    color: #888;
+    font-size: 0.75rem;
 }
 
 /* Piano Key Lever Actions */
