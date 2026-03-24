@@ -601,8 +601,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => plinthSkipBtn.classList.remove('pushed'), 200);
 
             if (!state.isLoggedIn) {
-                statusMessage.textContent = "Log in to skip between archives.";
-                window.dispatchEvent(new Event('requestAuth'));
+                document.getElementById('proModal').classList.remove('hidden');
                 return;
             }
             skipToNext();
@@ -697,11 +696,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (reserveBtn) {
         reserveBtn.addEventListener('click', () => {
             if (!state.isLoggedIn) {
-                statusMessage.textContent = "Log in to reserve this to your crate.";
-                window.dispatchEvent(new Event('requestAuth'));
+                document.getElementById('proModal').classList.remove('hidden');
                 return;
             }
             handleConversion(null, true);
+        });
+    }
+
+    // PRO Modal Handlers
+    const closeProModalBtn = document.getElementById('closeProModal');
+    if (closeProModalBtn) {
+        closeProModalBtn.addEventListener('click', () => {
+            document.getElementById('proModal').classList.add('hidden');
+        });
+    }
+
+    const proAuthBtn = document.getElementById('proAuthBtn');
+    if (proAuthBtn) {
+        proAuthBtn.addEventListener('click', () => {
+            document.getElementById('proModal').classList.add('hidden');
+            window.dispatchEvent(new Event('requestAuth'));
         });
     }
 

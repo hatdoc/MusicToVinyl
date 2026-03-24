@@ -170,6 +170,32 @@
         <aside class="react-crate-container" id="react-crate-root"></aside>
     </div>
 
+    <!-- PRO Upgrade Modal -->
+    <div id="proModal" class="hidden">
+        <div class="tour-overlay"></div>
+        <div class="modal-content wooden-frame pro-modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10005; min-width: 320px; max-width: 500px; padding: 30px;">
+            <button class="close-modal" id="closeProModal" style="position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 24px; color: #888; cursor: pointer;">&times;</button>
+            <h2 class="pro-title">Unlock the Pro Experience</h2>
+            <p style="color: #a4a4a4; font-size: 0.95rem; margin-bottom: 25px;">You've discovered a premium Vinyl Analog feature! Elevate your analog listening experience by upgrading to a PRO account.</p>
+            
+            <ul class="pro-features-list">
+                <li>
+                    <strong>📀 The Digital Crate</strong>
+                    <span>Save your favorite pressings permanently to your curated virtual crate.</span>
+                </li>
+                <li>
+                    <strong>⏭️ Seamless Track Skipping</strong>
+                    <span>Use the mechanical skip lever to instantly drop the needle on the next track in your queue.</span>
+                </li>
+                <li>
+                    <strong>🎵 High-Fidelity Audio</strong>
+                    <span>Unlock higher base bitrate conversions before analog simulation is applied.</span>
+                </li>
+            </ul>
+
+            <button id="proAuthBtn" class="action-btn" style="width: 100%; margin-top: 15px; padding: 15px; font-size: 1.1rem;">Sign Up / Log In to Upgrade</button>
+        </div>
+    </div>
     <!-- Interactive Onboarding Tour Container -->
     <div id="onboardingTour" class="hidden">
         <div class="tour-overlay"></div>

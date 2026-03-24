@@ -1479,3 +1479,43 @@ input:checked+.slider:before {
     color: #a4a4a4;
     margin-bottom: 10px;
 }
+
+/* PRO Features Modal */
+.pro-title {
+    color: var(--copper);
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+    font-family: var(--font-heading);
+    text-align: center;
+}
+
+.pro-features-list {
+    text-align: left;
+    margin: 25px 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.pro-features-list li {
+    background: rgba(197, 160, 89, 0.05);
+    border: 1px solid rgba(197, 160, 89, 0.2);
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.pro-features-list strong {
+    color: #e0e0e0;
+    font-size: 1.1rem;
+}
+
+.pro-features-list span {
+    color: #a4a4a4;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
