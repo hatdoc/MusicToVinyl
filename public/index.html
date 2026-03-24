@@ -191,19 +191,45 @@
 
     <!-- User Guide Modal -->
     <div id="userGuideModal" class="modal hidden">
-        <div class="modal-content wooden-frame user-guide-content">
+        <div class="modal-content wooden-frame user-guide-content" style="max-width: 640px; padding: 40px;">
             <span class="close-modal" id="closeUserGuide">&times;</span>
-            <h2 class="handwritten" style="color: var(--accent-color); font-size: 2rem; margin-bottom: 20px;">How to Play Records</h2>
+            <h2 class="handwritten" style="color: var(--accent-color); font-size: 2.5rem; margin-bottom: 25px;">How to Play Records</h2>
             
-            <div class="guide-steps" style="text-align: left; color: #a4a4a4; line-height: 1.6;">
-                <p><strong>1. Find Music:</strong> Paste a YouTube URL or type a song name into the search bar.</p>
-                <p><strong>2. Draw Record:</strong> Click the button to pull the track from the digital ether and press it onto our virtual vinyl.</p>
-                <p><strong>3. Drop the Needle:</strong> Use the <strong>⏵ (Play)</strong> lever on the bottom-left edge of the turntable to start the motor and drop the stylus.</p>
-                <p><strong>4. Dial in the Mix:</strong> Adjust the <strong>Volume</strong>, <strong>Warmth</strong> (muffles harsh digital highs), and <strong>Crackle</strong> (adds surface noise) using the dials on the right.</p>
-                <p><strong>5. Reserve:</strong> Create an account to save tracks to your personal crate for later listening.</p>
+            <div class="guide-grid">
+                <div class="guide-item">
+                    <svg class="curly-icon" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8a6 6 0 1 1-6 6v-4"/><path d="M13 6l2 2-2 2"/></svg>
+                    <div class="guide-text">
+                        <strong>Draw Record / Reserve</strong>
+                        <p>Paste a YouTube URL or type a song into the input bar. Click "Draw Record" to instantly press it to wax. "Reserve" puts the track in your upcoming queue.</p>
+                    </div>
+                </div>
+
+                <div class="guide-item">
+                    <svg class="curly-icon" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3s-4 2-4 7 4 7 8 7a7 7 0 0 0 7-7"/><polyline points="16 13 20 17 24 13"/></svg>
+                    <div class="guide-text">
+                        <strong>Play (⏵) & Skip (⏭) Levers</strong>
+                        <p>Located on the bottom-left edge of the wood plinth. Flick the Play lever to drop the needle and start the motor. Use Skip to move through your crate.</p>
+                    </div>
+                </div>
+
+                <div class="guide-item">
+                    <svg class="curly-icon" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21H3v-8a9 9 0 0 1 18 0z"/><path d="M12 13v8"/><path d="M8 17l4-4 4 4"/></svg>
+                    <div class="guide-text">
+                        <strong>Vol, Warmth, & Crackle Knobs</strong>
+                        <p>Drag the circular knobs on the right panel in a circular motion. <em>Warmth</em> actively filters out harsh digital high frequencies. <em>Crackle</em> dials in generative surface noise and pops.</p>
+                    </div>
+                </div>
+
+                <div class="guide-item pro-feature-guide">
+                    <svg class="curly-icon" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <div class="guide-text">
+                        <strong>Log In / PRO Features</strong>
+                        <p>Creating an account permanently saves your 10-track listening history to your virtual Crate, unlocks the ability to instantly check global marketplaces (like Discogs) for the physical vinyl of what you're hearing, and guarantees a pristine 50Hz analog grounding hum.</p>
+                    </div>
+                </div>
             </div>
             
-            <button id="gotItBtn" class="btn" style="margin-top: 25px;">Let's Spin</button>
+            <button id="gotItBtn" class="btn" style="margin-top: 35px; min-width: 200px;">Let's Spin</button>
         </div>
     </div>
 
