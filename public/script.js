@@ -122,9 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
             statusMessage.textContent = "Now Playing: Analog Stream";
             plinthPlayBtn.textContent = "⏸";
             plinthPlayBtn.classList.add('active');
+            vinylRecord.classList.add('spinning');
+            turntableHero.classList.add('playing');
         } else if (event.data == YT.PlayerState.PAUSED) {
             vinylRecord.classList.remove('spinning');
-            document.querySelector('.turntable-hero').classList.remove('playing');
+            turntableHero.classList.remove('playing');
             plinthPlayBtn.textContent = "⏵";
             plinthPlayBtn.classList.remove('active');
         }
@@ -490,7 +492,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Visuals
         vinylRecord.classList.add('spinning');
         turntableHero.classList.add('playing');
-        tonearm.style.transform = "translate(-10px, -40px) translateZ(40px) rotateZ(35deg)";
 
         plinthPlayBtn.textContent = "⏸";
         plinthPlayBtn.classList.add('active');
@@ -569,7 +570,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         vinylRecord.classList.remove('spinning');
         turntableHero.classList.remove('playing');
-        tonearm.style.transform = "translate(-10px, -40px) translateZ(40px) rotateZ(-12deg)";
         plinthPlayBtn.textContent = "⏵";
         plinthPlayBtn.classList.remove('active');
         stopVinylNoise();
