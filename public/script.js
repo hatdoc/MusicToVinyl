@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.loop = true;
 
         const gainNode = state.audioContext.createGain();
-        gainNode.gain.value = Math.pow(state.knobs.crackle, 3) * 1.0; // Cubic curve for massive max limit
+        gainNode.gain.value = state.knobs.crackle * 0.25; // Linear curve for audible presence at low values, strict 0.25 max limit
 
         source.connect(gainNode);
         gainNode.connect(state.nodes.noiseFilter); // Route through warmth filter
@@ -504,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 3) * 0.4;
             if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 9000); // Deeply muffle high-end
         } else if (type === 'crackle' && state.nodes.noiseGain) {
-            state.nodes.noiseGain.gain.value = Math.pow(val, 3) * 1.0;
+            state.nodes.noiseGain.gain.value = val * 0.25;
         }
     }
 
