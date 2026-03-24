@@ -112,6 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function onPlayerStateChange(event) {
+        if (state.isTransitioning) return; // Prevent YouTube events from interrupting the needle drop animation
+
         if (event.data == YT.PlayerState.ENDED) {
             if (state.queue.length > 0) {
                 skipToNext();
@@ -485,9 +487,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Playback State Machine ---
     function startPlayback(videoId) {
+        state.isTransitioning = true;
         state.isPlaying = true;
         state.isPaused = false;
         state.plays++;
+
+        // Instantly silence any currently playing track to create the 2-second drop needle gap
+        if (state.youtubePlayer && state.youtubePlayer.stopVideo) {
+            state.youtubePlayer.stopVideo();
+        }
+        stopVinylNoise();
 
         // Visuals
         vinylRecord.classList.add('spinning');
@@ -522,6 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Wait 2 seconds for the needle drop and buzzing to complete before starting the music
         setTimeout(() => {
+            state.isTransitioning = false;
             if (state.isPlaying && !state.isPaused) {
                 playVinylNoise();
                 if (state.youtubePlayer && state.youtubePlayer.loadVideoById) {
