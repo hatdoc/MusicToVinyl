@@ -671,7 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
             selected.forEach(t => {
                 html += `
                 <div class="rec-card suggestion-tag" data-query="${t.title} - ${t.sub}" title="Play: ${t.title} - ${t.sub}">
-                    <img src="https://img.youtube.com/vi/${t.id}/mqdefault.jpg" alt="${t.title}">
+                    <img src="https://i.ytimg.com/vi/${t.id}/0.jpg" alt="${t.title}">
                     <div class="rec-info">
                         <span class="rec-title">${t.title}</span>
                         <span class="rec-sub">${t.sub}</span>
