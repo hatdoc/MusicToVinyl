@@ -745,17 +745,25 @@ body {
     margin-bottom: 12px;
     cursor: pointer;
     transform-style: preserve-3d;
-    transform: translateZ(6px);
+    transform: translateZ(6px); /* Fixed completely, no rotation here */
     box-shadow:
         0px 1px 0 #1a1a1a,
         0px 2px 0 #151515,
         0px 3px 0 #111,
         0px 4px 0 #0a0a0a,
         0px 12px 15px rgba(0, 0, 0, 0.8);
-    /* Knurled edge */
+}
+
+.knob::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
     background-image:
         radial-gradient(circle at 30% 30%, #222, #000),
         repeating-conic-gradient(from 0deg, rgba(0, 0, 0, 0.2) 0deg 1deg, transparent 1deg 2deg);
+    transform: rotate(var(--knob-rot, -135deg));
+    z-index: 1;
 }
 
 .knob .indicator {
@@ -765,10 +773,11 @@ body {
     position: absolute;
     top: 4px;
     left: 50%;
-    transform: translateX(-50%) rotate(0deg);
+    transform: translateX(-50%) rotate(var(--knob-rot, -135deg));
     transform-origin: 50% 13.5px;
     border-radius: 1px;
     box-shadow: 0 0 3px var(--copper-glow);
+    z-index: 2;
 }
 
 .knob-group label {

@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function updateVisual(val) {
             const rotation = (val * 270) - 135; // -135 to +135 degrees
-            knob.style.transform = `translateZ(6px) rotate(${rotation}deg)`;
+            knob.style.setProperty('--knob-rot', `${rotation}deg`);
         }
 
         // Initialize positions
