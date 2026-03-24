@@ -619,19 +619,41 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: "uQFVqltOXRg", title: "Daniel Caesar", sub: "Get You" },
             { id: "uzS3WG6__G4", title: "Frank Ocean", sub: "Pink + White" },
             { id: "U1wFjItE2y0", title: "Steve Lacy", sub: "Dark Red" },
-            { id: "r9hEDhyt_Lg", title: "Mac Ayres", sub: "Easy" }
+            { id: "r9hEDhyt_Lg", title: "Mac Ayres", sub: "Easy" },
+            { id: "6WzC1Pymh1Q", title: "Daniel Caesar", sub: "Japanese Denim" },
+            { id: "vBgiPtoXQOA", title: "H.E.R.", sub: "Best Part" },
+            { id: "-CPCs7vVzBg", title: "Erykah Badu", sub: "On & On" },
+            { id: "zOyjbbt_0x4", title: "D'Angelo", sub: "Brown Sugar" },
+            { id: "4TYv2PhG89A", title: "Sade", sub: "Smooth Operator" },
+            { id: "tB0vD_PIfY0", title: "Bruno Major", sub: "Easily" },
+            { id: "by3yR8qUP0s", title: "Khalid", sub: "Location" },
+            { id: "K3Qzzggn--s", title: "Joji", sub: "Slow Dancing" }
         ],
         "Indie / Acoustic": [
             { id: "n-ccgXyAxcY", title: "The Black Skirts", sub: "Everything" },
-            { id: "j4Xw5O0wKqA", title: "Lamp", sub: "11/34" },
             { id: "FrcrYQ-3SCA", title: "Phum Viphurit", sub: "La La La" },
-            { id: "tO4dxvguQDk", title: "Norah Jones", sub: "Don't Know Why" }
+            { id: "tO4dxvguQDk", title: "Norah Jones", sub: "Don't Know Why" },
+            { id: "pXWwG91T6Jk", title: "Mac DeMarco", sub: "Chamber Of Reflection" },
+            { id: "mng1GvS43Qc", title: "Clairo", sub: "Pretty Girl" },
+            { id: "Z9e7kHn8uA8", title: "Rex Orange", sub: "Sunflower" },
+            { id: "TWcyIpul8Cg", title: "Bon Iver", sub: "Holocene" },
+            { id: "a8aPyBr-_S0", title: "Iron & Wine", sub: "Naked As We Came" },
+            { id: "y8AWFf7EAc4", title: "Jeff Buckley", sub: "Hallelujah" },
+            { id: "u5CVsCnxyXg", title: "Radiohead", sub: "No Surprises" },
+            { id: "ImKY6TZEyrI", title: "Mazzy Star", sub: "Fade Into You" }
         ],
         "Lofi / Jazz": [
             { id: "3zsQsKjIuWM", title: "Chet Baker", sub: "I Fall In Love Too Easily" },
             { id: "Hrr3dp7zHQY", title: "Ryo Fukui", sub: "Scenery" },
             { id: "r-Z8KuwI7Gc", title: "Bill Evans", sub: "Autumn Leaves" },
-            { id: "NEqH1S2L8A4", title: "Lofi Jazz", sub: "Cafe Playlist" }
+            { id: "NEqH1S2L8A4", title: "Lofi Jazz", sub: "Cafe Playlist" },
+            { id: "PoPL7BExSQU", title: "Miles Davis", sub: "Blue In Green" },
+            { id: "sRQamHcgA1U", title: "John Coltrane", sub: "In A Sentimental Mood" },
+            { id: "tT9Eh8DP7cU", title: "Dave Brubeck", sub: "Take Five" },
+            { id: "g9hwjQBQFIo", title: "Nujabes", sub: "Aruarian Dance" },
+            { id: "8PAOly_4XFk", title: "J Dilla", sub: "Life" },
+            { id: "ZgP0aUKnmNw", title: "Mndsgn", sub: "Camelblues" },
+            { id: "-wWbA-gmb4E", title: "Thelonious Monk", sub: "'Round Midnight" }
         ]
     };
 
