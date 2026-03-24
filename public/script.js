@@ -33,35 +33,138 @@ document.addEventListener('DOMContentLoaded', () => {
     const sleeveArtist = document.getElementById('sleeveArtist');
     const affiliateBtn = document.getElementById('affiliateBtn');
 
-    // User Guide Modal Elements
-    const userGuideModal = document.getElementById('userGuideModal');
+    // --- Onboarding Tour Logic ---
+    const tourContainer = document.getElementById('onboardingTour');
     const openUserGuideNav = document.getElementById('openUserGuideNav');
-    const closeUserGuide = document.getElementById('closeUserGuide');
-    const gotItBtn = document.getElementById('gotItBtn');
+    const tourTitle = document.getElementById('tourTitle');
+    const tourText = document.getElementById('tourText');
+    const tourCounter = document.getElementById('tourStepCounter');
+    const tourTooltip = document.getElementById('tourTooltip');
+    const nextTourBtn = document.getElementById('nextTourBtn');
+    const closeTourBtn = document.getElementById('closeTour');
 
-    // --- User Guide Logic ---
-    function showUserGuide() {
-        if (userGuideModal) userGuideModal.classList.remove('hidden');
+    let currentTourStep = 0;
+    
+    const tourSteps = [
+        {
+            title: "Find & Draw Record",
+            text: "Paste a YouTube link or type a song here, then click Draw Record to instantly press it to wax.",
+            target: ".converter-interface",
+            placement: "top",
+            offsetY: -80
+        },
+        {
+            title: "Play (⏵) Lever",
+            text: "Flick this lever down to start the motor and seamlessly drop the stylus onto your record.",
+            target: "#plinthPlayBtn",
+            placement: "right",
+            offsetX: 80
+        },
+        {
+            title: "Skip (⏭) Lever",
+            text: "Instantly skip to the next track in your crate queue without breaking the immersion.",
+            target: "#plinthSkipBtn",
+            placement: "right",
+            offsetX: 80
+        },
+        {
+            title: "Analog Mix Knobs",
+            text: "Drag these knobs in a circle. Warmth filters out harsh digital highs. Crackle dials in true generative surface noise.",
+            target: ".panel-controls",
+            placement: "left",
+            offsetX: -80
+        },
+        {
+            title: "PRO Features & Crate",
+            text: "Log in to permanently save your 10-track crate history and unlock live Discogs vinyl pricing for the tracks you hear.",
+            target: "#react-crate-root",
+            placement: "left",
+            offsetX: -40
+        }
+    ];
+
+    function showTourStep(index) {
+        document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+        
+        if (index >= tourSteps.length) {
+            endTour();
+            return;
+        }
+
+        const step = tourSteps[index];
+        const targetEl = document.querySelector(step.target);
+        
+        if (!targetEl) {
+            showTourStep(index + 1);
+            return;
+        }
+        
+        targetEl.classList.add('tour-highlight');
+        tourTitle.textContent = step.title;
+        tourText.textContent = step.text;
+        tourCounter.textContent = `${index + 1}/${tourSteps.length}`;
+        nextTourBtn.textContent = index === tourSteps.length - 1 ? "Start Listening" : "Next ➔";
+        
+        tourTooltip.setAttribute('data-placement', step.placement);
+        
+        // Exact positional tracking
+        const rect = targetEl.getBoundingClientRect();
+        let top = 0, left = 0;
+        
+        // Account for current rotation/transform scaling context
+        if (step.placement === 'top') {
+            top = rect.top - tourTooltip.offsetHeight + (step.offsetY || -20);
+            left = rect.left + (rect.width / 2) - (tourTooltip.offsetWidth / 2);
+        } else if (step.placement === 'bottom') {
+            top = rect.bottom + (step.offsetY || 20);
+            left = rect.left + (rect.width / 2) - (tourTooltip.offsetWidth / 2);
+        } else if (step.placement === 'left') {
+            top = rect.top + (rect.height / 2) - (tourTooltip.offsetHeight / 2);
+            left = rect.left - tourTooltip.offsetWidth + (step.offsetX || -20);
+        } else if (step.placement === 'right') {
+            top = rect.top + (rect.height / 2) - (tourTooltip.offsetHeight / 2);
+            left = rect.right + (step.offsetX || 20);
+        }
+        
+        // Window bounding collision guard
+        top = Math.max(10, Math.min(top, window.innerHeight - tourTooltip.offsetHeight - 10));
+        left = Math.max(10, Math.min(left, window.innerWidth - tourTooltip.offsetWidth - 10));
+        
+        tourTooltip.style.top = `${top}px`;
+        tourTooltip.style.left = `${left}px`;
     }
 
-    function hideUserGuide() {
-        if (userGuideModal) userGuideModal.classList.add('hidden');
+    function startTour() {
+        if (tourContainer) tourContainer.classList.remove('hidden');
+        currentTourStep = 0;
+        showTourStep(0);
+    }
+
+    function endTour() {
+        if (tourContainer) tourContainer.classList.add('hidden');
+        document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
     }
 
     if (openUserGuideNav) {
         openUserGuideNav.addEventListener('click', (e) => {
             e.preventDefault();
-            showUserGuide();
+            startTour();
+        });
+    }
+    
+    if (nextTourBtn) {
+        nextTourBtn.addEventListener('click', () => {
+            currentTourStep++;
+            showTourStep(currentTourStep);
         });
     }
 
-    if (closeUserGuide) closeUserGuide.addEventListener('click', hideUserGuide);
-    if (gotItBtn) gotItBtn.addEventListener('click', hideUserGuide);
+    if (closeTourBtn) closeTourBtn.addEventListener('click', endTour);
 
     // Show on first visit
-    if (!localStorage.getItem('vinyl_guide_seen')) {
-        showUserGuide();
-        localStorage.setItem('vinyl_guide_seen', 'true');
+    if (!localStorage.getItem('vinyl_tour_seen')) {
+        startTour();
+        localStorage.setItem('vinyl_tour_seen', 'true');
     }
 
     // --- Theme Logic ---

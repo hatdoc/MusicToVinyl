@@ -1085,6 +1085,88 @@ input:checked+.slider:before {
     font-size: 24px;
     cursor: pointer;
     transition: color 0.2s;
+    background: transparent;
+    border: none;
+}
+
+/* --- INTERACTIVE ONBOARDING TOUR --- */
+#onboardingTour {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+.tour-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    pointer-events: auto;
+    transition: opacity 0.3s;
+}
+
+.tour-tooltip {
+    position: absolute;
+    width: 320px;
+    padding: 25px;
+    pointer-events: auto;
+    transition: top 0.5s cubic-bezier(0.4, 0, 0.2, 1), left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10001;
+}
+
+.close-tour {
+    position: absolute;
+    top: 10px; right: 15px;
+    background: none; border: none; color: #888; font-size: 1.5rem; cursor: pointer;
+}
+
+.close-tour:hover { color: var(--copper); }
+
+.tour-arrow {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+/* Spiral / Curved SVG Arrows */
+.tour-tooltip[data-placement="top"] .tour-arrow {
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50,10 C80,30 80,70 50,90' stroke='%23C5A059' stroke-width='4' stroke-linecap='round'/%3E%3Cpolygon points='50,95 40,80 60,80' fill='%23C5A059'/%3E%3C/svg%3E");
+}
+
+.tour-tooltip[data-placement="bottom"] .tour-arrow {
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50,90 C80,70 80,30 50,10' stroke='%23C5A059' stroke-width='4' stroke-linecap='round'/%3E%3Cpolygon points='50,5 40,20 60,20' fill='%23C5A059'/%3E%3C/svg%3E");
+}
+
+.tour-tooltip[data-placement="left"] .tour-arrow {
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10,50 C30,80 70,80 90,50' stroke='%23C5A059' stroke-width='4' stroke-linecap='round'/%3E%3Cpolygon points='95,50 80,40 80,60' fill='%23C5A059'/%3E%3C/svg%3E");
+}
+
+.tour-tooltip[data-placement="right"] .tour-arrow {
+    left: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M90,50 C70,20 30,20 10,50' stroke='%23C5A059' stroke-width='4' stroke-linecap='round'/%3E%3Cpolygon points='5,50 20,40 20,60' fill='%23C5A059'/%3E%3C/svg%3E");
+}
+
+.tour-highlight {
+    position: relative;
+    z-index: 10002 !important;
+    box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.7), 0 0 30px rgba(197, 160, 89, 0.5) !important;
+    border-radius: 8px;
+    transition: box-shadow 0.3s;
 }
 
 .close-modal:hover {

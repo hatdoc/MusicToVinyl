@@ -189,47 +189,18 @@
         <aside class="react-crate-container" id="react-crate-root"></aside>
     </div>
 
-    <!-- User Guide Modal -->
-    <div id="userGuideModal" class="modal hidden">
-        <div class="modal-content wooden-frame user-guide-content" style="max-width: 640px; padding: 40px;">
-            <span class="close-modal" id="closeUserGuide">&times;</span>
-            <h2 class="handwritten" style="color: var(--accent-color); font-size: 2.5rem; margin-bottom: 25px;">How to Play Records</h2>
-            
-            <div class="guide-grid">
-                <div class="guide-item">
-                    <svg class="curly-icon" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8a6 6 0 1 1-6 6v-4"/><path d="M13 6l2 2-2 2"/></svg>
-                    <div class="guide-text">
-                        <strong>Draw Record / Reserve</strong>
-                        <p>Paste a YouTube URL or type a song into the input bar. Click "Draw Record" to instantly press it to wax. "Reserve" puts the track in your upcoming queue.</p>
-                    </div>
-                </div>
-
-                <div class="guide-item">
-                    <svg class="curly-icon" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3s-4 2-4 7 4 7 8 7a7 7 0 0 0 7-7"/><polyline points="16 13 20 17 24 13"/></svg>
-                    <div class="guide-text">
-                        <strong>Play (⏵) & Skip (⏭) Levers</strong>
-                        <p>Located on the bottom-left edge of the wood plinth. Flick the Play lever to drop the needle and start the motor. Use Skip to move through your crate.</p>
-                    </div>
-                </div>
-
-                <div class="guide-item">
-                    <svg class="curly-icon" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21H3v-8a9 9 0 0 1 18 0z"/><path d="M12 13v8"/><path d="M8 17l4-4 4 4"/></svg>
-                    <div class="guide-text">
-                        <strong>Vol, Warmth, & Crackle Knobs</strong>
-                        <p>Drag the circular knobs on the right panel in a circular motion. <em>Warmth</em> actively filters out harsh digital high frequencies. <em>Crackle</em> dials in generative surface noise and pops.</p>
-                    </div>
-                </div>
-
-                <div class="guide-item pro-feature-guide">
-                    <svg class="curly-icon" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                    <div class="guide-text">
-                        <strong>Log In / PRO Features</strong>
-                        <p>Creating an account permanently saves your 10-track listening history to your virtual Crate, unlocks the ability to instantly check global marketplaces (like Discogs) for the physical vinyl of what you're hearing, and guarantees a pristine 50Hz analog grounding hum.</p>
-                    </div>
-                </div>
+    <!-- Interactive Onboarding Tour Container -->
+    <div id="onboardingTour" class="hidden">
+        <div class="tour-overlay"></div>
+        <div id="tourTooltip" class="tour-tooltip wooden-frame">
+            <button class="close-tour" id="closeTour">&times;</button>
+            <div id="tourArrow" class="tour-arrow"></div>
+            <h3 id="tourTitle" style="color: var(--accent-color); margin-top: 0; font-family: var(--font-heading); font-size: 1.5rem;">Title</h3>
+            <p id="tourText" style="color: #a4a4a4; font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">Text</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="tourStepCounter" style="font-size: 0.75rem; color: #666; font-weight: bold; letter-spacing: 1px;">1/5</span>
+                <button id="nextTourBtn" class="btn" style="padding: 8px 20px;">Next</button>
             </div>
-            
-            <button id="gotItBtn" class="btn" style="margin-top: 35px; min-width: 200px;">Let's Spin</button>
         </div>
     </div>
 
