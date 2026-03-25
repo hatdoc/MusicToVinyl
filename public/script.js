@@ -250,7 +250,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 stopPlayback();
             }
         } else if (event.data == YT.PlayerState.PLAYING) {
-            statusMessage.textContent = "Now Playing: Analog Stream";
+            const videoData = event.target.getVideoData();
+            statusMessage.textContent = `Now Playing: ${videoData.title || "Analog Stream"}`;
             plinthPlayBtn.textContent = "⏸";
             plinthPlayBtn.classList.add('active');
             vinylRecord.classList.add('spinning');
