@@ -127,6 +127,12 @@ body.theme-obsidian {
     --plinth-shadow: rgba(0, 0, 0, 0.8);
     --knob-main: linear-gradient(145deg, #1a1a1a, #050505);
     --metal-edge: linear-gradient(145deg, #333, #111);
+    
+    --sidebar-bg: #0a0a0a;
+    --card-bg: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+    --border-color: #222;
+    --text-main: #e0e0e0;
+    --text-sub: #888;
 }
 
 body.theme-walnut {
@@ -138,6 +144,12 @@ body.theme-walnut {
     --plinth-shadow: rgba(0, 0, 0, 0.9);
     --knob-main: linear-gradient(145deg, #3d2b1f, #1a0f0d);
     --metal-edge: linear-gradient(145deg, #bbb, #555);
+
+    --sidebar-bg: #120c0a;
+    --card-bg: linear-gradient(145deg, #1f1411, #0f0a08);
+    --border-color: #2a1b16;
+    --text-main: #e0e0e0;
+    --text-sub: #a4a4a4;
 }
 
 body.theme-warm {
@@ -149,6 +161,12 @@ body.theme-warm {
     --plinth-shadow: rgba(0, 0, 0, 0.8);
     --knob-main: linear-gradient(145deg, #b34a17, #5c2307);
     --metal-edge: linear-gradient(145deg, #fff, #e26a2c);
+
+    --sidebar-bg: #1a0a05;
+    --card-bg: linear-gradient(145deg, #2b1209, #170904);
+    --border-color: #3b170c;
+    --text-main: #f0f0f0;
+    --text-sub: #b8b8b8;
 }
 
 body.theme-alabaster {
@@ -160,6 +178,12 @@ body.theme-alabaster {
     --plinth-shadow: rgba(0, 0, 0, 0.15);
     --knob-main: linear-gradient(145deg, #ffffff, #e6e6e6);
     --metal-edge: linear-gradient(145deg, #fff, #bdc3c7);
+
+    --sidebar-bg: #ffffff;
+    --card-bg: linear-gradient(145deg, #f9f9f9, #f0f0f0);
+    --border-color: #e0e0e0;
+    --text-main: #333333;
+    --text-sub: #777777;
 }
 
 body {
@@ -666,8 +690,8 @@ body {
 /* Curated Sidebar */
 .curated-sidebar {
     width: 280px;
-    background: #0a0a0a;
-    border-right: 1px solid #222;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
     padding: 20px 15px;
     overflow-y: auto;
     flex-shrink: 0;
@@ -678,7 +702,7 @@ body {
     width: 6px;
 }
 .curated-sidebar::-webkit-scrollbar-thumb {
-    background: #333;
+    background: var(--border-color);
     border-radius: 3px;
 }
 
@@ -688,7 +712,7 @@ body {
     font-size: 1.2rem;
     margin-bottom: 25px;
     text-align: center;
-    border-bottom: 1px dashed #333;
+    border-bottom: 1px dashed var(--border-color);
     padding-bottom: 12px;
 }
 
@@ -697,7 +721,7 @@ body {
 }
 
 .genre-title {
-    color: #e0e0e0;
+    color: var(--text-main);
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -714,8 +738,8 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
-    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
-    border: 1px solid #222;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     overflow: hidden;
     cursor: pointer;
@@ -734,7 +758,7 @@ body {
     width: 90px;
     height: 100%;
     object-fit: cover;
-    border-right: 2px solid #000;
+    border-right: 2px solid var(--border-color);
 }
 
 .rec-card .rec-info {
@@ -747,7 +771,7 @@ body {
 }
 
 .rec-card .rec-title {
-    color: #e0e0e0;
+    color: var(--text-main);
     font-weight: bold;
     font-size: 0.85rem;
     margin-bottom: 3px;
@@ -757,7 +781,7 @@ body {
 }
 
 .rec-card .rec-sub {
-    color: #888;
+    color: var(--text-sub);
     font-size: 0.75rem;
     white-space: nowrap;
     overflow: hidden;
@@ -1154,8 +1178,8 @@ input:checked+.slider:before {
 /* React Containers & Modals */
 .react-crate-container {
     width: 300px;
-    background: #0a0a0a;
-    border-left: 1px solid #222;
+    background: var(--sidebar-bg);
+    border-left: 1px solid var(--border-color);
     z-index: 20;
 }
 
@@ -1363,7 +1387,7 @@ input:checked+.slider:before {
     .react-crate-container {
         width: 100% !important;
         border-left: none;
-        border-top: 1px solid #333;
+        border-top: 1px solid var(--border-color);
         flex: none;
         height: auto !important;
         min-height: 500px;

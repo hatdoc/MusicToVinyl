@@ -272,14 +272,14 @@ function VirtualCrate() {
     };
 
     return (
-        <div style={{padding: '20px', color: '#e0e0e0', height: '100%', borderLeft: '1px solid #333', background: '#0a0a0a', display: 'flex', flexDirection: 'column'}}>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333', paddingBottom: '10px'}}>
+        <div style={{padding: '20px', color: 'var(--text-main)', height: '100%', borderLeft: '1px solid var(--border-color)', background: 'transparent', display: 'flex', flexDirection: 'column'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px'}}>
                 <h3 style={{color: '#C5A059', margin: 0, fontFamily: 'var(--font-heading)'}}>Vinyl Crate</h3>
                 {isPro ? (
                     <button onClick={async () => {
                         await supabase.auth.signOut();
                         window.location.reload();
-                    }} style={{background: 'transparent', border: '1px solid #444', color: '#888', padding: '4px 10px', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer'}}>Log Out</button>
+                    }} style={{background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-sub)', padding: '4px 10px', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer'}}>Log Out</button>
                 ) : (
                     <button onClick={() => window.dispatchEvent(new Event('requestAuth'))} style={{background: 'transparent', border: '1px solid #C5A059', color: '#C5A059', padding: '4px 10px', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer'}}>Log In</button>
                 )}
@@ -288,20 +288,20 @@ function VirtualCrate() {
             <div style={{display: 'flex', gap: '10px', margin: '15px 0'}}>
                 <button 
                     onClick={() => setView('history')}
-                    style={{flex: 1, padding: '5px', fontSize: '0.65rem', background: view === 'history' ? '#C5A059' : '#222', color: view === 'history' ? '#000' : '#888', border: 'none', borderRadius: '4px', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 'bold'}}
+                    style={{flex: 1, padding: '5px', fontSize: '0.65rem', background: view === 'history' ? '#C5A059' : 'var(--card-bg)', color: view === 'history' ? '#000' : 'var(--text-sub)', border: 'none', borderRadius: '4px', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 'bold'}}
                 >
                     History
                 </button>
                 <button 
                     onClick={() => setView('queue')}
-                    style={{flex: 1, padding: '5px', fontSize: '0.65rem', background: view === 'queue' ? '#C5A059' : '#222', color: view === 'queue' ? '#000' : '#888', border: 'none', borderRadius: '4px', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 'bold'}}
+                    style={{flex: 1, padding: '5px', fontSize: '0.65rem', background: view === 'queue' ? '#C5A059' : 'var(--card-bg)', color: view === 'queue' ? '#000' : 'var(--text-sub)', border: 'none', borderRadius: '4px', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 'bold'}}
                 >
                     Reserved ({queue.length})
                 </button>
             </div>
             
             {/* Sidebar AdSense placeholder */}
-            <div style={{margin: '10px 0', padding: '20px', background: '#111', textAlign: 'center', border: '1px dashed #444', fontSize: '0.7rem', color: '#666'}}>
+            <div style={{margin: '10px 0', padding: '20px', background: 'var(--card-bg)', textAlign: 'center', border: '1px dashed var(--border-color)', fontSize: '0.7rem', color: 'var(--text-sub)'}}>
                 AdSense Zone
             </div>
             
@@ -311,18 +311,18 @@ function VirtualCrate() {
                         <div 
                             key={item.id} 
                             onClick={() => playHistoryTrack(item)}
-                            style={{padding: '10px 0', borderBottom: '1px solid #1a1a1a', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s', position: 'relative'}}
-                            onMouseEnter={(e) => e.currentTarget.style.background = '#1a1a1a'}
+                            style={{padding: '10px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s', position: 'relative'}}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'var(--card-bg)'}
                             onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                             title="Click to play this Vinyl"
                         >
                             <img 
                                 src={`https://img.youtube.com/vi/${item.youtube_id}/mqdefault.jpg`} 
                                 alt="Cover" 
-                                style={{width: '80px', height: '55px', minWidth: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #333'}}
+                                style={{width: '80px', height: '55px', minWidth: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)'}}
                             />
                             <div style={{flex: 1, overflow: 'hidden'}}>
-                                <div style={{fontSize: '0.85rem', lineHeight: '1.3', color: '#e0e0e0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>{item.title}</div>
+                                <div style={{fontSize: '0.85rem', lineHeight: '1.3', color: 'var(--text-main)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>{item.title}</div>
                                 {isPro && (
                                     <button 
                                         onClick={(e) => queueHistoryTrack(item, e)}
@@ -336,16 +336,16 @@ function VirtualCrate() {
                     ))
                 ) : (
                     queue.length === 0 ? (
-                        <div style={{textAlign: 'center', padding: '40px 20px', color: '#555', fontSize: '0.8rem'}}>No tracks reserved yet.</div>
+                        <div style={{textAlign: 'center', padding: '40px 20px', color: 'var(--text-sub)', fontSize: '0.8rem'}}>No tracks reserved yet.</div>
                     ) : (
                         queue.map((item, index) => (
                             <div 
                                 key={index}
-                                style={{padding: '10px 0', borderBottom: '1px solid #1a1a1a', display: 'flex', gap: '12px', alignItems: 'center'}}
+                                style={{padding: '10px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', gap: '12px', alignItems: 'center'}}
                             >
                                 <div style={{width: '20px', fontSize: '0.7rem', color: '#C5A059', fontWeight: 'bold'}}>{index + 1}</div>
                                 <div style={{flex: 1, overflow: 'hidden'}}>
-                                    <div style={{fontSize: '0.85rem', lineHeight: '1.3', color: '#e0e0e0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{item.title}</div>
+                                    <div style={{fontSize: '0.85rem', lineHeight: '1.3', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{item.title}</div>
                                     <button 
                                         onClick={(e) => removeFromQueue(index, e)}
                                         style={{marginTop: '5px', padding: '2px 8px', fontSize: '0.6rem', background: 'rgba(200, 50, 50, 0.1)', border: '1px solid rgba(200, 50, 50, 0.3)', color: '#ff8888', borderRadius: '3px', cursor: 'pointer'}}
