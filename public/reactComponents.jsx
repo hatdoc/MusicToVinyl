@@ -272,7 +272,7 @@ function VirtualCrate() {
     };
 
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-    const [isMobileCollapsed, setIsMobileCollapsed] = useState(true);
+    const [isMobileCollapsed, setIsMobileCollapsed] = useState(window.innerWidth <= 768);
 
     useEffect(() => {
         const handleResize = () => {
@@ -305,7 +305,7 @@ function VirtualCrate() {
             </div>
             
             {!isMobileCollapsed && (
-                <>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <div style={{display: 'flex', gap: '10px', margin: '15px 0'}}>
                 <button 
                     onClick={() => setView('history')}
@@ -379,7 +379,7 @@ function VirtualCrate() {
                     )
                 )}
             </div>
-                </>
+                </div>
             )}
         </div>
     );

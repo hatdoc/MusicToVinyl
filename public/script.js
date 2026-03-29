@@ -688,6 +688,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Mobile Accordion Logic for Curated Sidebar
+    const curatedToggle = document.getElementById('curatedToggle');
+    const curatedArrow = document.getElementById('curatedArrow');
+    if (curatedToggle && curatedContainer && curatedArrow) {
+        curatedToggle.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                curatedContainer.classList.toggle('mobile-collapsed');
+                curatedArrow.textContent = curatedContainer.classList.contains('mobile-collapsed') ? '▼' : '▲';
+            }
+        });
+    }
+
     // Use event delegation so dynamic elements trigger correctly
     document.body.addEventListener('click', (e) => {
         const tag = e.target.closest('.suggestion-tag');
