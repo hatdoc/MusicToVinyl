@@ -271,10 +271,29 @@ function VirtualCrate() {
         window.dispatchEvent(new Event('queueUpdated'));
     };
 
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [isMobileCollapsed, setIsMobileCollapsed] = useState(true);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const isMob = window.innerWidth <= 768;
+            setIsMobile(isMob);
+            if (!isMob) setIsMobileCollapsed(false);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
         <div style={{padding: '20px', color: 'var(--text-main)', height: '100%', borderLeft: '1px solid var(--border-color)', background: 'transparent', display: 'flex', flexDirection: 'column'}}>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px'}}>
-                <h3 style={{color: '#C5A059', margin: 0, fontFamily: 'var(--font-heading)'}}>Vinyl Crate</h3>
+            <div 
+                style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px', cursor: isMobile ? 'pointer' : 'default'}}
+                onClick={() => { if (isMobile) setIsMobileCollapsed(!isMobileCollapsed); }}
+            >
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                    <h3 style={{color: '#C5A059', margin: 0, fontFamily: 'var(--font-heading)'}}>Vinyl Crate</h3>
+                    {isMobile && <span style={{marginLeft: '8px', color: '#C5A059', fontSize: '0.8rem'}}>{isMobileCollapsed ? '▼' : '▲'}</span>}
+                </div>
                 {isPro ? (
                     <button onClick={async () => {
                         await supabase.auth.signOut();
@@ -285,6 +304,8 @@ function VirtualCrate() {
                 )}
             </div>
             
+            {!isMobileCollapsed && (
+                <>
             <div style={{display: 'flex', gap: '10px', margin: '15px 0'}}>
                 <button 
                     onClick={() => setView('history')}
@@ -358,6 +379,8 @@ function VirtualCrate() {
                     )
                 )}
             </div>
+                </>
+            )}
         </div>
     );
 }
