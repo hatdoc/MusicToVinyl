@@ -1405,12 +1405,8 @@ input:checked+.slider:before {
 
     .turntable-wrapper {
         width: 100%;
-        height: 380px;
-        transform: scale(0.65);
-        transform-origin: top center;
         margin: 0 auto;
-        /* Pull controls up into the empty visual space left by scale() */
-        margin-bottom: -100px;
+        /* Dynamic transform scaling mathematically applied by script.js scaleTurntable() */
     }
 
     .turntable-hero.playing {
