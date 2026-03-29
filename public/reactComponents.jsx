@@ -294,14 +294,6 @@ function VirtualCrate() {
                     <h3 style={{color: '#C5A059', margin: 0, fontFamily: 'var(--font-heading)'}}>Vinyl Crate</h3>
                     {isMobile && <span style={{marginLeft: '8px', color: '#C5A059', fontSize: '0.8rem'}}>{isMobileCollapsed ? '▼' : '▲'}</span>}
                 </div>
-                {isPro ? (
-                    <button onClick={async () => {
-                        await supabase.auth.signOut();
-                        window.location.reload();
-                    }} style={{background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-sub)', padding: '4px 10px', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer'}}>Log Out</button>
-                ) : (
-                    <button onClick={() => window.dispatchEvent(new Event('requestAuth'))} style={{background: 'transparent', border: '1px solid #C5A059', color: '#C5A059', padding: '4px 10px', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer'}}>Log In</button>
-                )}
             </div>
             
             {!isMobileCollapsed && (
@@ -493,8 +485,37 @@ function ShoppingModal() {
     );
 }
 
+function NavAuthButton() {
+    const [isPro, setIsPro] = useState(window.appState ? window.appState.isLoggedIn : false);
+
+    useEffect(() => {
+        const handleAuth = (e) => setIsPro(e.detail ? e.detail.isPro : true);
+        window.addEventListener('authSuccess', handleAuth);
+        return () => window.removeEventListener('authSuccess', handleAuth);
+    }, []);
+
+    if (isPro) {
+        return (
+            <button onClick={async () => {
+                await supabase.auth.signOut();
+                window.location.reload();
+            }} style={{background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-sub)', padding: '6px 14px', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600}}>Log Out</button>
+        );
+    }
+
+    return (
+        <button onClick={() => window.dispatchEvent(new Event('requestAuth'))} style={{background: 'transparent', border: '1px solid #C5A059', color: '#C5A059', padding: '6px 14px', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600}}>Log In</button>
+    );
+}
+
 const authRoot = ReactDOM.createRoot(document.getElementById('react-auth-root'));
 authRoot.render(<AuthGate />);
+
+const navAuthRoot = document.getElementById('react-nav-auth-root');
+if (navAuthRoot) {
+    const navRoot = ReactDOM.createRoot(navAuthRoot);
+    navRoot.render(<NavAuthButton />);
+}
 
 const crateRoot = ReactDOM.createRoot(document.getElementById('react-crate-root'));
 crateRoot.render(<VirtualCrate />);
