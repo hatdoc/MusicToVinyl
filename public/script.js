@@ -54,8 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
             offsetY: -80
         },
         {
-            title: "Reserve (PRO)",
-            text: "Instead of playing immediately, click Reserve to add the track to your Crate queue. Requires a PRO account.",
+            title: "Reserve Tracks",
+            text: "Instead of playing immediately, click Reserve to add the track to your Crate queue. Join for free to unlock.",
             target: "#reserveBtn",
             placement: "top",
             offsetY: -80
@@ -82,8 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
             offsetX: -80
         },
         {
-            title: "PRO Features & Crate",
-            text: "Log in to permanently save your 10-track crate history and unlock live Discogs vinyl pricing for the tracks you hear.",
+            title: "Your Vinyl Crate",
+            text: "Join for free to permanently save your 10-track crate history and unlock live Discogs vinyl pricing for the tracks you hear.",
             target: "#react-crate-root",
             placement: "left",
             offsetX: -40

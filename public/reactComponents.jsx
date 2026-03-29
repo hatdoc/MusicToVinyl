@@ -73,7 +73,7 @@ function AuthGate() {
                     &times;
                 </button>
                 <div style={{textAlign: 'center', marginBottom: '20px'}}>
-                    <h2 style={{color: '#C5A059', fontFamily: 'var(--font-heading)', margin: '0 0 10px 0'}}>{isLoginMode ? 'Welcome Back' : 'Unlock PRO'}</h2>
+                    <h2 style={{color: '#C5A059', fontFamily: 'var(--font-heading)', margin: '0 0 10px 0'}}>{isLoginMode ? 'Welcome Back' : 'Join for Free'}</h2>
                     <p style={{color: '#d4c5b0', fontSize: '0.85rem', margin: '0 0 15px 0'}}>Elevate your digital vinyl experience.</p>
                 </div>
                 
@@ -112,7 +112,7 @@ function AuthGate() {
                         style={{padding: '12px', background: 'rgba(0,0,0,0.5)', border: '1px solid #C5A059', color: '#fff', borderRadius: '4px'}}
                     />
                     <button type="submit" disabled={loading} style={{padding: '12px', background: 'linear-gradient(145deg, #C5A059, #8c6e33)', color: '#000', cursor: loading ? 'wait' : 'pointer', border: '1px solid #000', fontWeight: 'bold', borderRadius: '4px'}}>
-                        {loading ? 'Processing...' : (isLoginMode ? 'Log In' : 'Create Account')}
+                        {loading ? 'Processing...' : (isLoginMode ? 'Log In' : 'Join for Free')}
                     </button>
                 </form>
                 
