@@ -655,7 +655,8 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: "g9hwjQBQFIo", title: "Nujabes", sub: "Aruarian Dance" },
             { id: "8PAOly_4XFk", title: "J Dilla", sub: "Life" },
             { id: "ZgP0aUKnmNw", title: "Mndsgn", sub: "Camelblues" },
-            { id: "-wWbA-gmb4E", title: "Thelonious Monk", sub: "'Round Midnight" }
+            { id: "-wWbA-gmb4E", title: "Thelonious Monk", sub: "'Round Midnight" },
+            { id: "Eeratv7ZKkU", title: "Nujabes Vibe", sub: "Lofi Jazz Playlist" }
         ]
     };
 
