@@ -87,6 +87,20 @@ document.addEventListener('DOMContentLoaded', () => {
             target: "#react-crate-root",
             placement: "left",
             offsetX: -40
+        },
+        {
+            title: "Curated Classics",
+            text: "Not sure what to play? Click any cover in this left-sidebar crate to instantly spin a hand-picked analog masterpiece.",
+            target: ".curated-sidebar",
+            placement: "right",
+            offsetX: 40
+        },
+        {
+            title: "Vintage Cardboard Sleeve",
+            text: "When a record plays, its authentic weathered yellow cardboard sleeve slides out here, dropping handwritten track metadata directly onto your desk.",
+            target: "#turntableWrapper",
+            placement: "top",
+            offsetY: 20
         }
     ];
 
