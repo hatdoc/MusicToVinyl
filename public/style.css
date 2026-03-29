@@ -788,11 +788,7 @@ body {
     text-overflow: ellipsis;
 }
 
-@media (max-width: 1000px) {
-    .curated-sidebar {
-        display: none;
-    }
-}
+/* Removed static 1000px media query to allow responsive mobile scaling under 768px */
 
 /* Piano Key Lever Actions */
 .piano-key-deck {
@@ -1443,6 +1439,39 @@ input:checked+.slider:before {
         flex-direction: column;
         width: 100%;
         gap: 10px;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    #convertBtn,
+    #reserveBtn {
+        max-width: none;
+        width: 100%;
+    }
+
+    .curated-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+        box-sizing: border-box;
+    }
+
+    #curatedLists {
+        display: flex;
+        overflow-x: auto;
+        gap: 15px;
+        padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .curated-genre {
+        min-width: 260px;
+        margin-bottom: 0;
     }
 
     .btn,
