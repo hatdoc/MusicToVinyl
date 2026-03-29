@@ -547,6 +547,8 @@ document.addEventListener('DOMContentLoaded', () => {
             let newVal = (adjustedAngle + 135) / 270;
             newVal = Math.max(0, Math.min(1, newVal));
 
+            if (Math.abs(newVal - state.knobs[controlType]) > 0.5) return;
+
             state.knobs[controlType] = newVal;
             updateVisual(newVal);
             applyAudioParams(controlType, newVal);
