@@ -683,7 +683,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             html += `</div></div>`;
-            curatedContainer.innerHTML += html;
+            curatedContainer.insertAdjacentHTML('beforeend', html);
         }
     }
 

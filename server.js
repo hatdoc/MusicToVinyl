@@ -24,11 +24,26 @@ app.get('/privacy', (req, res) => res.sendFile(path.join(__dirname, 'public/priv
 app.get('/terms', (req, res) => res.sendFile(path.join(__dirname, 'public/terms.html')));
 app.get('/journal', (req, res) => res.sendFile(path.join(__dirname, 'public/journal.html')));
 
+// Simple In-Memory Rate Limiter for public endpoints
+const searchRateLimits = new Map();
+const searchRateLimiter = (req, res, next) => {
+    const ip = req.ip;
+    const now = Date.now();
+    const record = searchRateLimits.get(ip) || { count: 0, resetTime: now + 60000 };
+    if (now > record.resetTime) { record.count = 0; record.resetTime = now + 60000; }
+    record.count++;
+    searchRateLimits.set(ip, record);
+    if (record.count > 30) return res.status(429).json({ error: "Too many requests." });
+    next();
+};
+
 // YouTube Search Proxy API
-app.get('/api/search', async (req, res) => {
+app.get('/api/search', searchRateLimiter, async (req, res) => {
     try {
         const query = req.query.q;
-        if (!query) return res.status(400).json({ error: "Missing query parameter" });
+        if (!query || typeof query !== 'string' || query.length > 200) {
+            return res.status(400).json({ error: "Invalid query parameter" });
+        }
         const r = await ytSearch(query);
         const videos = r.videos.slice(0, 5).map(v => ({
             id: v.videoId,
@@ -44,11 +59,21 @@ app.get('/api/search', async (req, res) => {
 });
 
 // Admin Dashboard Route
-app.get('/admin', (req, res) => {
+const escapeHTML = (str) => String(str).replace(/[&<>'"]/g, tag => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[tag]));
+
+const basicAuth = (req, res, next) => {
+    const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+    const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
+    if (login === 'admin' && password === 'supersecret123') return next();
+    res.set('WWW-Authenticate', 'Basic realm="VinylAdmin"');
+    res.status(401).send('Authentication required.');
+};
+
+app.get('/admin', basicAuth, (req, res) => {
     let rows = conversions.map(c => `
         <tr>
-            <td style="padding: 10px; border: 1px solid #444;">${c.genre}</td>
-            <td style="padding: 10px; border: 1px solid #444;">${c.count}</td>
+            <td style="padding: 10px; border: 1px solid #444;">${escapeHTML(c.genre)}</td>
+            <td style="padding: 10px; border: 1px solid #444;">${escapeHTML(c.count)}</td>
         </tr>
     `).join('');
 

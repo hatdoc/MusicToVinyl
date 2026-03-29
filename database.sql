@@ -62,11 +62,11 @@ ALTER TABLE crate_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE intent_logs ENABLE ROW LEVEL SECURITY;
 
 -- 1. Intent Logs Policy
--- Allow ANYONE (including public anons) to INSERT tracking data (intent)
+-- Allow ANYONE to INSERT tracking data, but prevent injecting other user IDs
 CREATE POLICY "Enable insert for all users" 
 ON intent_logs FOR INSERT 
 TO public 
-WITH CHECK (true);
+WITH CHECK (user_id = auth.uid() OR (user_id IS NULL AND auth.uid() IS NULL));
 
 -- Deny SELECT to public (Only your Admin / Service Role can view the logs)
 CREATE POLICY "Deny select for public" 
@@ -79,8 +79,8 @@ USING (false);
 CREATE POLICY "Enable crate management for authenticated users only"
 ON crate_items FOR ALL
 TO authenticated
-USING (true)
-WITH CHECK (true);
+USING (auth.uid() = user_id)
+WITH CHECK (auth.uid() = user_id);
 
 -- ----------------------------------------------------
 -- AUTOMATED AUTH TRIGGER
