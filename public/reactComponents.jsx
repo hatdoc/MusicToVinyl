@@ -313,6 +313,9 @@ function VirtualCrate() {
 
     return (
         <div style={{padding: '20px', color: 'var(--text-main)', height: '100%', borderLeft: '1px solid var(--border-color)', background: 'transparent', display: 'flex', flexDirection: 'column'}}>
+            <div style={{marginBottom: '15px'}}>
+                <NavAuthButton />
+            </div>
             <div 
                 style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px', cursor: isMobile ? 'pointer' : 'default'}}
                 onClick={() => { if (isMobile) setIsMobileCollapsed(!isMobileCollapsed); }}
@@ -526,23 +529,19 @@ function NavAuthButton() {
             <button onClick={async () => {
                 await supabase.auth.signOut();
                 window.location.reload();
-            }} style={{background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-sub)', padding: '6px 14px', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600}}>Log Out</button>
+            }} style={{width: '100%', background: 'transparent', border: '1px solid #C5A059', color: '#C5A059', padding: '8px 14px', borderRadius: '4px', fontSize: '0.8rem', cursor: 'pointer', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600}}>Log Out</button>
         );
     }
 
     return (
-        <button onClick={() => window.dispatchEvent(new Event('requestAuth'))} style={{background: 'transparent', border: '1px solid #C5A059', color: '#C5A059', padding: '6px 14px', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600}}>Log In</button>
+        <button onClick={() => window.dispatchEvent(new Event('requestAuth'))} style={{width: '100%', background: 'transparent', border: '1px solid #C5A059', color: '#C5A059', padding: '8px 14px', borderRadius: '4px', fontSize: '0.8rem', cursor: 'pointer', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600}}>Join for Free / Log In</button>
     );
 }
 
 const authRoot = ReactDOM.createRoot(document.getElementById('react-auth-root'));
 authRoot.render(<AuthGate />);
 
-const navAuthRoot = document.getElementById('react-nav-auth-root');
-if (navAuthRoot) {
-    const navRoot = ReactDOM.createRoot(navAuthRoot);
-    navRoot.render(<NavAuthButton />);
-}
+// NavAuthButton is successfully rendered locally inside VirtualCrate
 
 const crateRoot = ReactDOM.createRoot(document.getElementById('react-crate-root'));
 crateRoot.render(<VirtualCrate />);
