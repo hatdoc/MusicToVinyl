@@ -148,11 +148,15 @@ function VirtualCrate() {
         });
     }, []);
 
-    // Fetch history from Supabase if logged in
+    // Fetch history with dual-layer cloud/local storage sync
     useEffect(() => {
         const fetchHistory = async () => {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
+                // Remote Expiration: Purge entries older than 7 days
+                const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+                await supabase.from('crate_items').delete().eq('user_id', user.id).lt('added_at', oneWeekAgo);
+
                 const { data, error } = await supabase
                     .from('crate_items')
                     .select('*')
@@ -166,14 +170,32 @@ function VirtualCrate() {
                     data.forEach(d => {
                         if (!unique.includes(d.youtube_id)) {
                             unique.push(d.youtube_id);
-                            filtered.push({ id: d.id, title: d.video_title, youtube_id: d.youtube_id });
+                            let addedTime = d.added_at ? new Date(d.added_at).getTime() : Date.now();
+                            filtered.push({ id: d.id, title: d.video_title, youtube_id: d.youtube_id, added_at: addedTime });
                         }
                     });
-                    setItems(filtered.slice(0, 10)); // Ensure max 10 even after strict duplicate reduction
+
+                    // Zero Data Loss: Merge cloud records with local caching safely 
+                    let localHistory = JSON.parse(localStorage.getItem('vinyl_history')) || [];
+                    const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+                    localHistory = localHistory.filter(t => t.added_at > cutoff);
+
+                    const merged = [...filtered, ...localHistory].filter((t, index, self) => 
+                        index === self.findIndex(i => i.youtube_id === t.youtube_id)
+                    ).sort((a, b) => b.added_at - a.added_at).slice(0, 10);
+                    
+                    localStorage.setItem('vinyl_history', JSON.stringify(merged));
+                    setItems(merged);
                 }
+            } else {
+                // Free User Caching Loader
+                let localHistory = JSON.parse(localStorage.getItem('vinyl_history')) || [];
+                const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+                localHistory = localHistory.filter(t => t.added_at > cutoff);
+                setItems(localHistory);
             }
         };
-        if (isPro) fetchHistory();
+        fetchHistory(); // Triggers universally to preserve local data loss
     }, [isPro]);
 
     useEffect(() => {
@@ -187,14 +209,19 @@ function VirtualCrate() {
         
         // Listen for new tracks loaded in the player to add to history automatically
         const handleTrackLoaded = async (e) => {
-            if (!isPro) return; // "If they are using free feature, it should not save anything"
+            const newTrack = { id: Date.now(), title: e.detail.title, youtube_id: e.detail.id, added_at: Date.now() };
             
-            const newTrack = { id: Date.now(), title: e.detail.title, youtube_id: e.detail.id };
+            // Universal Local Caching Logic
             setItems(prev => {
-                const updated = [newTrack, ...prev.filter(t => t.youtube_id !== newTrack.youtube_id)];
-                return updated.slice(0, 10); // Keep only 10
+                const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+                let validPrev = prev.filter(t => t.added_at > cutoff && t.youtube_id !== newTrack.youtube_id);
+                const updated = [newTrack, ...validPrev].slice(0, 10);
+                localStorage.setItem('vinyl_history', JSON.stringify(updated));
+                return updated;
             });
             
+            if (!isPro) return; // Prevent cloud synchronization for Free tier (local usage only)
+
             // Save exactly 10 URLs remotely for PRO members
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
@@ -204,7 +231,7 @@ function VirtualCrate() {
                     video_title: newTrack.title
                 }]);
                 
-                // Enforce maximum 10 Vinyls limit in database
+                // Enforce maximum 10 Vinyls limit in database remotely
                 const { data: keepData } = await supabase
                     .from('crate_items')
                     .select('id')
