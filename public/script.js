@@ -474,12 +474,18 @@ document.addEventListener('DOMContentLoaded', () => {
         burstSource.buffer = state.nodes.noiseBuffer;
         const burstGain = ctx.createGain();
 
-        burstGain.gain.setValueAtTime(0.3, ctx.currentTime);
-        burstGain.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + 2.0);
+        // Scale burst volume with user's crackle preference. It creates a subtle initial spike.
+        const burstStart = state.knobs.crackle * 0.4;
+        const burstEnd = state.knobs.crackle * 0.25; // Matches the continuous loop volume
+
+        // Avoid exponentialRamp throwing if crackle is 0, use linear ramp
+        burstGain.gain.setValueAtTime(burstStart, ctx.currentTime);
+        burstGain.gain.linearRampToValueAtTime(burstEnd, ctx.currentTime + 2.0);
 
         burstSource.connect(burstGain);
         burstGain.connect(state.nodes.noiseFilter); // Route through warmth filter
         burstSource.start();
+        burstSource.stop(ctx.currentTime + 2.0); // Stop right as continuous loop starts
     }
 
     function playVinylNoise() {
