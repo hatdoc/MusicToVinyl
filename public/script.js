@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < bufferSize; i++) {
             const white = (Math.random() * 2 - 1) * 0.3; // Much louder baseline internal signal before gain attenuation
             let crackle = 0;
-            if (Math.random() < 0.0015) { crackle = (Math.random() * 2 - 1) * 1.5; }
+            if (Math.random() < 0.0015) { crackle = (Math.random() * 2 - 1) * 0.5; }
             let pop = 0;
             if (Math.random() < 0.0002) { pop = (Math.random() * 2 - 1) * 2.5; }
             const rumble = Math.sin(i * 0.002) * 0.1;
@@ -683,11 +683,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Shuffle and pick 2 per category
             const shuffled = [...tracks].sort(() => 0.5 - Math.random());
             const selected = shuffled.slice(0, 2);
-            
+
             let html = `<div class="curated-genre">
                 <h4 class="genre-title">${genre}</h4>
                 <div class="genre-list">`;
-                
+
             selected.forEach(t => {
                 html += `
                 <div class="rec-card suggestion-tag" data-query="${t.title} - ${t.sub}" title="Play: ${t.title} - ${t.sub}">
@@ -699,7 +699,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 `;
             });
-            
+
             html += `</div></div>`;
             curatedContainer.insertAdjacentHTML('beforeend', html);
         }
@@ -870,11 +870,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function scaleTurntable() {
         const wrapper = document.querySelector('.turntable-wrapper');
         if (!wrapper) return;
-        
+
         const mainContent = document.querySelector('.main-content');
         // Container width minus layout padding (~40px)
         const availableWidth = (mainContent ? mainContent.clientWidth : window.innerWidth) - 40;
-        
+
         // Base logical width modeled locally is 600px
         if (availableWidth < 600) {
             const scale = Math.max(0.4, availableWidth / 600); // Prevent impossibly tiny sizes
@@ -887,8 +887,8 @@ document.addEventListener('DOMContentLoaded', () => {
             wrapper.style.marginBottom = '20px';
         }
     }
-    
+
     window.addEventListener('resize', scaleTurntable);
     // Use timeout to ensure bounding box layout stabilizes before measuring
-    setTimeout(scaleTurntable, 50); 
+    setTimeout(scaleTurntable, 50);
 });
