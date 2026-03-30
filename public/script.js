@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         youtubePlayer: null,
         youtubeVideoId: null,
         playerReady: false,
-        knobs: { volume: 0.4, warmth: 0.65, crackle: 0.7 },
+        knobs: { volume: 0.4, warmth: 0.65, crackle: 0.4 },
         queue: []
     };
 
