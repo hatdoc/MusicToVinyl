@@ -402,6 +402,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         state.audioContext = new AudioContext();
+        if (state.audioContext.state === 'suspended') {
+            state.audioContext.resume();
+        }
 
         // 1. Vinyl Noise Buffer (Enhanced Crackles, Hiss, and Rumble)
         const bufferSize = state.audioContext.sampleRate * 6; // 6 seconds for less repetition
@@ -409,12 +412,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = buffer.getChannelData(0);
 
         for (let i = 0; i < bufferSize; i++) {
-            const white = (Math.random() * 2 - 1) * 0.025;
+            const white = (Math.random() * 2 - 1) * 0.3; // Much louder baseline internal signal before gain attenuation
             let crackle = 0;
-            if (Math.random() < 0.0015) { crackle = (Math.random() * 2 - 1) * 0.45; }
+            if (Math.random() < 0.0015) { crackle = (Math.random() * 2 - 1) * 1.5; }
             let pop = 0;
-            if (Math.random() < 0.0002) { pop = (Math.random() * 2 - 1) * 0.6; }
-            const rumble = Math.sin(i * 0.002) * 0.008;
+            if (Math.random() < 0.0002) { pop = (Math.random() * 2 - 1) * 2.5; }
+            const rumble = Math.sin(i * 0.002) * 0.1;
 
             data[i] = white + crackle + pop + rumble;
         }
@@ -433,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
         humOsc.frequency.value = 50; // Deep 50Hz hum
 
         const humGain = state.audioContext.createGain();
-        humGain.gain.value = Math.pow(state.knobs.warmth, 3) * 0.4; // Cubic curve for massive max limit
+        humGain.gain.value = Math.pow(state.knobs.warmth, 3) * 0.08; // Cubic curve locked directly to the strict 0.08 max user rule
 
         humOsc.connect(humGain);
 
@@ -471,8 +474,8 @@ document.addEventListener('DOMContentLoaded', () => {
         burstSource.buffer = state.nodes.noiseBuffer;
         const burstGain = ctx.createGain();
 
-        burstGain.gain.setValueAtTime(0.4, ctx.currentTime);
-        burstGain.gain.exponentialRampToValueAtTime(0.1, ctx.currentTime + 2.0);
+        burstGain.gain.setValueAtTime(0.3, ctx.currentTime);
+        burstGain.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + 2.0);
 
         burstSource.connect(burstGain);
         burstGain.connect(state.nodes.noiseFilter); // Route through warmth filter
@@ -500,8 +503,8 @@ document.addEventListener('DOMContentLoaded', () => {
         state.nodes.noiseGain = gainNode;
         source.start();
 
-        // Ensure hum is active
-        if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(state.knobs.warmth, 3) * 0.4;
+        // Ensure hum is active using strict custom rule 0.08 profile
+        if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(state.knobs.warmth, 3) * 0.08;
     }
 
     function stopVinylNoise() {
@@ -755,7 +758,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'volume' && state.youtubePlayer) {
             state.youtubePlayer.setVolume(val * 100);
         } else if (type === 'warmth') {
-            if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 3) * 0.4;
+            if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 3) * 0.08;
             if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 9000); // Deeply muffle high-end
         } else if (type === 'crackle' && state.nodes.noiseGain) {
             state.nodes.noiseGain.gain.value = val * 0.25;
