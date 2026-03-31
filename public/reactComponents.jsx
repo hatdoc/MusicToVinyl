@@ -205,7 +205,17 @@ function VirtualCrate() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setYoutubePlaylists(data.items || []);
+                
+                // Inject YT Music "Liked Music" system playlist at the top
+                const likedMusicPL = {
+                    id: 'LM',
+                    snippet: {
+                        title: 'Your Liked Music ❤️',
+                        thumbnails: { default: { url: 'https://i.postimg.cc/QMcXXg8W/ytm_liked.png' } } // Fallback image for safety
+                    }
+                };
+                
+                setYoutubePlaylists([likedMusicPL, ...(data.items || [])]);
             }
         } catch(e) { console.error("YT API Error:", e); }
         setIsLoadingYT(false);
