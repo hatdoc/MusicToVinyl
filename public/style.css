@@ -1361,6 +1361,27 @@ input:checked+.slider:before {
     display: none;
 }
 
+/* --- TABLET & SMALL LAPTOP RESPONSIVENESS --- */
+@media (max-width: 1250px) and (min-width: 1000px) {
+    .curated-sidebar { width: 230px; }
+    .react-crate-container { width: 250px; }
+    .turntable-wrapper {
+        transform: scale(0.8);
+        transform-origin: center center;
+    }
+}
+
+@media (max-width: 999px) and (min-width: 769px) {
+    .curated-sidebar { width: 200px; padding: 15px 10px; }
+    .react-crate-container { width: 240px; }
+    .turntable-wrapper {
+        transform: scale(0.55);
+        transform-origin: center center;
+        margin-top: -50px;
+    }
+    .header .logo { font-size: 2rem; }
+}
+
 /* --- MOBILE RESPONSIVENESS & TOUCH --- */
 @media (max-width: 768px) {
     body {
