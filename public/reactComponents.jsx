@@ -183,18 +183,30 @@ function VirtualCrate() {
 
     // Explicitly check Supabase auth upon React mounting to prevent Babel compile-delay race conditions
     useEffect(() => {
-        supabase.auth.getSession().then(({data: { session }}) => {
+        const checkSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
             if (session) {
                 setIsPro(true);
                 window.dispatchEvent(new Event('authSuccess')); // Forces script.js to physically restore tactile knobs
-                
-                // Extract Google OAuth Provider Token if available
+                if (session.provider_token) {
+                    setGoogleToken(session.provider_token);
+                    fetchYouTubePlaylists(session.provider_token);
+                }
+            }
+        };
+        checkSession();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                setIsPro(true);
                 if (session.provider_token) {
                     setGoogleToken(session.provider_token);
                     fetchYouTubePlaylists(session.provider_token);
                 }
             }
         });
+
+        return () => subscription.unsubscribe();
     }, []);
 
     const fetchYouTubePlaylists = async (token) => {
@@ -780,6 +792,17 @@ shoppingRoot.render(<ShoppingModal />);
 // --- Auto-Login / Session Restoration ---
 (async function initSession() {
     window.appState = window.appState || { isLoggedIn: false };
+    
+    // Robustly listen for OAuth redirect hash parsing
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (session) {
+            window.appState.isLoggedIn = true;
+            window.dispatchEvent(new Event('authSuccess'));
+        } else if (event === 'SIGNED_OUT') {
+            window.appState.isLoggedIn = false;
+        }
+    });
+
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
         window.appState.isLoggedIn = true;
