@@ -180,6 +180,9 @@ function VirtualCrate() {
     const [selectedPlaylist, setSelectedPlaylist] = useState(null);
     const [playlistItems, setPlaylistItems] = useState([]);
     const [isLoadingYT, setIsLoadingYT] = useState(false);
+    const [playlistPageToken, setPlaylistPageToken] = useState(null);
+    const [itemsPageToken, setItemsPageToken] = useState(null);
+    const [isLoadingMoreYT, setIsLoadingMoreYT] = useState(false);
 
     // Explicitly check Supabase auth upon React mounting to prevent Babel compile-delay race conditions
     useEffect(() => {
@@ -209,46 +212,66 @@ function VirtualCrate() {
         return () => subscription.unsubscribe();
     }, []);
 
-    const fetchYouTubePlaylists = async (token) => {
-        setIsLoadingYT(true);
+    const fetchYouTubePlaylists = async (token, pageToken = '') => {
+        if (pageToken) setIsLoadingMoreYT(true);
+        else setIsLoadingYT(true);
+        
         try {
-            const res = await fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&maxResults=20`, {
+            const url = `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&maxResults=50${pageToken ? '&pageToken=' + pageToken : ''}`;
+            const res = await fetch(url, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
                 const data = await res.json();
                 
-                // Inject YT Music "Liked Music" system playlist at the top
-                const likedMusicPL = {
-                    id: 'LM',
-                    snippet: {
-                        title: 'Your Liked Music ❤️',
-                        thumbnails: { default: { url: 'https://i.postimg.cc/QMcXXg8W/ytm_liked.png' } } // Fallback image for safety
-                    }
-                };
-                
-                setYoutubePlaylists([likedMusicPL, ...(data.items || [])]);
+                if (pageToken) {
+                    setYoutubePlaylists(prev => [...prev, ...(data.items || [])]);
+                } else {
+                    const likedMusicPL = {
+                        id: 'LM',
+                        snippet: {
+                            title: 'Your Liked Music ❤️',
+                            thumbnails: { default: { url: 'https://i.postimg.cc/QMcXXg8W/ytm_liked.png' } }
+                        }
+                    };
+                    setYoutubePlaylists([likedMusicPL, ...(data.items || [])]);
+                }
+                setPlaylistPageToken(data.nextPageToken || null);
             }
         } catch(e) { console.error("YT API Error:", e); }
-        setIsLoadingYT(false);
+        
+        if (pageToken) setIsLoadingMoreYT(false);
+        else setIsLoadingYT(false);
     };
 
-    const fetchYouTubePlaylistItems = async (playlistId, token) => {
-        setIsLoadingYT(true);
+    const fetchYouTubePlaylistItems = async (playlistId, token, pageToken = '') => {
+        if (pageToken) setIsLoadingMoreYT(true);
+        else setIsLoadingYT(true);
+
         try {
-            const res = await fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=30`, {
+            const url = `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50${pageToken ? '&pageToken=' + pageToken : ''}`;
+            const res = await fetch(url, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
                 const data = await res.json();
-                setPlaylistItems(data.items || []);
+                if (pageToken) {
+                    setPlaylistItems(prev => [...prev, ...(data.items || [])]);
+                } else {
+                    setPlaylistItems(data.items || []);
+                }
+                setItemsPageToken(data.nextPageToken || null);
             }
         } catch(e) { console.error("YT API Error:", e); }
-        setIsLoadingYT(false);
+        
+        if (pageToken) setIsLoadingMoreYT(false);
+        else setIsLoadingYT(false);
     };
 
     const handlePlaylistClick = (pl) => {
         setSelectedPlaylist(pl);
+        setPlaylistItems([]); 
+        setItemsPageToken(null);
         fetchYouTubePlaylistItems(pl.id, googleToken);
     };
 
@@ -482,17 +505,29 @@ function VirtualCrate() {
                                     </div>
                                 </div>
                             ))}
+                            {itemsPageToken && (
+                                <button onClick={() => fetchYouTubePlaylistItems(selectedPlaylist.id, googleToken, itemsPageToken)} disabled={isLoadingMoreYT} style={{width: '100%', padding: '12px', background: 'transparent', color: '#C5A059', border: '1px solid var(--border-color)', borderRadius: '4px', marginTop: '15px', marginBottom: '15px', cursor: 'pointer', fontWeight: 'bold', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '1px'}}>
+                                    {isLoadingMoreYT ? 'Loading...' : 'Load More Tracks ↓'}
+                                </button>
+                            )}
                         </div>
                     ) : (
-                        youtubePlaylists.map(pl => (
-                            <div key={pl.id} onClick={() => handlePlaylistClick(pl)} style={{padding: '10px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s'}} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--card-bg)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
-                                <img src={pl.snippet.thumbnails && pl.snippet.thumbnails.default && pl.snippet.thumbnails.default.url} style={{width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px'}} />
-                                <div>
-                                    <div style={{fontSize: '0.9rem'}}>{pl.snippet.title}</div>
-                                    <div style={{fontSize: '0.7rem', color: '#888'}}>Playlist</div>
+                        <div>
+                            {youtubePlaylists.map(pl => (
+                                <div key={pl.id} onClick={() => handlePlaylistClick(pl)} style={{padding: '10px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s'}} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--card-bg)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
+                                    <img src={pl.snippet.thumbnails && pl.snippet.thumbnails.default && pl.snippet.thumbnails.default.url} style={{width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px'}} />
+                                    <div>
+                                        <div style={{fontSize: '0.9rem'}}>{pl.snippet.title}</div>
+                                        <div style={{fontSize: '0.7rem', color: '#888'}}>Playlist</div>
+                                    </div>
                                 </div>
-                            </div>
-                        ))
+                            ))}
+                            {playlistPageToken && (
+                                <button onClick={() => fetchYouTubePlaylists(googleToken, playlistPageToken)} disabled={isLoadingMoreYT} style={{width: '100%', padding: '12px', background: 'transparent', color: '#C5A059', border: '1px solid var(--border-color)', borderRadius: '4px', marginTop: '15px', marginBottom: '15px', cursor: 'pointer', fontWeight: 'bold', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '1px'}}>
+                                    {isLoadingMoreYT ? 'Loading...' : 'Load More Playlists ↓'}
+                                </button>
+                            )}
+                        </div>
                     )
                 ) : view === 'history' ? (
                     items.map(item => (
