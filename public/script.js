@@ -426,7 +426,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Global Noise Filter (Controlled by Warmth)
         const noiseFilter = state.audioContext.createBiquadFilter();
         noiseFilter.type = 'lowpass';
-        noiseFilter.frequency.value = 10000 - (state.knobs.warmth * 8000); // 10k down to 2k
+        // Inverted Warmth: min val -> max warmth sound, max val -> min warmth sound.
+        noiseFilter.frequency.value = 10000 - ((1 - state.knobs.warmth) * 8000); 
 
         state.nodes.noiseFilter = noiseFilter;
 
@@ -436,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
         humOsc.frequency.value = 50; // Deep 50Hz hum
 
         const humGain = state.audioContext.createGain();
-        humGain.gain.value = Math.pow(state.knobs.warmth, 3) * 0.08; // Cubic curve locked directly to the strict 0.08 max user rule
+        humGain.gain.value = Math.pow(1 - state.knobs.warmth, 3) * 0.08; // Inverted max/min mapping
 
         humOsc.connect(humGain);
 
@@ -510,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.start();
 
         // Ensure hum is active using strict custom rule 0.08 profile
-        if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(state.knobs.warmth, 3) * 0.08;
+        if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(1 - state.knobs.warmth, 3) * 0.08; // Inverted mapping
     }
 
     function stopVinylNoise() {
@@ -764,8 +765,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'volume' && state.youtubePlayer) {
             state.youtubePlayer.setVolume(val * 100);
         } else if (type === 'warmth') {
-            if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(val, 3) * 0.08;
-            if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (val * 9000); // Deeply muffle high-end
+            const invertedVal = 1 - val;
+            if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(invertedVal, 3) * 0.08;
+            if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (invertedVal * 8000); 
         } else if (type === 'crackle' && state.nodes.noiseGain) {
             state.nodes.noiseGain.gain.value = val * 0.25;
         }
