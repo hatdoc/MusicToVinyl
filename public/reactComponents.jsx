@@ -59,7 +59,8 @@ function AuthGate() {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                scopes: 'https://www.googleapis.com/auth/youtube.readonly'
+                scopes: 'https://www.googleapis.com/auth/youtube.readonly',
+                redirectTo: 'https://vinylanalog.pages.dev/'
             }
         });
         if (error) {
