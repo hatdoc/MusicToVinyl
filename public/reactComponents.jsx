@@ -53,6 +53,22 @@ function AuthGate() {
         }
     };
 
+    const handleGoogleSignIn = async () => {
+        setLoading(true);
+        setAuthError(null);
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                scopes: 'https://www.googleapis.com/auth/youtube.readonly',
+                redirectTo: window.location.origin
+            }
+        });
+        if (error) {
+            setAuthError("Google Sign In Error: " + error.message);
+            setLoading(false);
+        }
+    };
+
     const finalizeLogin = () => {
         window.appState.isLoggedIn = true;
         setIsVisible(false);
@@ -112,9 +128,29 @@ function AuthGate() {
                         style={{padding: '12px', background: 'rgba(0,0,0,0.5)', border: '1px solid #C5A059', color: '#fff', borderRadius: '4px'}}
                     />
                     <button type="submit" disabled={loading} style={{padding: '12px', background: 'linear-gradient(145deg, #C5A059, #8c6e33)', color: '#000', cursor: loading ? 'wait' : 'pointer', border: '1px solid #000', fontWeight: 'bold', borderRadius: '4px'}}>
-                        {loading ? 'Processing...' : (isLoginMode ? 'Log In' : 'Join for Free')}
+                        {loading ? 'Processing...' : (isLoginMode ? 'Log In' : 'Join with Email')}
                     </button>
                 </form>
+
+                <div style={{display: 'flex', alignItems: 'center', margin: '20px 0'}}>
+                    <div style={{flex: 1, height: '1px', background: '#333'}}></div>
+                    <div style={{color: '#888', margin: '0 10px', fontSize: '0.85rem'}}>OR</div>
+                    <div style={{flex: 1, height: '1px', background: '#333'}}></div>
+                </div>
+
+                <button 
+                    onClick={handleGoogleSignIn} 
+                    disabled={loading}
+                    style={{width: '100%', padding: '12px', background: '#e0e0e0', color: '#111', cursor: loading ? 'wait' : 'pointer', border: 'none', fontWeight: 'bold', borderRadius: '4px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px'}}
+                >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Continue with Google
+                </button>
                 
                 <div style={{marginTop: '20px', fontSize: '0.85rem', color: '#888'}}>
                     {isLoginMode ? "Don't have an account? " : "Already a member? "}
@@ -135,8 +171,15 @@ function VirtualCrate() {
     const [isVisible, setIsVisible] = useState(false);
     const [items, setItems] = useState([]);
     const [queue, setQueue] = useState([]);
-    const [view, setView] = useState('history'); // 'history' or 'queue'
+    const [view, setView] = useState('history'); // 'history', 'queue', 'youtube'
     const [isPro, setIsPro] = useState(false);
+
+    // YOUTUBE INTEGRATION STATE
+    const [googleToken, setGoogleToken] = useState(null);
+    const [youtubePlaylists, setYoutubePlaylists] = useState([]);
+    const [selectedPlaylist, setSelectedPlaylist] = useState(null);
+    const [playlistItems, setPlaylistItems] = useState([]);
+    const [isLoadingYT, setIsLoadingYT] = useState(false);
 
     // Explicitly check Supabase auth upon React mounting to prevent Babel compile-delay race conditions
     useEffect(() => {
@@ -144,9 +187,48 @@ function VirtualCrate() {
             if (session) {
                 setIsPro(true);
                 window.dispatchEvent(new Event('authSuccess')); // Forces script.js to physically restore tactile knobs
+                
+                // Extract Google OAuth Provider Token if available
+                if (session.provider_token) {
+                    setGoogleToken(session.provider_token);
+                    fetchYouTubePlaylists(session.provider_token);
+                }
             }
         });
     }, []);
+
+    const fetchYouTubePlaylists = async (token) => {
+        setIsLoadingYT(true);
+        try {
+            const res = await fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&maxResults=20`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setYoutubePlaylists(data.items || []);
+            }
+        } catch(e) { console.error("YT API Error:", e); }
+        setIsLoadingYT(false);
+    };
+
+    const fetchYouTubePlaylistItems = async (playlistId, token) => {
+        setIsLoadingYT(true);
+        try {
+            const res = await fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=30`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setPlaylistItems(data.items || []);
+            }
+        } catch(e) { console.error("YT API Error:", e); }
+        setIsLoadingYT(false);
+    };
+
+    const handlePlaylistClick = (pl) => {
+        setSelectedPlaylist(pl);
+        fetchYouTubePlaylistItems(pl.id, googleToken);
+    };
 
     // Fetch history with dual-layer cloud/local storage sync
     useEffect(() => {
@@ -325,18 +407,24 @@ function VirtualCrate() {
             
             {!isMobileCollapsed && (
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div style={{display: 'flex', gap: '10px', margin: '15px 0'}}>
+            <div style={{display: 'flex', gap: '5px', margin: '15px 0', flexWrap: 'wrap'}}>
                 <button 
-                    onClick={() => setView('history')}
-                    style={{flex: 1, padding: '5px', fontSize: '0.65rem', background: view === 'history' ? '#C5A059' : 'var(--card-bg)', color: view === 'history' ? '#000' : 'var(--text-sub)', border: 'none', borderRadius: '4px', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 'bold'}}
+                    onClick={() => { setView('history'); setSelectedPlaylist(null); }}
+                    style={{flex: 1, minWidth: '30%', padding: '5px', fontSize: '0.65rem', background: view === 'history' ? '#C5A059' : 'var(--card-bg)', color: view === 'history' ? '#000' : 'var(--text-sub)', border: 'none', borderRadius: '4px', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 'bold'}}
                 >
                     History
                 </button>
                 <button 
-                    onClick={() => setView('queue')}
-                    style={{flex: 1, padding: '5px', fontSize: '0.65rem', background: view === 'queue' ? '#C5A059' : 'var(--card-bg)', color: view === 'queue' ? '#000' : 'var(--text-sub)', border: 'none', borderRadius: '4px', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 'bold'}}
+                    onClick={() => { setView('queue'); setSelectedPlaylist(null); }}
+                    style={{flex: 1, minWidth: '30%', padding: '5px', fontSize: '0.65rem', background: view === 'queue' ? '#C5A059' : 'var(--card-bg)', color: view === 'queue' ? '#000' : 'var(--text-sub)', border: 'none', borderRadius: '4px', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 'bold'}}
                 >
                     Reserved ({queue.length})
+                </button>
+                <button 
+                    onClick={() => setView('youtube')}
+                    style={{flex: 1, minWidth: '30%', padding: '5px', fontSize: '0.65rem', background: view === 'youtube' ? '#C5A059' : 'var(--card-bg)', color: view === 'youtube' ? '#000' : 'var(--text-sub)', border: 'none', borderRadius: '4px', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 'bold'}}
+                >
+                    My YouTube
                 </button>
             </div>
             
@@ -346,7 +434,45 @@ function VirtualCrate() {
             </div>
             
             <div style={{flex: 1, overflowY: 'auto'}}>
-                {view === 'history' ? (
+                {view === 'youtube' ? (
+                    !googleToken ? (
+                        <div style={{textAlign: 'center', padding: '40px 20px', color: 'var(--text-sub)', fontSize: '0.8rem'}}>
+                            <p>Connect your YouTube account to view playlists here.</p>
+                            <button onClick={() => window.dispatchEvent(new Event('requestAuth'))} style={{padding: '8px 15px', background: '#333', color: '#fff', border: '1px solid #555', borderRadius: '4px', cursor: 'pointer', marginTop: '10px'}}>Sign In with Google</button>
+                        </div>
+                    ) : isLoadingYT ? (
+                        <div style={{textAlign: 'center', padding: '40px 20px', color: 'var(--text-sub)', fontSize: '0.8rem'}}>Loading YouTube Data...</div>
+                    ) : selectedPlaylist ? (
+                        <div>
+                            <button onClick={() => setSelectedPlaylist(null)} style={{background: 'none', border: 'none', color: '#C5A059', cursor: 'pointer', fontSize: '0.75rem', padding: '10px 0', textDecoration: 'underline'}}>← Back to Playlists</button>
+                            <h4 style={{margin: '0 0 10px 0', fontSize: '0.9rem'}}>{selectedPlaylist.snippet.title}</h4>
+                            {playlistItems.map(item => (
+                                <div key={item.id} style={{padding: '10px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', gap: '12px', alignItems: 'center'}}>
+                                    <img src={item.snippet.thumbnails?.default?.url} style={{width: '60px', height: '45px', objectFit: 'cover', borderRadius: '4px'}} />
+                                    <div style={{flex: 1, overflow: 'hidden'}}>
+                                        <div style={{fontSize: '0.85rem', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} title={item.snippet.title}>{item.snippet.title}</div>
+                                        <button 
+                                            onClick={() => window.dispatchEvent(new CustomEvent('playHistoryTrack', { detail: { youtube_id: item.snippet.resourceId.videoId, title: item.snippet.title } }))}
+                                            style={{marginTop: '5px', padding: '2px 8px', fontSize: '0.6rem', background: '#C5A059', border: 'none', color: '#000', borderRadius: '3px', cursor: 'pointer', fontWeight: 'bold'}}
+                                        >
+                                            Play Record
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        youtubePlaylists.map(pl => (
+                            <div key={pl.id} onClick={() => handlePlaylistClick(pl)} style={{padding: '10px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s'}} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--card-bg)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
+                                <img src={pl.snippet.thumbnails?.default?.url} style={{width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px'}} />
+                                <div>
+                                    <div style={{fontSize: '0.9rem'}}>{pl.snippet.title}</div>
+                                    <div style={{fontSize: '0.7rem', color: '#888'}}>Playlist</div>
+                                </div>
+                            </div>
+                        ))
+                    )
+                ) : view === 'history' ? (
                     items.map(item => (
                         <div 
                             key={item.id} 
