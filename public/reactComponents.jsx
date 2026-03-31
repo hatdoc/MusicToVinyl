@@ -448,7 +448,7 @@ function VirtualCrate() {
                             <h4 style={{margin: '0 0 10px 0', fontSize: '0.9rem'}}>{selectedPlaylist.snippet.title}</h4>
                             {playlistItems.map(item => (
                                 <div key={item.id} style={{padding: '10px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', gap: '12px', alignItems: 'center'}}>
-                                    <img src={item.snippet.thumbnails?.default?.url} style={{width: '60px', height: '45px', objectFit: 'cover', borderRadius: '4px'}} />
+                                    <img src={item.snippet.thumbnails && item.snippet.thumbnails.default && item.snippet.thumbnails.default.url} style={{width: '60px', height: '45px', objectFit: 'cover', borderRadius: '4px'}} />
                                     <div style={{flex: 1, overflow: 'hidden'}}>
                                         <div style={{fontSize: '0.85rem', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} title={item.snippet.title}>{item.snippet.title}</div>
                                         <button 
@@ -464,7 +464,7 @@ function VirtualCrate() {
                     ) : (
                         youtubePlaylists.map(pl => (
                             <div key={pl.id} onClick={() => handlePlaylistClick(pl)} style={{padding: '10px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', transition: 'background 0.2s'}} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--card-bg)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
-                                <img src={pl.snippet.thumbnails?.default?.url} style={{width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px'}} />
+                                <img src={pl.snippet.thumbnails && pl.snippet.thumbnails.default && pl.snippet.thumbnails.default.url} style={{width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px'}} />
                                 <div>
                                     <div style={{fontSize: '0.9rem'}}>{pl.snippet.title}</div>
                                     <div style={{fontSize: '0.7rem', color: '#888'}}>Playlist</div>
