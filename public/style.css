@@ -687,23 +687,95 @@ body {
     transform: translateY(1px);
 }
 
-/* Curated Sidebar */
-.curated-sidebar {
-    width: 280px;
+/* COMBINED RIGHT SIDEBAR */
+.combined-right-panel {
+    width: 340px;
     background: var(--sidebar-bg);
-    border-right: 1px solid var(--border-color);
-    padding: 20px 15px;
-    overflow-y: auto;
+    border-left: 1px solid var(--border-color);
     flex-shrink: 0;
     height: 100%;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), margin-right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.curated-sidebar::-webkit-scrollbar {
+.sidebar-scrollable-content {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 30px;
+}
+
+.sidebar-scrollable-content::-webkit-scrollbar {
     width: 6px;
 }
-.curated-sidebar::-webkit-scrollbar-thumb {
+.sidebar-scrollable-content::-webkit-scrollbar-thumb {
     background: var(--border-color);
     border-radius: 3px;
+}
+
+/* Unhide Sidebar Tab - Minimalist Free-floating Icon */
+.unhide-toggle {
+    position: fixed;
+    right: -40px; /* Hidden offscreen by default */
+    top: 105px;
+    width: 36px;
+    height: 60px;
+    background: transparent;
+    border: none;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-size: 1.2rem;
+    z-index: 200;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s, color 0.3s;
+    outline: none;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.unhide-toggle:hover {
+    color: var(--text-main);
+    transform: scale(1.1);
+}
+
+/* Hidden State */
+body.sidebar-hidden .combined-right-panel {
+    transform: translateX(100%);
+    margin-right: -340px; /* Completely removes its footprint from the flex layout */
+}
+
+body.sidebar-hidden .unhide-toggle {
+    right: 5px; /* Slide into view, slightly padded from monitor edge */
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Moody React Header Close Button */
+.hide-sidebar-btn {
+    background: transparent;
+    border: none;
+    color: var(--accent-color);
+    padding: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.hide-sidebar-btn:hover {
+    background: transparent;
+    color: var(--text-main);
+    transform: scale(1.1);
+}
+
+/* Internal Areas */
+.curated-section {
+    padding: 20px 15px;
+    border-top: 1px dashed var(--border-color);
 }
 
 .curated-title {
@@ -949,7 +1021,7 @@ input[type="text"]:focus {
     border-bottom-color: var(--accent-color);
 }
 
-button:not(.lever-key):not(.knob):not(.theme-dot):not(.close-modal) {
+button:not(.lever-key):not(.knob):not(.theme-dot):not(.close-modal):not(.unhide-toggle):not(.hide-sidebar-btn) {
     padding: 12px 30px;
     background: linear-gradient(145deg, #333, #111);
     color: var(--accent-color);
@@ -964,12 +1036,12 @@ button:not(.lever-key):not(.knob):not(.theme-dot):not(.close-modal) {
     transition: all 0.2s;
 }
 
-button:not(.lever-key):not(.knob):not(.theme-dot):not(.close-modal):hover {
+button:not(.lever-key):not(.knob):not(.theme-dot):not(.close-modal):not(.unhide-toggle):not(.hide-sidebar-btn):hover {
     transform: translateY(-1px);
     box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.9);
 }
 
-button:not(.lever-key):not(.knob):not(.theme-dot):not(.close-modal):active {
+button:not(.lever-key):not(.knob):not(.theme-dot):not(.close-modal):not(.unhide-toggle):not(.hide-sidebar-btn):active {
     transform: translateY(1px);
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
 }
@@ -1173,9 +1245,8 @@ input:checked+.slider:before {
 
 /* React Containers & Modals */
 .react-crate-container {
-    width: 300px;
-    background: var(--sidebar-bg);
-    border-left: 1px solid var(--border-color);
+    width: 100%;
+    background: transparent;
     z-index: 20;
 }
 
@@ -1363,8 +1434,8 @@ input:checked+.slider:before {
 
 /* --- TABLET & SMALL LAPTOP RESPONSIVENESS --- */
 @media (max-width: 1250px) and (min-width: 1000px) {
-    .curated-sidebar { width: 230px; }
-    .react-crate-container { width: 250px; }
+    .combined-right-panel { width: 300px; }
+    body.sidebar-hidden .combined-right-panel { margin-right: -300px; }
     .turntable-wrapper {
         transform: scale(0.8);
         transform-origin: center center;
@@ -1372,8 +1443,8 @@ input:checked+.slider:before {
 }
 
 @media (max-width: 999px) and (min-width: 769px) {
-    .curated-sidebar { width: 200px; padding: 15px 10px; }
-    .react-crate-container { width: 240px; }
+    .combined-right-panel { width: 280px; }
+    body.sidebar-hidden .combined-right-panel { margin-right: -280px; }
     .turntable-wrapper {
         transform: scale(0.55);
         transform-origin: center center;

@@ -38,35 +38,28 @@
 </head>
 <body class="theme-walnut">
 
-    <!-- Main Navigation Bar -->
-    <nav class="main-nav">
-        <div class="nav-container">
-            <a href="/" class="nav-brand">Vinyl Analog</a>
-            <ul class="nav-links">
-                <li><a href="#" id="openUserGuideNav">How to Use</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="journal.html">Journal</a></li>
-                <li id="react-nav-auth-root" style="display: flex; align-items: center; margin-left: 15px;"></li>
-            </ul>
-        </div>
-    </nav>
-
     <div class="app-container">
-        <!-- New Permanent Left Sidebar -->
-        <aside class="curated-sidebar">
-            <h3 class="curated-title accordion-header" id="curatedToggle">Curated for Vinyl <span class="mobile-only" id="curatedArrow" style="margin-left: 8px; font-size: 0.8rem; color: #C5A059;">▼</span></h3>
-            <p style="font-size: 0.8rem; color: #a4a4a4; margin-bottom: 15px; margin-top: 5px; line-height: 1.4;">Not sure which song to play? Discover our hand-picked analog classics.</p>
-            <div id="curatedLists" class="mobile-collapsed">
-                <!-- Dynamically populated by JS based on music styles -->
-            </div>
-        </aside>
 
         <main class="main-content">
-            <header class="header">
-                <h1 class="logo">Vinyl Analog <span class="tagline">Authentic warmth for digital souls.</span></h1>
-            </header>
+            <!-- Main Navigation Bar -->
+            <nav class="main-nav" style="align-self: flex-start; justify-self: flex-start; width: 100%; top: 0; position: sticky; z-index: 1000;">
+                <div class="nav-container">
+                    <a href="/" class="nav-brand">Vinyl Analog</a>
+                    <ul class="nav-links">
+                        <li><a href="#" id="openUserGuideNav">How to Use</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="journal.html">Journal</a></li>
+                        <li id="react-nav-auth-root" style="display: flex; align-items: center; margin-left: 15px;"></li>
+                    </ul>
+                </div>
+            </nav>
 
-            <section class="turntable-wrapper" id="turntableWrapper">
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
+                <header class="header">
+                    <h1 class="logo">Vinyl Analog <span class="tagline">Authentic warmth for digital souls.</span></h1>
+                </header>
+
+                <section class="turntable-wrapper" id="turntableWrapper">
                 <div class="theme-selector">
                     <button class="theme-dot obsidian" data-theme="theme-obsidian" title="Obsidian"></button>
                     <button class="theme-dot walnut active" data-theme="theme-walnut" title="Walnut"></button>
@@ -207,11 +200,26 @@
                     </div>
                 </div>
             </article>
-
+            </div>
         </main>
 
-        <!-- Sidebar React Crate Root -->
-        <aside class="react-crate-container" id="react-crate-root"></aside>
+        <!-- Sidebar Unhide Tab -->
+        <button id="unhideSidebar" class="unhide-toggle" title="Show Sidebar">◀</button>
+        <aside class="combined-right-panel" id="rightSidebar">
+            <div class="sidebar-scrollable-content">
+                <!-- Sidebar React Crate Root -->
+                <div class="react-crate-container" id="react-crate-root"></div>
+                
+                <!-- Curated Vinyl Lists -->
+                <div class="curated-section">
+                    <h3 class="curated-title accordion-header" id="curatedToggle">Curated for Vinyl <span class="mobile-only" id="curatedArrow" style="margin-left: 8px; font-size: 0.8rem; color: #C5A059;">▼</span></h3>
+                    <p style="font-size: 0.8rem; color: #a4a4a4; margin-bottom: 15px; margin-top: 5px; line-height: 1.4;">Not sure which song to play? Discover our hand-picked analog classics.</p>
+                    <div id="curatedLists" class="mobile-collapsed">
+                        <!-- Dynamically populated by JS based on music styles -->
+                    </div>
+                </div>
+            </div>
+        </aside>
     </div>
 
     <!-- PRO Upgrade Modal -->

@@ -439,15 +439,24 @@ function VirtualCrate() {
     }, []);
 
     return (
-        <div style={{padding: '20px', color: 'var(--text-main)', height: '100%', borderLeft: '1px solid var(--border-color)', background: 'transparent', display: 'flex', flexDirection: 'column'}}>
+        <div style={{padding: '0 20px 20px 20px', color: 'var(--text-main)', height: '100%', borderLeft: '1px solid var(--border-color)', background: 'transparent', display: 'flex', flexDirection: 'column'}}>
             <div 
-                style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px', cursor: isMobile ? 'pointer' : 'default'}}
+                style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(197, 160, 89, 0.2)', padding: '15px 0', cursor: isMobile ? 'pointer' : 'default'}}
                 onClick={() => { if (isMobile) setIsMobileCollapsed(!isMobileCollapsed); }}
             >
                 <div style={{display: 'flex', alignItems: 'center'}}>
-                    <h3 style={{color: '#C5A059', margin: 0, fontFamily: 'var(--font-heading)'}}>Vinyl Crate</h3>
+                    <h3 style={{color: '#C5A059', margin: 0, fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 'bold', fontStyle: 'italic'}}>Vinyl Crate</h3>
                     {isMobile && <span style={{marginLeft: '8px', color: '#C5A059', fontSize: '0.8rem'}}>{isMobileCollapsed ? '▼' : '▲'}</span>}
                 </div>
+                {!isMobile && (
+                    <button 
+                        className="hide-sidebar-btn"
+                        onClick={() => document.body.classList.add('sidebar-hidden')}
+                        title="Hide Crate"
+                    >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </button>
+                )}
             </div>
             
             {!isMobileCollapsed && (
@@ -478,7 +487,7 @@ function VirtualCrate() {
                 AdSense Zone
             </div>
             
-            <div style={{flex: 1, overflowY: 'auto'}}>
+            <div style={{overflowY: 'auto', maxHeight: '230px', paddingRight: '5px', flexShrink: 0}}>
                 {view === 'youtube' ? (
                     !googleToken ? (
                         <div style={{textAlign: 'center', padding: '40px 20px', color: 'var(--text-sub)', fontSize: '0.8rem'}}>
