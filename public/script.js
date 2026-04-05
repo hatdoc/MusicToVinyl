@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         youtubePlayer: null,
         youtubeVideoId: null,
         playerReady: false,
-        knobs: { volume: 0.4, warmth: 0.65, crackle: 0.4 },
+        knobs: { volume: 0.4, warmth: 0.35, crackle: 0.4 },
         queue: []
     };
 
@@ -90,10 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             title: "Curated Classics",
-            text: "Not sure what to play? Click any cover in this left-sidebar crate to instantly spin a hand-picked analog masterpiece.",
-            target: ".curated-sidebar",
-            placement: "right",
-            offsetX: 40
+            text: "Not sure what to play? Click any cover in this right-sidebar crate to instantly spin a hand-picked analog masterpiece.",
+            target: ".curated-section",
+            placement: "left",
+            offsetX: -40
         },
         {
             title: "Vintage Cardboard Sleeve",
@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const noiseFilter = state.audioContext.createBiquadFilter();
         noiseFilter.type = 'lowpass';
         // Inverted Warmth: min val -> max warmth sound, max val -> min warmth sound.
-        noiseFilter.frequency.value = 10000 - ((1 - state.knobs.warmth) * 8000); 
+        noiseFilter.frequency.value = 10000 - ((1 - state.knobs.warmth) * 8000);
 
         state.nodes.noiseFilter = noiseFilter;
 
@@ -475,9 +475,9 @@ document.addEventListener('DOMContentLoaded', () => {
         burstSource.buffer = state.nodes.noiseBuffer;
         const burstGain = ctx.createGain();
 
-        // Scale burst volume with user's crackle preference. It creates a subtle initial spike.
-        const burstStart = state.knobs.crackle * 0.4;
-        const burstEnd = state.knobs.crackle * 0.25; // Matches the continuous loop volume
+        // Scale burst volume with user's crackle preference.
+        const burstStart = Math.pow(state.knobs.crackle, 2) * 0.25;
+        const burstEnd = Math.pow(state.knobs.crackle, 2) * 0.15; // Matches the continuous loop volume
 
         // Avoid exponentialRamp throwing if crackle is 0, use linear ramp
         burstGain.gain.setValueAtTime(burstStart, ctx.currentTime);
@@ -501,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
         source.loop = true;
 
         const gainNode = state.audioContext.createGain();
-        gainNode.gain.value = state.knobs.crackle * 0.25; // Linear curve for audible presence at low values, strict 0.25 max limit
+        gainNode.gain.value = Math.pow(state.knobs.crackle, 2) * 0.15; // Exponential curve for detailed granular control at low values, strict 0.15 max limit
 
         source.connect(gainNode);
         gainNode.connect(state.nodes.noiseFilter); // Route through warmth filter
@@ -767,9 +767,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (type === 'warmth') {
             const invertedVal = 1 - val;
             if (state.nodes.humGain) state.nodes.humGain.gain.value = Math.pow(invertedVal, 3) * 0.08;
-            if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (invertedVal * 8000); 
+            if (state.nodes.noiseFilter) state.nodes.noiseFilter.frequency.value = 10000 - (invertedVal * 8000);
         } else if (type === 'crackle' && state.nodes.noiseGain) {
-            state.nodes.noiseGain.gain.value = val * 0.25;
+            state.nodes.noiseGain.gain.value = Math.pow(val, 2) * 0.15;
         }
     }
 
@@ -820,13 +820,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // Wait 2 seconds for the needle drop and buzzing to complete before starting the music
         setTimeout(() => {
             state.isTransitioning = false;
-            if (state.isPlaying && !state.isPaused) {
-                playVinylNoise();
-                if (state.youtubePlayer && state.youtubePlayer.loadVideoById) {
-                    state.youtubePlayer.loadVideoById(videoId);
-                    state.youtubePlayer.setVolume(state.knobs.volume * 100);
-                    state.youtubePlayer.playVideo();
-                }
+            if (state.isPlaying) {
+                const tryPlay = () => {
+                    if (state.youtubePlayer && typeof state.youtubePlayer.loadVideoById === "function") {
+                        state.youtubePlayer.loadVideoById(videoId);
+                        state.youtubePlayer.setVolume(state.knobs.volume * 100);
+                        if (state.isPaused) {
+                            state.youtubePlayer.pauseVideo();
+                        } else {
+                            playVinylNoise();
+                            state.youtubePlayer.playVideo();
+                        }
+                    } else {
+                        setTimeout(tryPlay, 500);
+                    }
+                };
+                tryPlay();
             }
         }, 2000);
 
@@ -836,7 +845,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function pausePlayback() {
         state.isPaused = true;
-        if (state.youtubePlayer) {
+        if (state.youtubePlayer && typeof state.youtubePlayer.pauseVideo === "function") {
             state.youtubePlayer.pauseVideo();
         }
         if (state.audioContext) {
@@ -844,12 +853,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         plinthPlayBtn.textContent = "⏵";
         plinthPlayBtn.classList.remove('active');
+        vinylRecord.classList.remove('spinning');
+        turntableHero.classList.remove('playing');
         statusMessage.textContent = "Playback Paused.";
     }
 
     function resumePlayback() {
         state.isPaused = false;
-        if (state.youtubePlayer) {
+        if (state.youtubePlayer && typeof state.youtubePlayer.playVideo === "function") {
             state.youtubePlayer.playVideo();
         }
         if (state.audioContext) {
@@ -857,13 +868,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         plinthPlayBtn.textContent = "⏸";
         plinthPlayBtn.classList.add('active');
+        vinylRecord.classList.add('spinning');
+        turntableHero.classList.add('playing');
         statusMessage.textContent = "Resuming warmth...";
     }
 
     function stopPlayback() {
         state.isPlaying = false;
         state.isPaused = false;
-        if (state.youtubePlayer) {
+        if (state.youtubePlayer && typeof state.youtubePlayer.stopVideo === "function") {
             state.youtubePlayer.stopVideo();
         }
         vinylRecord.classList.remove('spinning');
@@ -874,29 +887,11 @@ document.addEventListener('DOMContentLoaded', () => {
         statusMessage.textContent = "Waiting for record...";
     }
 
-    // --- Responsive Layout: Proportional Turntable Scaling ---
-    function scaleTurntable() {
-        const wrapper = document.querySelector('.turntable-wrapper');
-        if (!wrapper) return;
-
-        const mainContent = document.querySelector('.main-content');
-        // Container width minus layout padding (~40px)
-        const availableWidth = (mainContent ? mainContent.clientWidth : window.innerWidth) - 40;
-
-        // Base logical width modeled locally is 600px
-        if (availableWidth < 600) {
-            const scale = Math.max(0.4, availableWidth / 600); // Prevent impossibly tiny sizes
-            wrapper.style.transform = `scale(${scale})`;
-            wrapper.style.transformOrigin = window.innerWidth <= 768 ? 'top center' : 'center center';
-            // Compacting layout height proportionally to avoid blank whitespace generated by CSS transform
-            wrapper.style.marginBottom = `-${500 * (1 - scale)}px`;
-        } else {
-            wrapper.style.transform = 'none';
-            wrapper.style.marginBottom = '20px';
-        }
+    // --- Sidebar Unhide Logic ---
+    const unhideSidebarBtn = document.getElementById('unhideSidebar');
+    if (unhideSidebarBtn) {
+        unhideSidebarBtn.addEventListener('click', () => {
+            document.body.classList.remove('sidebar-hidden');
+        });
     }
-
-    window.addEventListener('resize', scaleTurntable);
-    // Use timeout to ensure bounding box layout stabilizes before measuring
-    setTimeout(scaleTurntable, 50);
 });
