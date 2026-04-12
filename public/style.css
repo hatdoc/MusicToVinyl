@@ -696,10 +696,11 @@ body {
 }
 
 #convertBtn,
-#reserveBtn {
+#reserveBtn,
+#randomSpinBtn {
     flex: 1;
     max-width: 220px;
-    min-width: 140px;
+    min-width: 110px;
 }
 
 #reserveBtn {
