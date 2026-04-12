@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sleeveTitle = document.getElementById('sleeveTitle');
     const sleeveArtist = document.getElementById('sleeveArtist');
     const affiliateBtn = document.getElementById('affiliateBtn');
+    const randomSpinBtn = document.getElementById('randomSpinBtn');
 
     // --- Onboarding Tour Logic ---
     const tourContainer = document.getElementById('onboardingTour');
@@ -743,6 +744,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Random Spin Logic
+    if (randomSpinBtn) {
+        randomSpinBtn.addEventListener('click', () => {
+            if (!curatedMusic) return;
+            const allTracks = Object.values(curatedMusic).flat();
+            if (allTracks.length === 0) return;
+            const randomTrack = allTracks[Math.floor(Math.random() * allTracks.length)];
+            youtubeUrlInput.value = `${randomTrack.title} - ${randomTrack.sub}`;
+            convertBtn.click();
+        });
+    }
+
+    // --- Keyboard Shortcuts Engine ---
+    document.addEventListener('keydown', (e) => {
+        // Ignore if user is actively typing
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        if (e.code === 'Space') {
+            e.preventDefault();
+            if (plinthPlayBtn) plinthPlayBtn.click();
+        } else if (e.code === 'ArrowRight') {
+            e.preventDefault();
+            if (plinthSkipBtn) plinthSkipBtn.click();
+        } else if (e.key === '/') {
+            e.preventDefault();
+            if (youtubeUrlInput) youtubeUrlInput.focus();
+        }
+    });
+
     // PRO Modal Handlers
     const closeProModalBtn = document.getElementById('closeProModal');
     if (closeProModalBtn) {
@@ -893,5 +923,15 @@ document.addEventListener('DOMContentLoaded', () => {
         unhideSidebarBtn.addEventListener('click', () => {
             document.body.classList.remove('sidebar-hidden');
         });
+    }
+
+    // --- Deep-Linking ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const deepLinkVideoId = urlParams.get('v');
+    if (deepLinkVideoId) {
+        setTimeout(() => {
+            statusMessage.textContent = "Loading deep-linked pressing...";
+            handleConversion(deepLinkVideoId);
+        }, 500); // Small delay to let initial animations settle
     }
 });
