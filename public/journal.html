@@ -4,48 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Journal - Vinyl Analog</title>
+    <meta name="description" content="Chronicles of Analog Excellence. Explore the physics and philosophy of analog sound.">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        .content-container {
-            max-width: 800px;
-            background: var(--plinth-base);
-            padding: 60px;
-            border-radius: 30px;
-            box-shadow: 20px 20px 60px var(--plinth-shadow), -20px -20px 60px var(--plinth-highlight);
-            margin-top: 40px;
-            color: var(--text-color);
-            line-height: 1.8;
-            overflow-y: auto;
-            max-height: 70vh;
-        }
-        h2 { font-family: var(--font-heading); color: var(--accent-color); margin-top: 40px; }
-        p { margin-bottom: 20px; font-size: 1.1rem; opacity: 0.8; }
-        .back-link { margin-top: 40px; display: block; color: var(--accent-color); text-decoration: none; font-weight: bold; letter-spacing: 2px; }
-    </style>
 </head>
 <body class="theme-walnut">
+
+    <!-- Main Navigation Bar -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">Vinyl Analog</a>
+            <ul class="nav-links">
+                <li><a href="/">Turntable</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="journal.html">Journal</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <main class="main-content">
-        <header class="header">
-            <h1 class="logo">The Journal</h1>
-            <span class="tagline">Chronicles of Analog Excellence</span>
-        </header>
+        <article class="editorial-content" style="margin-top: 0; min-height: calc(100vh - 60px);">
+            <div class="editorial-container">
+                <header class="editorial-header">
+                    <h2>The Journal</h2>
+                    <p>Chronicles of Analog Excellence</p>
+                </header>
 
-        <article class="content-container">
-            <h2>The Physics of Analog Warmth</h2>
-            <p>What we describe as "warmth" in analog audio is actually a complex interplay of subtle harmonic distortions, physical media limitations, and natural frequency roll-offs. Unlike the clinical precision of digital signals, analog equipment introduces even-order harmonics that the human ear perceives as musical, pleasing, and deeply engaging. When an audio signal passes through vacuum tubes, magnetic tape, or is physically carved into a PVC groove, it inherently gains texture.</p>
-            <p>Digital audio, particularly at high sample rates and bit depths, reproduces sound exactly as recorded. While technically flawless, this can lead to "listener fatigue." The human brain evolved to process sound in natural acoustic environments, which are never perfectly silent or completely devoid of resonance. The subtle imperfections of analog warmth—the gentle roll-off of harsh high frequencies above 15kHz, the slight bump in the lower midrange—act as a comforting acoustic blanket.</p>
-            
-            <h2>Why Vinyl Matters in a Digital World</h2>
-            <p>Vinyl records offer a tactile, deliberate relationship with music that streaming algorithms simply cannot replicate. The physical act of cleaning a record, aligning the tonearm, dropping the needle, and observing the mechanical rotation creates a ritualistic listening experience that demands presence and attention. In an age where millions of songs are available at the tap of a screen, music often becomes background noise. Vinyl forces the listener to sit down, commit to an album sequence, and actively participate in the playback event.</p>
-            <p>Furthermore, the physical constraints of the vinyl medium forced mastering engineers to make specific artistic choices. Deep, out-of-phase bass had to be summed to mono to prevent the stylus from jumping out "the groove", and extreme high frequencies were carefully managed to prevent distortion. These technical workarounds inadvertently created the "vinyl sound"—a cohesive, centered, and physically impactful audio signature that remains highly sought after by audiophiles and casual listeners alike.</p>
+                <div class="prose-block">
+                    <h3>The Physics of Analog Warmth</h3>
+                    <p>What we describe as "warmth" in analog audio is actually a complex interplay of subtle harmonic distortions, physical media limitations, and natural frequency roll-offs. Unlike the clinical precision of digital signals, analog equipment introduces even-order harmonics that the human ear perceives as musical, pleasing, and deeply engaging. When an audio signal passes through vacuum tubes, magnetic tape, or is physically carved into a PVC groove, it inherently gains texture.</p>
+                    <p>Digital audio, particularly at high sample rates and bit depths, reproduces sound exactly as recorded. While technically flawless, this can lead to "listener fatigue." The human brain evolved to process sound in natural acoustic environments, which are never perfectly silent or completely devoid of resonance. The subtle imperfections of analog warmth—the gentle roll-off of harsh high frequencies above 15kHz, the slight bump in the lower midrange—act as a comforting acoustic blanket.</p>
+                </div>
+                
+                <div class="prose-block">
+                    <h3>Why Vinyl Matters in a Digital World</h3>
+                    <p>Vinyl records offer a tactile, deliberate relationship with music that streaming algorithms simply cannot replicate. The physical act of cleaning a record, aligning the tonearm, dropping the needle, and observing the mechanical rotation creates a ritualistic listening experience that demands presence and attention. In an age where millions of songs are available at the tap of a screen, music often becomes background noise. Vinyl forces the listener to sit down, commit to an album sequence, and actively participate in the playback event.</p>
+                    <p>Furthermore, the physical constraints of the vinyl medium forced mastering engineers to make specific artistic choices. Deep, out-of-phase bass had to be summed to mono to prevent the stylus from jumping out "the groove", and extreme high frequencies were carefully managed to prevent distortion. These technical workarounds inadvertently created the "vinyl sound"—a cohesive, centered, and physically impactful audio signature that remains highly sought after by audiophiles and casual listeners alike.</p>
+                </div>
 
-            <h2>The Science of Our Generative Vinyl Engine</h2>
-            <p>Our proprietary DSP (Digital Signal Processing) chain at Vinyl Analog is designed to meticulously emulate the physical and electrical characteristics of a high-mass turntable and vintage amplifier setup. We don't just loop an MP3 of crackle; we generate sound dynamically.</p>
-            <p>First, we model the turntable's physical rumble. By synthesizing a pure, low-frequency 50Hz and 60Hz oscillating hum, we replicate the alternating current grounding noise and physical motor vibration commonly found in vintage hi-fi gear. The "Warmth" control actively drives a cascading series of Biquad filters. We apply a dynamic High-Pass filter at 80Hz to eliminate digital sub-noise, combined with a variable Low-Pass slope that sweeps from 10kHz down to 2kHz to mirror the natural high-frequency attenuation of a worn physical stylus.</p>
-            <p>Furthermore, our engine generates unique, mathematically randomized crackle artifacts. Instead of a repeating sample pattern, we use an advanced noise generation algorithm that creates completely unique pops and hisses based on atmospheric variables, providing a truly endless, non-repeating sonic landscape.</p>
+                <div class="prose-block">
+                    <h3>The Science of Our Generative Vinyl Engine</h3>
+                    <p>Our proprietary DSP (Digital Signal Processing) chain at Vinyl Analog is designed to meticulously emulate the physical and electrical characteristics of a high-mass turntable and vintage amplifier setup. We don't just loop an MP3 of crackle; we generate sound dynamically.</p>
+                    <p>First, we model the turntable's physical rumble. By synthesizing a pure, low-frequency 50Hz and 60Hz oscillating hum, we replicate the alternating current grounding noise and physical motor vibration commonly found in vintage hi-fi gear. The "Warmth" control actively drives a cascading series of Biquad filters. We apply a dynamic High-Pass filter at 80Hz to eliminate digital sub-noise, combined with a variable Low-Pass slope that sweeps from 10kHz down to 2kHz to mirror the natural high-frequency attenuation of a worn physical stylus.</p>
+                    <p>Furthermore, our engine generates unique, mathematically randomized crackle artifacts. Instead of a repeating sample pattern, we use an advanced noise generation algorithm that creates completely unique pops and hisses based on atmospheric variables, providing a truly endless, non-repeating sonic landscape.</p>
+                </div>
 
-            <a href="/" class="back-link">← RETURN TO TURNTABLE</a>
+                <a href="/" style="display: inline-block; margin-top: 20px; color: var(--copper); font-family: var(--font-ui); text-transform: uppercase; letter-spacing: 2px; text-decoration: none; border-bottom: 1px solid var(--copper); padding-bottom: 5px;">← Return to Turntable</a>
+            </div>
         </article>
     </main>
 </body>

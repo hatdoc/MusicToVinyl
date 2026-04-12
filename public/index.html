@@ -6,6 +6,38 @@
     <meta name="google-adsense-account" content="ca-pub-8983851567536524">
     <title>Vinyl Analog - Authentic Sound & Digital Turnable Simulator</title>
     <meta name="description" content="Experience the authentic warmth of vinyl records with our digital turntable simulator. Convert digital tracks into rich, analog audio experiences.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vinylanalog.com/">
+    <meta property="og:title" content="Vinyl Analog - Authentic Sound & Digital Turnable Simulator">
+    <meta property="og:description" content="Experience the authentic warmth of vinyl records with our digital turntable simulator. Convert digital tracks into rich, analog audio experiences.">
+    <meta property="og:image" content="https://vinylanalog.com/images/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://vinylanalog.com/">
+    <meta property="twitter:title" content="Vinyl Analog - Authentic Sound & Digital Turnable Simulator">
+    <meta property="twitter:description" content="Experience the authentic warmth of vinyl records with our digital turntable simulator. Convert digital tracks into rich, analog audio experiences.">
+    <meta property="twitter:image" content="https://vinylanalog.com/images/og-image.jpg">
+    
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Vinyl Analog",
+      "url": "https://vinylanalog.com",
+      "description": "Digital turntable simulator that converts digital tracks into authentic analog vinyl audio experiences.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCY60G7C8B"></script>
@@ -86,10 +118,10 @@
                     <!-- Playback Keys (Piano Style) - FAR BOTTOM-LEFT EDGE -->
                     <div class="piano-key-deck left-edge">
                         <div class="lever-group">
-                            <button id="plinthPlayBtn" class="lever-key">⏵</button>
+                            <button id="plinthPlayBtn" class="lever-key" aria-label="Play or Pause Track">⏵</button>
                         </div>
                         <div class="lever-group">
-                            <button id="plinthSkipBtn" class="lever-key">⏭</button>
+                            <button id="plinthSkipBtn" class="lever-key" aria-label="Skip to Next Track">⏭</button>
                         </div>
                     </div>
                     
@@ -144,7 +176,7 @@
 
             <section class="converter-interface">
                 <div class="input-group">
-                    <input type="text" id="youtubeUrl" placeholder="Search track name or paste YouTube URL..." autocomplete="off">
+                    <input type="text" id="youtubeUrl" aria-label="Track Search or YouTube URL" placeholder="Search track name or paste YouTube URL..." autocomplete="off">
                     <div class="button-group">
                         <button id="convertBtn">Draw Record</button>
                         <button id="reserveBtn" class="secondary">Reserve</button>

@@ -4,48 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - Vinyl Analog</title>
+    <meta name="description" content="Learn about Vinyl Analog's mission to preserve the authentic warmth of analog sound through advanced digital simulation.">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        .content-container {
-            max-width: 800px;
-            background: var(--plinth-base);
-            padding: 60px;
-            border-radius: 30px;
-            box-shadow: 20px 20px 60px var(--plinth-shadow), -20px -20px 60px var(--plinth-highlight);
-            margin-top: 40px;
-            color: var(--text-color);
-            line-height: 1.8;
-        }
-        h2 { font-family: var(--font-heading); color: var(--accent-color); margin-top: 40px; }
-        p { margin-bottom: 20px; font-size: 1.1rem; opacity: 0.8; }
-        .back-link { margin-top: 40px; display: block; color: var(--accent-color); text-decoration: none; font-weight: bold; letter-spacing: 2px; }
-    </style>
 </head>
 <body class="theme-walnut">
+
+    <!-- Main Navigation Bar -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">Vinyl Analog</a>
+            <ul class="nav-links">
+                <li><a href="/">Turntable</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="journal.html">Journal</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <main class="main-content">
-        <header class="header">
-            <h1 class="logo">Our Story</h1>
-            <span class="tagline">Preserving the Ritual of Listening</span>
-        </header>
+        <article class="editorial-content" style="margin-top: 0; min-height: calc(100vh - 60px);">
+            <div class="editorial-container">
+                <header class="editorial-header">
+                    <h2>Our Story</h2>
+                    <p>Preserving the Ritual of Listening</p>
+                </header>
 
-        <section class="content-container">
-            <h2>The Mission</h2>
-            <p>Vinyl Analog was born out of a desire to bridge the gap between digital convenience and analog character. We believe that music is more than just data; it is an atmosphere, a texture, and a memory. Our platform allows users to experience the "ritual" of vinyl through an advanced DSP engine that respects the physics of physical playback. In an age where fidelity is often confused with sterility, we are dedicated to reintroducing the warmth, soul, and imperfect beauty of analog media to a global audience of music lovers.</p>
-            
-            <h2>Our Expertise in Audio Engineering</h2>
-            <p>Our team consists of veteran audio engineers, software developers, and devout audiophiles who have spent decades analyzing the specific harmonic profiles of vintage vacuum tubes, solid-state pre-amplifiers, and high-end moving-coil cartridges. We didn't just want to build a simple equalization filter; we set out to mathematically map the psychoacoustic properties of a physical record spinning on a plinth.</p>
-            <p>The "Vinyl Engine" you interact with today is the result of years of research and precise digital modeling. We utilized real-time frequency analysis of classic audio equipment to capture the exact saturation curves, noise floor behaviors, and subtle high-frequency roll-offs that define the "vinyl sound." Our commitment to authentic reproduction ensures that our tool creates a genuinely believable analog experience rather than a superficial digital effect.</p>
+                <div class="prose-block">
+                    <h3>The Mission</h3>
+                    <p>Vinyl Analog was born out of a desire to bridge the gap between digital convenience and analog character. We believe that music is more than just data; it is an atmosphere, a texture, and a memory. Our platform allows users to experience the "ritual" of vinyl through an advanced DSP engine that respects the physics of physical playback. In an age where fidelity is often confused with sterility, we are dedicated to reintroducing the warmth, soul, and imperfect beauty of analog media to a global audience of music lovers.</p>
+                </div>
+                
+                <div class="prose-block">
+                    <h3>Our Expertise in Audio Engineering</h3>
+                    <p>Our team consists of veteran audio engineers, software developers, and devout audiophiles who have spent decades analyzing the specific harmonic profiles of vintage vacuum tubes, solid-state pre-amplifiers, and high-end moving-coil cartridges. We didn't just want to build a simple equalization filter; we set out to mathematically map the psychoacoustic properties of a physical record spinning on a plinth.</p>
+                    <p>The "Vinyl Engine" you interact with today is the result of years of research and precise digital modeling. We utilized real-time frequency analysis of classic audio equipment to capture the exact saturation curves, noise floor behaviors, and subtle high-frequency roll-offs that define the "vinyl sound." Our commitment to authentic reproduction ensures that our tool creates a genuinely believable analog experience rather than a superficial digital effect.</p>
+                </div>
 
-            <h2>Why Trust Our Engine?</h2>
-            <p>Unlike many online tools that simply loop pre-recorded "crackle" MP3 files over a track, Vinyl Analog generates its noise floor dynamically. By utilizing the modern Web Audio API, our engine synthesizes grounding hums and calculates crackle artifacts in real-time, meaning your listening experience is uniquely generated every single time you drop the needle. We pride ourselves on pushing the boundaries of what browser-based audio processing can achieve.</p>
+                <div class="prose-block">
+                    <h3>Why Trust Our Engine?</h3>
+                    <p>Unlike many online tools that simply loop pre-recorded "crackle" MP3 files over a track, Vinyl Analog generates its noise floor dynamically. By utilizing the modern Web Audio API, our engine synthesizes grounding hums and calculates crackle artifacts in real-time, meaning your listening experience is uniquely generated every single time you drop the needle. We pride ourselves on pushing the boundaries of what browser-based audio processing can achieve.</p>
+                </div>
 
-            <h2>Contact Us</h2>
-            <p>Have questions about our proprietary audio processing techniques, or want to learn more about our ongoing mission to preserve analog culture? Our engineering team is always open to feedback from the audiophile community.</p>
-            <p>Reach out to us at: <strong>curator@vinylanalog.com</strong></p>
+                <div class="prose-block">
+                    <h3>Contact Us</h3>
+                    <p>Have questions about our proprietary audio processing techniques, or want to learn more about our ongoing mission to preserve analog culture? Our engineering team is always open to feedback from the audiophile community.</p>
+                    <p>Reach out to us at: <strong style="color: var(--copper);">curator@vinylanalog.com</strong></p>
+                </div>
 
-            <a href="/" class="back-link">← RETURN TO TURNTABLE</a>
-        </section>
+                <a href="/" style="display: inline-block; margin-top: 20px; color: var(--copper); font-family: var(--font-ui); text-transform: uppercase; letter-spacing: 2px; text-decoration: none; border-bottom: 1px solid var(--copper); padding-bottom: 5px;">← Return to Turntable</a>
+            </div>
+        </article>
     </main>
 </body>
 </html>
