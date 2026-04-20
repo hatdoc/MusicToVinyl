@@ -500,34 +500,14 @@ body {
     object-fit: cover;
 }
 
-.center-label:hover .edit-label-btn {
-    opacity: 1;
+.ambiance-btn.active {
+    background: rgba(197, 160, 89, 0.2) !important;
+    border-color: var(--copper) !important;
+    box-shadow: 0 0 10px rgba(197, 160, 89, 0.3) !important;
 }
 
-.edit-label-btn {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.6);
-    border: 1px solid rgba(255,255,255,0.4);
-    color: white;
-    font-size: 1.2rem;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 20;
-    opacity: 0;
-    transition: opacity 0.2s, background 0.2s;
-}
-
-.edit-label-btn:hover {
-    background: rgba(0,0,0,0.8);
-    border-color: var(--copper);
+.ambiance-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* spindle */

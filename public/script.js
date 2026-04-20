@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
         knobs: { volume: 0.4, warmth: 0.35, crackle: 0.4 },
         queue: [],
         listening_seconds: parseInt(localStorage.getItem('vinyl_listening_seconds')) || 0,
-        custom_label_url: localStorage.getItem('vinyl_custom_label') || null,
         statsSyncTimer: 0
     };
 
@@ -111,13 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
             text: "Keep track of your total hours spun. Play more tracks to unlock gamification badges like Vinyl Enthusiast and Analog Master.",
             target: "#react-stats-root",
             placement: "bottom",
-            offsetY: -10
-        },
-        {
-            title: "Custom Center Labels",
-            text: "Hover over the center of any spinning record to reveal the Edit icon. Click it to paste a custom image URL for your personalized vinyl pressing.",
-            target: "#centerLabel",
-            placement: "top",
             offsetY: -10
         }
     ];
@@ -331,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.youtubeVideoId = track.youtube_id;
         const thumbnail = `https://img.youtube.com/vi/${track.youtube_id}/0.jpg`;
         if (albumArt) {
-            albumArt.src = state.custom_label_url ? state.custom_label_url : thumbnail;
+            albumArt.src = thumbnail;
             albumArt.classList.remove('hidden');
         }
 
@@ -401,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.youtubeVideoId = videoId;
         const thumbnail = `https://img.youtube.com/vi/${videoId}/0.jpg`;
         if (albumArt) {
-            albumArt.src = state.custom_label_url ? state.custom_label_url : thumbnail;
+            albumArt.src = thumbnail;
             albumArt.classList.remove('hidden');
         }
 
@@ -974,47 +966,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 1000);
 
-    window.addEventListener('customLabelUpdated', (e) => {
-        state.custom_label_url = e.detail;
-        if (e.detail) {
-            localStorage.setItem('vinyl_custom_label', e.detail);
-            if (albumArt && !albumArt.classList.contains('hidden')) {
-                albumArt.src = e.detail;
-            }
-        } else {
-            localStorage.removeItem('vinyl_custom_label');
-            if (albumArt && !albumArt.classList.contains('hidden') && state.youtubeVideoId) {
-                albumArt.src = `https://img.youtube.com/vi/${state.youtubeVideoId}/0.jpg`;
-            }
-        }
-        
-        // Push remote if logged in
-        if (state.isLoggedIn && window.supabase) {
-            window.supabase.auth.getUser().then(({ data: { user } }) => {
-                if (user) {
-                    window.supabase.from('users').update({ custom_label_url: e.detail }).eq('id', user.id).then();
-                }
-            });
-        }
-    });
-
     // Remote Pull when logging in
     window.addEventListener('authSuccess', () => {
         if (window.supabase) {
             window.supabase.auth.getUser().then(({ data: { user } }) => {
                 if (user) {
-                    window.supabase.from('users').select('listening_seconds, custom_label_url').eq('id', user.id).single().then(({ data, error }) => {
+                    window.supabase.from('users').select('listening_seconds').eq('id', user.id).single().then(({ data, error }) => {
                         if (data && !error) {
                             if (data.listening_seconds && data.listening_seconds > state.listening_seconds) {
                                 state.listening_seconds = data.listening_seconds;
                                 localStorage.setItem('vinyl_listening_seconds', state.listening_seconds);
-                            }
-                            if (data.custom_label_url) {
-                                state.custom_label_url = data.custom_label_url;
-                                localStorage.setItem('vinyl_custom_label', state.custom_label_url);
-                                if (albumArt && !albumArt.classList.contains('hidden')) {
-                                    albumArt.src = state.custom_label_url;
-                                }
                             }
                             window.dispatchEvent(new CustomEvent('statsUpdated', { detail: state.listening_seconds }));
                         }
@@ -1023,4 +984,158 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+    // --- Needle-Drop Seeking ---
+    const groovesEl = document.querySelector('.grooves');
+    if (groovesEl) {
+        groovesEl.addEventListener('click', (e) => {
+            if (!state.isPlaying || !state.youtubePlayer || typeof state.youtubePlayer.getDuration !== 'function') return;
+
+            const rect = groovesEl.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const dx = e.clientX - centerX;
+            const dy = e.clientY - centerY;
+            const distance = Math.sqrt(dx*dx + dy*dy);
+            
+            const maxRadius = rect.width / 2;
+            const minRadius = maxRadius * 0.1; // inner limit
+            
+            if (distance > maxRadius) return;
+            
+            // 0% at outer edge, 100% at inner edge
+            const rawPercentage = (maxRadius - distance) / (maxRadius - minRadius);
+            const boundedPercentage = Math.max(0, Math.min(1, rawPercentage));
+
+            const duration = state.youtubePlayer.getDuration();
+            if (duration) {
+                const seekTime = duration * boundedPercentage;
+                state.youtubePlayer.seekTo(seekTime, true);
+                if (typeof playNeedleDrop === 'function') playNeedleDrop();
+            }
+        });
+    }
+
+    // --- Room Ambiance Generator ---
+    const ambNodes = {
+        rain: null,
+        fire: null,
+        rainGain: null,
+        fireGain: null,
+        rainPlaying: false,
+        firePlaying: false
+    };
+
+    function startRain() {
+        if (!audioCtx) initAudioEngine();
+        if (ambNodes.rainPlaying) return;
+        ambNodes.rainPlaying = true;
+        
+        const bufferSize = audioCtx.sampleRate * 2;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = Math.random() * 2 - 1;
+        }
+        
+        ambNodes.rain = audioCtx.createBufferSource();
+        ambNodes.rain.buffer = buffer;
+        ambNodes.rain.loop = true;
+        
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 400; // Deep rumble
+        
+        ambNodes.rainGain = audioCtx.createGain();
+        ambNodes.rainGain.gain.value = 0.5;
+        
+        ambNodes.rain.connect(filter);
+        filter.connect(ambNodes.rainGain);
+        ambNodes.rainGain.connect(masterGain);
+        
+        ambNodes.rain.start();
+        document.getElementById('toggleRainBtn')?.classList.add('active');
+    }
+
+    function stopRain() {
+        if (ambNodes.rain) {
+            ambNodes.rain.stop();
+            ambNodes.rain.disconnect();
+            ambNodes.rain = null;
+        }
+        if (ambNodes.rainGain) {
+            ambNodes.rainGain.disconnect();
+            ambNodes.rainGain = null;
+        }
+        ambNodes.rainPlaying = false;
+        document.getElementById('toggleRainBtn')?.classList.remove('active');
+    }
+
+    function startFire() {
+        if (!audioCtx) initAudioEngine();
+        if (ambNodes.firePlaying) return;
+        ambNodes.firePlaying = true;
+        
+        const bufferSize = audioCtx.sampleRate * 2;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        let lastOut = 0;
+        for (let i = 0; i < bufferSize; i++) {
+            let white = Math.random() * 2 - 1;
+            data[i] = (lastOut + (0.02 * white)) / 1.02;
+            lastOut = data[i];
+            if (Math.random() < 0.001) {
+                data[i] = (Math.random() * 2 - 1) * 2.0;
+            }
+        }
+        
+        ambNodes.fire = audioCtx.createBufferSource();
+        ambNodes.fire.buffer = buffer;
+        ambNodes.fire.loop = true;
+        
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 800; 
+        
+        ambNodes.fireGain = audioCtx.createGain();
+        ambNodes.fireGain.gain.value = 0.8;
+        
+        ambNodes.fire.connect(filter);
+        filter.connect(ambNodes.fireGain);
+        ambNodes.fireGain.connect(masterGain);
+        
+        ambNodes.fire.start();
+        document.getElementById('toggleFireBtn')?.classList.add('active');
+    }
+
+    function stopFire() {
+        if (ambNodes.fire) {
+            ambNodes.fire.stop();
+            ambNodes.fire.disconnect();
+            ambNodes.fire = null;
+        }
+        if (ambNodes.fireGain) {
+            ambNodes.fireGain.disconnect();
+            ambNodes.fireGain = null;
+        }
+        ambNodes.firePlaying = false;
+        document.getElementById('toggleFireBtn')?.classList.remove('active');
+    }
+
+    const toggleRainBtn = document.getElementById('toggleRainBtn');
+    if (toggleRainBtn) {
+        toggleRainBtn.addEventListener('click', () => {
+            if (ambNodes.rainPlaying) stopRain();
+            else startRain();
+        });
+    }
+
+    const toggleFireBtn = document.getElementById('toggleFireBtn');
+    if (toggleFireBtn) {
+        toggleFireBtn.addEventListener('click', () => {
+            if (ambNodes.firePlaying) stopFire();
+            else startFire();
+        });
+    }
 });
