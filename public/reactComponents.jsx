@@ -846,14 +846,12 @@ function ProfileStats() {
     if (hours >= 50) { badgeClass = 'badge-master'; badgeName = 'Analog Master'; }
 
     return (
-        <div style={{padding: '15px 20px', borderBottom: '1px solid var(--border-color)'}}>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <h4 style={{margin: '0 0 5px 0', color: 'var(--copper)'}}>Listening Stats</h4>
-                <div style={{fontSize: '0.8rem', color: 'var(--text-main)'}}>{hours} hrs</div>
+        <div style={{display: 'flex', alignItems: 'center', gap: '15px', background: 'rgba(0,0,0,0.2)', padding: '6px 15px', borderRadius: '20px', border: '1px solid var(--border-color)', marginTop: '8px'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                <span style={{fontSize: '0.8rem', color: 'var(--text-sub)'}}>Listening Stats:</span>
+                <strong style={{color: 'var(--copper)', fontSize: '0.9rem'}}>{hours} hrs</strong>
             </div>
-            <div>
-                <span className={`stats-badge ${badgeClass}`}>{badgeName}</span>
-            </div>
+            <span className={`stats-badge ${badgeClass}`} style={{margin: 0}}>{badgeName}</span>
         </div>
     );
 }
