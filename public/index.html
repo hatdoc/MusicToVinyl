@@ -81,12 +81,15 @@
                         <li><a href="#" id="openUserGuideNav">How to Use</a></li>
                         <li><a href="about.html">About Us</a></li>
                         <li><a href="journal.html">Journal</a></li>
-                        <li style="display: flex; gap: 10px; margin-left: 20px; align-items: center; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 20px; height: 30px;">
-                            <span style="font-size: 0.8rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px;">Ambiance</span>
-                            <button id="toggleRainBtn" class="ambiance-btn" title="Toggle Rain Ambiance" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 30px; height: 30px; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🌧️</button>
-                            <button id="toggleFireBtn" class="ambiance-btn" title="Toggle Fireplace Ambiance" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 30px; height: 30px; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🔥</button>
-                        </li>
-                        <li id="react-nav-auth-root" style="display: flex; align-items: center; margin-left: 15px;"></li>
+                        <!-- Column wrapper for right-aligned items -->
+                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                            <li id="react-nav-auth-root" style="display: flex; align-items: center; height: 30px;"></li>
+                            <li style="display: flex; gap: 10px; align-items: center; border-right: 1px solid rgba(197,160,89,0.3); padding-right: 15px;">
+                                <span style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px;">Room Ambiance</span>
+                                <button id="toggleRainBtn" class="ambiance-btn" title="Toggle Rain Ambiance" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 28px; height: 28px; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🌧️</button>
+                                <button id="toggleFireBtn" class="ambiance-btn" title="Toggle Fireplace Ambiance" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 28px; height: 28px; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🔥</button>
+                            </li>
+                        </div>
                     </ul>
                 </div>
             </nav>
