@@ -81,6 +81,11 @@
                         <li><a href="#" id="openUserGuideNav">How to Use</a></li>
                         <li><a href="about.html">About Us</a></li>
                         <li><a href="journal.html">Journal</a></li>
+                        <li style="display: flex; gap: 10px; margin-left: 20px; align-items: center; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 20px; height: 30px;">
+                            <span style="font-size: 0.8rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px;">Ambiance</span>
+                            <button id="toggleRainBtn" class="ambiance-btn" title="Toggle Rain Ambiance" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 30px; height: 30px; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🌧️</button>
+                            <button id="toggleFireBtn" class="ambiance-btn" title="Toggle Fireplace Ambiance" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 30px; height: 30px; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🔥</button>
+                        </li>
                         <li id="react-nav-auth-root" style="display: flex; align-items: center; margin-left: 15px;"></li>
                     </ul>
                 </div>
@@ -155,12 +160,6 @@
                     
                     <!-- Arm Rest -->
                     <div class="arm-rest"></div>
-                    
-                    <!-- Ambiance Generators (Top Left) -->
-                    <div class="controls panel-controls-left" style="position: absolute; top: 30px; left: 30px; display: flex; gap: 15px; transform-style: preserve-3d; transform: translateZ(5px);">
-                        <button id="toggleRainBtn" class="ambiance-btn" title="Toggle Rain Ambiance" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; transition: all 0.2s;">🌧️</button>
-                        <button id="toggleFireBtn" class="ambiance-btn" title="Toggle Fireplace Ambiance" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; transition: all 0.2s;">🔥</button>
-                    </div>
 
                     <!-- Integrated Controls Deck (Right Side) -->
                     <div class="controls panel-controls">
