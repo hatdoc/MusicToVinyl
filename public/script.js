@@ -11,7 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
         youtubeVideoId: null,
         playerReady: false,
         knobs: { volume: 0.4, warmth: 0.35, crackle: 0.4 },
-        queue: []
+        queue: [],
+        listening_seconds: parseInt(localStorage.getItem('vinyl_listening_seconds')) || 0,
+        custom_label_url: localStorage.getItem('vinyl_custom_label') || null,
+        statsSyncTimer: 0
     };
 
     // Mount global state for React components
@@ -314,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.youtubeVideoId = track.youtube_id;
         const thumbnail = `https://img.youtube.com/vi/${track.youtube_id}/0.jpg`;
         if (albumArt) {
-            albumArt.src = thumbnail;
+            albumArt.src = state.custom_label_url ? state.custom_label_url : thumbnail;
             albumArt.classList.remove('hidden');
         }
 
@@ -384,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.youtubeVideoId = videoId;
         const thumbnail = `https://img.youtube.com/vi/${videoId}/0.jpg`;
         if (albumArt) {
-            albumArt.src = thumbnail;
+            albumArt.src = state.custom_label_url ? state.custom_label_url : thumbnail;
             albumArt.classList.remove('hidden');
         }
 
@@ -934,4 +937,76 @@ document.addEventListener('DOMContentLoaded', () => {
             handleConversion(deepLinkVideoId);
         }, 500); // Small delay to let initial animations settle
     }
+
+    // --- Stats & Labels Integrations ---
+    setInterval(() => {
+        if (state.isPlaying && !state.isPaused) {
+            state.listening_seconds += 1;
+            state.statsSyncTimer += 1;
+            
+            localStorage.setItem('vinyl_listening_seconds', state.listening_seconds);
+            
+            if (state.statsSyncTimer >= 60) {
+                state.statsSyncTimer = 0;
+                if (state.isLoggedIn && window.supabase) {
+                    window.supabase.auth.getUser().then(({ data: { user } }) => {
+                        if (user) {
+                            window.supabase.from('users').update({ listening_seconds: state.listening_seconds }).eq('id', user.id).then();
+                        }
+                    });
+                }
+            }
+            window.dispatchEvent(new CustomEvent('statsUpdated', { detail: state.listening_seconds }));
+        }
+    }, 1000);
+
+    window.addEventListener('customLabelUpdated', (e) => {
+        state.custom_label_url = e.detail;
+        if (e.detail) {
+            localStorage.setItem('vinyl_custom_label', e.detail);
+            if (albumArt && !albumArt.classList.contains('hidden')) {
+                albumArt.src = e.detail;
+            }
+        } else {
+            localStorage.removeItem('vinyl_custom_label');
+            if (albumArt && !albumArt.classList.contains('hidden') && state.youtubeVideoId) {
+                albumArt.src = `https://img.youtube.com/vi/${state.youtubeVideoId}/0.jpg`;
+            }
+        }
+        
+        // Push remote if logged in
+        if (state.isLoggedIn && window.supabase) {
+            window.supabase.auth.getUser().then(({ data: { user } }) => {
+                if (user) {
+                    window.supabase.from('users').update({ custom_label_url: e.detail }).eq('id', user.id).then();
+                }
+            });
+        }
+    });
+
+    // Remote Pull when logging in
+    window.addEventListener('authSuccess', () => {
+        if (window.supabase) {
+            window.supabase.auth.getUser().then(({ data: { user } }) => {
+                if (user) {
+                    window.supabase.from('users').select('listening_seconds, custom_label_url').eq('id', user.id).single().then(({ data, error }) => {
+                        if (data && !error) {
+                            if (data.listening_seconds && data.listening_seconds > state.listening_seconds) {
+                                state.listening_seconds = data.listening_seconds;
+                                localStorage.setItem('vinyl_listening_seconds', state.listening_seconds);
+                            }
+                            if (data.custom_label_url) {
+                                state.custom_label_url = data.custom_label_url;
+                                localStorage.setItem('vinyl_custom_label', state.custom_label_url);
+                                if (albumArt && !albumArt.classList.contains('hidden')) {
+                                    albumArt.src = state.custom_label_url;
+                                }
+                            }
+                            window.dispatchEvent(new CustomEvent('statsUpdated', { detail: state.listening_seconds }));
+                        }
+                    });
+                }
+            });
+        }
+    });
 });

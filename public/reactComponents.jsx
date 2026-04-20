@@ -827,11 +827,98 @@ function SearchModal() {
     );
 }
 
+// --- Profile Stats Component ---
+function ProfileStats() {
+    const [seconds, setSeconds] = useState(window.appState && window.appState.listening_seconds ? window.appState.listening_seconds : parseInt(localStorage.getItem('vinyl_listening_seconds')) || 0);
+
+    useEffect(() => {
+        const handleStats = (e) => setSeconds(e.detail);
+        window.addEventListener('statsUpdated', handleStats);
+        return () => window.removeEventListener('statsUpdated', handleStats);
+    }, []);
+
+    const hours = (seconds / 3600).toFixed(1);
+    
+    let badgeClass = 'badge-novice';
+    let badgeName = 'Novice Spinner';
+    
+    if (hours >= 10) { badgeClass = 'badge-enthusiast'; badgeName = 'Vinyl Enthusiast'; }
+    if (hours >= 50) { badgeClass = 'badge-master'; badgeName = 'Analog Master'; }
+
+    return (
+        <div style={{padding: '15px 20px', borderBottom: '1px solid var(--border-color)'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <h4 style={{margin: '0 0 5px 0', color: 'var(--copper)'}}>Listening Stats</h4>
+                <div style={{fontSize: '0.8rem', color: 'var(--text-main)'}}>{hours} hrs</div>
+            </div>
+            <div>
+                <span className={`stats-badge ${badgeClass}`}>{badgeName}</span>
+            </div>
+        </div>
+    );
+}
+
+// --- Custom Label Modal ---
+function CustomLabelModal() {
+    const [isVisible, setIsVisible] = useState(false);
+    const [url, setUrl] = useState(window.appState && window.appState.custom_label_url ? window.appState.custom_label_url : localStorage.getItem('vinyl_custom_label') || '');
+
+    useEffect(() => {
+        const btn = document.getElementById('editLabelBtn');
+        const open = () => setIsVisible(true);
+        if (btn) btn.addEventListener('click', open);
+        return () => { if (btn) btn.removeEventListener('click', open); }
+    }, []);
+
+    const handleSave = () => {
+        window.dispatchEvent(new CustomEvent('customLabelUpdated', { detail: url.trim() || null }));
+        setIsVisible(false);
+    };
+
+    if (!isVisible) return null;
+
+    return (
+        <div className="modal">
+            <div className="modal-content wooden-frame" style={{position: 'relative', width: '350px'}}>
+                <button onClick={() => setIsVisible(false)} style={{position: 'absolute', top: '10px', right: '15px', background: 'transparent', border: 'none', color: '#888', fontSize: '1.5rem', cursor: 'pointer', outline: 'none'}}>&times;</button>
+                <h2 style={{color: '#C5A059', fontFamily: 'var(--font-heading)', margin: '0 0 10px 0'}}>Custom Vinyl Label</h2>
+                <p style={{color: '#d4c5b0', fontSize: '0.85rem', margin: '0 0 15px 0'}}>Paste an image URL to customize your turntable's center label.</p>
+                
+                <input 
+                    type="url" 
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder="https://example.com/image.jpg"
+                    style={{width: '100%', padding: '10px', marginBottom: '15px', background: 'rgba(0,0,0,0.5)', border: '1px solid #C5A059', color: '#fff', borderRadius: '4px', boxSizing: 'border-box'}}
+                />
+                
+                <div style={{display: 'flex', gap: '10px'}}>
+                    <button onClick={handleSave} style={{flex: 1, padding: '10px', background: 'linear-gradient(145deg, #C5A059, #8c6e33)', color: '#000', border: 'none', fontWeight: 'bold', borderRadius: '4px', cursor: 'pointer'}}>Save Label</button>
+                    <button onClick={() => { setUrl(''); window.dispatchEvent(new CustomEvent('customLabelUpdated', { detail: null })); setIsVisible(false); }} style={{padding: '10px 15px', background: 'transparent', color: '#ff8888', border: '1px solid #ff8888', fontWeight: 'bold', borderRadius: '4px', cursor: 'pointer'}}>Clear</button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 const searchRoot = ReactDOM.createRoot(document.getElementById('react-search-root'));
 searchRoot.render(<SearchModal />);
 
 const shoppingRoot = ReactDOM.createRoot(document.getElementById('react-shopping-root'));
 shoppingRoot.render(<ShoppingModal />);
+
+const statsContainer = document.getElementById('react-stats-root');
+if (statsContainer) {
+    const statsRoot = ReactDOM.createRoot(statsContainer);
+    statsRoot.render(<ProfileStats />);
+}
+
+const labelModalContainer = document.getElementById('react-label-modal-root');
+if (labelModalContainer) {
+    const labelModalRoot = ReactDOM.createRoot(labelModalContainer);
+    labelModalRoot.render(<CustomLabelModal />);
+}
+
 
 // --- Auto-Login / Session Restoration ---
 (async function initSession() {

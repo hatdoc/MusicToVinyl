@@ -500,6 +500,36 @@ body {
     object-fit: cover;
 }
 
+.center-label:hover .edit-label-btn {
+    opacity: 1;
+}
+
+.edit-label-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 20;
+    opacity: 0;
+    transition: opacity 0.2s, background 0.2s;
+}
+
+.edit-label-btn:hover {
+    background: rgba(0,0,0,0.8);
+    border-color: var(--copper);
+}
+
 /* spindle */
 .vinyl-record::after {
     content: '';
@@ -1740,3 +1770,18 @@ input:checked+.slider:before {
     font-size: 0.9rem;
     line-height: 1.4;
 }
+
+/* Gamification / Stats */
+.stats-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-right: 5px;
+    margin-top: 5px;
+}
+.badge-novice { background: rgba(255,255,255,0.1); color: #ccc; border: 1px solid #555; }
+.badge-enthusiast { background: rgba(197,160,89,0.1); color: var(--copper, #C5A059); border: 1px solid rgba(197,160,89,0.5); }
+.badge-master { background: rgba(226,106,44,0.1); color: var(--accent-color); border: 1px solid rgba(226,106,44,0.6); box-shadow: 0 0 8px rgba(226,106,44,0.3); }

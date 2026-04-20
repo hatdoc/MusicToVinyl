@@ -13,7 +13,9 @@ CREATE TABLE users (
     email VARCHAR(255) UNIQUE NOT NULL,
     signup_ip VARCHAR(45),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    last_login TIMESTAMP WITH TIME ZONE
+    last_login TIMESTAMP WITH TIME ZONE,
+    listening_seconds INTEGER DEFAULT 0,
+    custom_label_url VARCHAR(255)
 );
 
 -- 2. Crate Items (Want List)
