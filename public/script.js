@@ -105,6 +105,20 @@ document.addEventListener('DOMContentLoaded', () => {
             target: "#turntableWrapper",
             placement: "top",
             offsetY: 20
+        },
+        {
+            title: "Listening Stats",
+            text: "Keep track of your total hours spun. Play more tracks to unlock gamification badges like Vinyl Enthusiast and Analog Master.",
+            target: "#react-stats-root",
+            placement: "bottom",
+            offsetY: -10
+        },
+        {
+            title: "Custom Center Labels",
+            text: "Hover over the center of any spinning record to reveal the Edit icon. Click it to paste a custom image URL for your personalized vinyl pressing.",
+            target: "#centerLabel",
+            placement: "top",
+            offsetY: -10
         }
     ];
 
