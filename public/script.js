@@ -1027,31 +1027,31 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function startRain() {
-        if (!audioCtx) initAudioEngine();
+        if (!state.audioContext) initAudioEngine();
         if (ambNodes.rainPlaying) return;
         ambNodes.rainPlaying = true;
         
-        const bufferSize = audioCtx.sampleRate * 2;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const bufferSize = state.audioContext.sampleRate * 2;
+        const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
         const data = buffer.getChannelData(0);
         for (let i = 0; i < bufferSize; i++) {
             data[i] = Math.random() * 2 - 1;
         }
         
-        ambNodes.rain = audioCtx.createBufferSource();
+        ambNodes.rain = state.audioContext.createBufferSource();
         ambNodes.rain.buffer = buffer;
         ambNodes.rain.loop = true;
         
-        const filter = audioCtx.createBiquadFilter();
+        const filter = state.audioContext.createBiquadFilter();
         filter.type = 'lowpass';
         filter.frequency.value = 400; // Deep rumble
         
-        ambNodes.rainGain = audioCtx.createGain();
+        ambNodes.rainGain = state.audioContext.createGain();
         ambNodes.rainGain.gain.value = 0.5;
         
         ambNodes.rain.connect(filter);
         filter.connect(ambNodes.rainGain);
-        ambNodes.rainGain.connect(masterGain);
+        ambNodes.rainGain.connect(state.nodes.masterGain);
         
         ambNodes.rain.start();
         document.getElementById('toggleRainBtn')?.classList.add('active');
@@ -1072,12 +1072,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startFire() {
-        if (!audioCtx) initAudioEngine();
+        if (!state.audioContext) initAudioEngine();
         if (ambNodes.firePlaying) return;
         ambNodes.firePlaying = true;
         
-        const bufferSize = audioCtx.sampleRate * 2;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const bufferSize = state.audioContext.sampleRate * 2;
+        const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
         const data = buffer.getChannelData(0);
         
         let lastOut = 0;
@@ -1090,20 +1090,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        ambNodes.fire = audioCtx.createBufferSource();
+        ambNodes.fire = state.audioContext.createBufferSource();
         ambNodes.fire.buffer = buffer;
         ambNodes.fire.loop = true;
         
-        const filter = audioCtx.createBiquadFilter();
+        const filter = state.audioContext.createBiquadFilter();
         filter.type = 'lowpass';
         filter.frequency.value = 800; 
         
-        ambNodes.fireGain = audioCtx.createGain();
+        ambNodes.fireGain = state.audioContext.createGain();
         ambNodes.fireGain.gain.value = 0.8;
         
         ambNodes.fire.connect(filter);
         filter.connect(ambNodes.fireGain);
-        ambNodes.fireGain.connect(masterGain);
+        ambNodes.fireGain.connect(state.nodes.masterGain);
         
         ambNodes.fire.start();
         document.getElementById('toggleFireBtn')?.classList.add('active');
@@ -1124,43 +1124,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startOcean() {
-        if (!audioCtx) initAudioEngine();
+        if (!state.audioContext) initAudioEngine();
         if (ambNodes.oceanPlaying) return;
         ambNodes.oceanPlaying = true;
         
-        const bufferSize = audioCtx.sampleRate * 2;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const bufferSize = state.audioContext.sampleRate * 2;
+        const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
         const data = buffer.getChannelData(0);
         for (let i = 0; i < bufferSize; i++) {
             data[i] = Math.random() * 2 - 1;
         }
         
-        ambNodes.ocean = audioCtx.createBufferSource();
+        ambNodes.ocean = state.audioContext.createBufferSource();
         ambNodes.ocean.buffer = buffer;
         ambNodes.ocean.loop = true;
         
-        const filter = audioCtx.createBiquadFilter();
+        const filter = state.audioContext.createBiquadFilter();
         filter.type = 'bandpass';
         filter.frequency.value = 200; 
         filter.Q.value = 0.5;
 
         // An LFO to sweep the frequency up and down to simulate waves crashing and receding
-        const filterLfo = audioCtx.createOscillator();
+        const filterLfo = state.audioContext.createOscillator();
         filterLfo.type = 'sine';
         filterLfo.frequency.value = 0.12; // ~8.3 second cycle
         
-        const filterLfoGain = audioCtx.createGain();
+        const filterLfoGain = state.audioContext.createGain();
         filterLfoGain.gain.value = 400; // Sweep up to 600Hz
         
         filterLfo.connect(filterLfoGain);
         filterLfoGain.connect(filter.frequency);
 
-        ambNodes.oceanGain = audioCtx.createGain();
+        ambNodes.oceanGain = state.audioContext.createGain();
         ambNodes.oceanGain.gain.value = 0.5;
         
         ambNodes.ocean.connect(filter);
         filter.connect(ambNodes.oceanGain);
-        ambNodes.oceanGain.connect(masterGain);
+        ambNodes.oceanGain.connect(state.nodes.masterGain);
         
         ambNodes.ocean.start();
         filterLfo.start();
@@ -1189,12 +1189,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startCity() {
-        if (!audioCtx) initAudioEngine();
+        if (!state.audioContext) initAudioEngine();
         if (ambNodes.cityPlaying) return;
         ambNodes.cityPlaying = true;
         
-        const bufferSize = audioCtx.sampleRate * 2;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const bufferSize = state.audioContext.sampleRate * 2;
+        const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
         const data = buffer.getChannelData(0);
         
         let lastOut = 0;
@@ -1205,30 +1205,30 @@ document.addEventListener('DOMContentLoaded', () => {
             lastOut = data[i];
         }
         
-        ambNodes.city = audioCtx.createBufferSource();
+        ambNodes.city = state.audioContext.createBufferSource();
         ambNodes.city.buffer = buffer;
         ambNodes.city.loop = true;
         
-        const filter = audioCtx.createBiquadFilter();
+        const filter = state.audioContext.createBiquadFilter();
         filter.type = 'lowpass';
         filter.frequency.value = 150; 
         
-        const lfo = audioCtx.createOscillator();
+        const lfo = state.audioContext.createOscillator();
         lfo.type = 'sine';
         lfo.frequency.value = 0.05; // very slow subtle rumble fluctuation
         
-        const lfoGain = audioCtx.createGain();
+        const lfoGain = state.audioContext.createGain();
         lfoGain.gain.value = 50;
         
         lfo.connect(lfoGain);
         lfoGain.connect(filter.frequency);
         
-        ambNodes.cityGain = audioCtx.createGain();
+        ambNodes.cityGain = state.audioContext.createGain();
         ambNodes.cityGain.gain.value = 0.7;
         
         ambNodes.city.connect(filter);
         filter.connect(ambNodes.cityGain);
-        ambNodes.cityGain.connect(masterGain);
+        ambNodes.cityGain.connect(state.nodes.masterGain);
         
         ambNodes.city.start();
         lfo.start();
