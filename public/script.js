@@ -1533,21 +1533,30 @@ document.addEventListener('DOMContentLoaded', () => {
             timerToggleBtn.textContent = 'Start';
         });
 
-        timerDisplay.addEventListener('click', () => {
-            if (isTimerRunning) return; // Don't edit while running
-            const currentMin = Math.floor(focusTimeRemaining / 60);
-            const input = prompt("Enter focus time in minutes (1-120):", currentMin);
-            if (input !== null) {
-                const mins = parseInt(input, 10);
-                if (!isNaN(mins) && mins > 0 && mins <= 120) {
-                    defaultFocusMinutes = mins;
+        const timerIncreaseBtn = document.getElementById('timerIncreaseBtn');
+        const timerDecreaseBtn = document.getElementById('timerDecreaseBtn');
+
+        if (timerIncreaseBtn) {
+            timerIncreaseBtn.addEventListener('click', () => {
+                if (isTimerRunning) return;
+                if (defaultFocusMinutes < 120) {
+                    defaultFocusMinutes += 1;
                     focusTimeRemaining = defaultFocusMinutes * 60;
                     updateTimerDisplay();
-                } else {
-                    alert("Please enter a valid number of minutes between 1 and 120.");
                 }
-            }
-        });
+            });
+        }
+
+        if (timerDecreaseBtn) {
+            timerDecreaseBtn.addEventListener('click', () => {
+                if (isTimerRunning) return;
+                if (defaultFocusMinutes > 1) {
+                    defaultFocusMinutes -= 1;
+                    focusTimeRemaining = defaultFocusMinutes * 60;
+                    updateTimerDisplay();
+                }
+            });
+        }
 
         if (toggleTimerPanelBtn && timerWidget) {
             toggleTimerPanelBtn.addEventListener('click', () => {
