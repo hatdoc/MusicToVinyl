@@ -511,6 +511,16 @@ body {
     background: rgba(255, 255, 255, 0.1) !important;
 }
 
+#timerToggleBtn:hover {
+    background: #d4a754 !important;
+    transform: scale(1.05);
+}
+
+#timerResetBtn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
 /* spindle */
 .vinyl-record::after {
     content: '';

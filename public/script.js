@@ -810,6 +810,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (type === 'crackle' && state.nodes.noiseGain) {
             state.nodes.noiseGain.gain.value = Math.pow(val, 2) * 0.15;
         }
+        if (typeof updateShareUrl === 'function') updateShareUrl();
     }
 
     // --- Playback State Machine ---
@@ -937,6 +938,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Deep-Linking ---
     const urlParams = new URLSearchParams(window.location.search);
     const deepLinkVideoId = urlParams.get('v');
+    const parseVol = urlParams.get('vol');
+    const parseWarm = urlParams.get('warm');
+    const parseCrack = urlParams.get('crack');
+    const parseAmb = urlParams.get('amb');
+
+    if (parseVol) state.knobs.volume = parseFloat(parseVol);
+    if (parseWarm) state.knobs.warmth = parseFloat(parseWarm);
+    if (parseCrack) state.knobs.crackle = parseFloat(parseCrack);
+    
+    // Apply visual knob rotation immediately if DOM exists
+    const updateVisual = (knobDiv, val) => {
+        if (!knobDiv) return;
+        const rotation = (val * 270) - 135;
+        knobDiv.style.setProperty('--knob-rot', `${rotation}deg`);
+    };
+    updateVisual(document.querySelector('.knob[data-control="volume"]'), state.knobs.volume);
+    updateVisual(document.querySelector('.knob[data-control="warmth"]'), state.knobs.warmth);
+    updateVisual(document.querySelector('.knob[data-control="crackle"]'), state.knobs.crackle);
+
+    if (parseAmb) {
+        // Delay starting ambiances just slightly so audio engine doesn't trip user gesture rules too early
+        setTimeout(() => {
+            const ambs = parseAmb.split(',');
+            if (ambs.includes('rain') && typeof startRain === 'function') startRain();
+            if (ambs.includes('fire') && typeof startFire === 'function') startFire();
+            if (ambs.includes('ocean') && typeof startOcean === 'function') startOcean();
+            if (ambs.includes('city') && typeof startCity === 'function') startCity();
+            if (ambs.includes('thunder') && typeof startThunder === 'function') startThunder();
+            if (ambs.includes('wind') && typeof startWind === 'function') startWind();
+        }, 1200);
+    }
+
     if (deepLinkVideoId) {
         setTimeout(() => {
             statusMessage.textContent = "Loading deep-linked pressing...";
@@ -1020,10 +1053,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const ambNodes = {
         rain: null,
         fire: null,
+        thunder: null,
+        wind: null,
         rainGain: null,
         fireGain: null,
+        thunderGain: null,
+        windGain: null,
         rainPlaying: false,
-        firePlaying: false
+        firePlaying: false,
+        thunderPlaying: false,
+        windPlaying: false
     };
 
     function startRain() {
@@ -1055,6 +1094,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         ambNodes.rain.start();
         document.getElementById('toggleRainBtn')?.classList.add('active');
+        if(typeof updateShareUrl === 'function') updateShareUrl();
     }
 
     function stopRain() {
@@ -1069,6 +1109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         ambNodes.rainPlaying = false;
         document.getElementById('toggleRainBtn')?.classList.remove('active');
+        if(typeof updateShareUrl === 'function') updateShareUrl();
     }
 
     function startFire() {
@@ -1107,6 +1148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         ambNodes.fire.start();
         document.getElementById('toggleFireBtn')?.classList.add('active');
+        if(typeof updateShareUrl === 'function') updateShareUrl();
     }
 
     function stopFire() {
@@ -1121,6 +1163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         ambNodes.firePlaying = false;
         document.getElementById('toggleFireBtn')?.classList.remove('active');
+        if(typeof updateShareUrl === 'function') updateShareUrl();
     }
 
     function startOcean() {
@@ -1167,6 +1210,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         ambNodes.oceanLfo = filterLfo;
         document.getElementById('toggleOceanBtn')?.classList.add('active');
+        if(typeof updateShareUrl === 'function') updateShareUrl();
     }
 
     function stopOcean() {
@@ -1186,7 +1230,129 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         ambNodes.oceanPlaying = false;
         document.getElementById('toggleOceanBtn')?.classList.remove('active');
+        if(typeof updateShareUrl === 'function') updateShareUrl();
     }
+    function startThunder() {
+        if (!state.audioContext) initAudioEngine();
+        if (ambNodes.thunderPlaying) return;
+        ambNodes.thunderPlaying = true;
+        
+        // Thunder is low frequency rumble bursts on top of noise
+        const bufferSize = state.audioContext.sampleRate * 2;
+        const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        let lastOut = 0;
+        for (let i = 0; i < bufferSize; i++) {
+            let white = Math.random() * 2 - 1;
+            data[i] = (lastOut + (0.01 * white)) / 1.01;
+            lastOut = data[i];
+        }
+        
+        ambNodes.thunder = state.audioContext.createBufferSource();
+        ambNodes.thunder.buffer = buffer;
+        ambNodes.thunder.loop = true;
+        
+        const filter = state.audioContext.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 100;
+        
+        // Random volume variations for thunder claps
+        const lfo = state.audioContext.createOscillator();
+        lfo.type = 'sine';
+        lfo.frequency.value = 0.03; // very slow
+        
+        const lfoGain = state.audioContext.createGain();
+        lfoGain.gain.value = 80;
+        
+        lfo.connect(lfoGain);
+        lfoGain.connect(filter.frequency);
+        
+        ambNodes.thunderGain = state.audioContext.createGain();
+        ambNodes.thunderGain.gain.value = 0.9;
+        
+        ambNodes.thunder.connect(filter);
+        filter.connect(ambNodes.thunderGain);
+        ambNodes.thunderGain.connect(state.audioContext.destination);
+        
+        ambNodes.thunder.start();
+        lfo.start();
+        ambNodes.thunderLfo = lfo;
+        document.getElementById('toggleThunderBtn')?.classList.add('active');
+        updateShareUrl();
+    }
+
+    function stopThunder() {
+        if (ambNodes.thunder) { ambNodes.thunder.stop(); ambNodes.thunder.disconnect(); ambNodes.thunder = null; }
+        if (ambNodes.thunderLfo) { ambNodes.thunderLfo.stop(); ambNodes.thunderLfo.disconnect(); ambNodes.thunderLfo = null; }
+        if (ambNodes.thunderGain) { ambNodes.thunderGain.disconnect(); ambNodes.thunderGain = null; }
+        ambNodes.thunderPlaying = false;
+        document.getElementById('toggleThunderBtn')?.classList.remove('active');
+        updateShareUrl();
+    }
+
+    function startWind() {
+        if (!state.audioContext) initAudioEngine();
+        if (ambNodes.windPlaying) return;
+        ambNodes.windPlaying = true;
+        
+        const bufferSize = state.audioContext.sampleRate * 2;
+        const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
+        for (let i = 0; i < bufferSize; i++) {
+            let white = Math.random() * 2 - 1;
+            b0 = 0.99886 * b0 + white * 0.0555179;
+            b1 = 0.99332 * b1 + white * 0.0750759;
+            b2 = 0.96900 * b2 + white * 0.1538520;
+            b3 = 0.86650 * b3 + white * 0.3104856;
+            b4 = 0.55000 * b4 + white * 0.5329522;
+            b5 = -0.7616 * b5 - white * 0.0168980;
+            data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+            data[i] *= 0.11; // compensate gain
+            b6 = white * 0.115926;
+        }
+        
+        ambNodes.wind = state.audioContext.createBufferSource();
+        ambNodes.wind.buffer = buffer;
+        ambNodes.wind.loop = true;
+        
+        const filter = state.audioContext.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 500;
+        
+        const lfo = state.audioContext.createOscillator();
+        lfo.type = 'sine';
+        lfo.frequency.value = 0.08;
+        
+        const lfoGain = state.audioContext.createGain();
+        lfoGain.gain.value = 250;
+        
+        lfo.connect(lfoGain);
+        lfoGain.connect(filter.frequency);
+        
+        ambNodes.windGain = state.audioContext.createGain();
+        ambNodes.windGain.gain.value = 0.5;
+        
+        ambNodes.wind.connect(filter);
+        filter.connect(ambNodes.windGain);
+        ambNodes.windGain.connect(state.audioContext.destination);
+        
+        ambNodes.wind.start();
+        lfo.start();
+        ambNodes.windLfo = lfo;
+        document.getElementById('toggleWindBtn')?.classList.add('active');
+        updateShareUrl();
+    }
+
+    function stopWind() {
+        if (ambNodes.wind) { ambNodes.wind.stop(); ambNodes.wind.disconnect(); ambNodes.wind = null; }
+        if (ambNodes.windLfo) { ambNodes.windLfo.stop(); ambNodes.windLfo.disconnect(); ambNodes.windLfo = null; }
+        if (ambNodes.windGain) { ambNodes.windGain.disconnect(); ambNodes.windGain = null; }
+        ambNodes.windPlaying = false;
+        document.getElementById('toggleWindBtn')?.classList.remove('active');
+        updateShareUrl();
+    }
+
 
     function startCity() {
         if (!state.audioContext) initAudioEngine();
@@ -1234,6 +1400,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lfo.start();
         ambNodes.cityLfo = lfo;
         document.getElementById('toggleCityBtn')?.classList.add('active');
+        if(typeof updateShareUrl === 'function') updateShareUrl();
     }
 
     function stopCity() {
@@ -1253,6 +1420,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         ambNodes.cityPlaying = false;
         document.getElementById('toggleCityBtn')?.classList.remove('active');
+        if(typeof updateShareUrl === 'function') updateShareUrl();
     }
 
     const toggleRainBtn = document.getElementById('toggleRainBtn');
@@ -1286,4 +1454,109 @@ document.addEventListener('DOMContentLoaded', () => {
             else startCity();
         });
     }
+    const toggleThunderBtn = document.getElementById('toggleThunderBtn');
+    if (toggleThunderBtn) {
+        toggleThunderBtn.addEventListener('click', () => {
+            if (ambNodes.thunderPlaying) stopThunder();
+            else startThunder();
+        });
+    }
+
+    const toggleWindBtn = document.getElementById('toggleWindBtn');
+    if (toggleWindBtn) {
+        toggleWindBtn.addEventListener('click', () => {
+            if (ambNodes.windPlaying) stopWind();
+            else startWind();
+        });
+    }
+
+    // --- Pomodoro Focus Timer ---
+    let focusTimer = null;
+    let focusTimeRemaining = 25 * 60; // 25 minutes
+    let isTimerRunning = false;
+    const timerDisplay = document.getElementById('focusTimerDisplay');
+    const timerToggleBtn = document.getElementById('timerToggleBtn');
+    const timerResetBtn = document.getElementById('timerResetBtn');
+
+    function updateTimerDisplay() {
+        if (!timerDisplay) return;
+        const m = Math.floor(focusTimeRemaining / 60);
+        const s = focusTimeRemaining % 60;
+        timerDisplay.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    if (timerToggleBtn && timerResetBtn) {
+        timerToggleBtn.addEventListener('click', () => {
+            if (isTimerRunning) {
+                clearInterval(focusTimer);
+                isTimerRunning = false;
+                timerToggleBtn.textContent = 'Start';
+            } else {
+                isTimerRunning = true;
+                timerToggleBtn.textContent = 'Pause';
+                focusTimer = setInterval(() => {
+                    if (focusTimeRemaining > 0) {
+                        focusTimeRemaining--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(focusTimer);
+                        isTimerRunning = false;
+                        timerToggleBtn.textContent = 'Start';
+                        // Subtle chime
+                        if (state.audioContext) {
+                            const osc = state.audioContext.createOscillator();
+                            const gain = state.audioContext.createGain();
+                            osc.type = 'sine';
+                            osc.frequency.setValueAtTime(440, state.audioContext.currentTime);
+                            gain.gain.setValueAtTime(0, state.audioContext.currentTime);
+                            gain.gain.linearRampToValueAtTime(0.5, state.audioContext.currentTime + 0.1);
+                            gain.gain.exponentialRampToValueAtTime(0.01, state.audioContext.currentTime + 3);
+                            osc.connect(gain);
+                            gain.connect(state.audioContext.destination);
+                            osc.start();
+                            osc.stop(state.audioContext.currentTime + 3);
+                        }
+                    }
+                }, 1000);
+            }
+        });
+
+        timerResetBtn.addEventListener('click', () => {
+            clearInterval(focusTimer);
+            isTimerRunning = false;
+            focusTimeRemaining = 25 * 60;
+            updateTimerDisplay();
+            timerToggleBtn.textContent = 'Start';
+        });
+        updateTimerDisplay();
+    }
+
+    // --- Share URL Sync (Global function used by knobs and ambiances) ---
+    window.updateShareUrl = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (state.youtubeVideoId) {
+            urlParams.set('v', state.youtubeVideoId);
+        }
+        urlParams.set('vol', state.knobs.volume.toFixed(2));
+        urlParams.set('warm', state.knobs.warmth.toFixed(2));
+        urlParams.set('crack', state.knobs.crackle.toFixed(2));
+        
+        const ambs = [];
+        if (ambNodes.rainPlaying) ambs.push('rain');
+        if (ambNodes.firePlaying) ambs.push('fire');
+        if (ambNodes.oceanPlaying) ambs.push('ocean');
+        if (ambNodes.cityPlaying) ambs.push('city');
+        if (ambNodes.thunderPlaying) ambs.push('thunder');
+        if (ambNodes.windPlaying) ambs.push('wind');
+        
+        if (ambs.length > 0) {
+            urlParams.set('amb', ambs.join(','));
+        } else {
+            urlParams.delete('amb');
+        }
+
+        const newUrl = window.location.pathname + '?' + urlParams.toString();
+        window.history.replaceState(null, '', newUrl);
+    };
+
 });
