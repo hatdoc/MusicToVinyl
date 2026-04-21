@@ -1472,11 +1472,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Pomodoro Focus Timer ---
     let focusTimer = null;
-    let focusTimeRemaining = 25 * 60; // 25 minutes
+    let defaultFocusMinutes = 25;
+    let focusTimeRemaining = defaultFocusMinutes * 60;
     let isTimerRunning = false;
     const timerDisplay = document.getElementById('focusTimerDisplay');
     const timerToggleBtn = document.getElementById('timerToggleBtn');
     const timerResetBtn = document.getElementById('timerResetBtn');
+    const timerWidget = document.getElementById('focusTimerWidget');
+    const toggleTimerPanelBtn = document.getElementById('toggleTimerPanelBtn');
+    const closeTimerWidgetBtn = document.getElementById('closeTimerWidgetBtn');
 
     function updateTimerDisplay() {
         if (!timerDisplay) return;
@@ -1524,10 +1528,47 @@ document.addEventListener('DOMContentLoaded', () => {
         timerResetBtn.addEventListener('click', () => {
             clearInterval(focusTimer);
             isTimerRunning = false;
-            focusTimeRemaining = 25 * 60;
+            focusTimeRemaining = defaultFocusMinutes * 60;
             updateTimerDisplay();
             timerToggleBtn.textContent = 'Start';
         });
+
+        timerDisplay.addEventListener('click', () => {
+            if (isTimerRunning) return; // Don't edit while running
+            const currentMin = Math.floor(focusTimeRemaining / 60);
+            const input = prompt("Enter focus time in minutes (1-120):", currentMin);
+            if (input !== null) {
+                const mins = parseInt(input, 10);
+                if (!isNaN(mins) && mins > 0 && mins <= 120) {
+                    defaultFocusMinutes = mins;
+                    focusTimeRemaining = defaultFocusMinutes * 60;
+                    updateTimerDisplay();
+                } else {
+                    alert("Please enter a valid number of minutes between 1 and 120.");
+                }
+            }
+        });
+
+        if (toggleTimerPanelBtn && timerWidget) {
+            toggleTimerPanelBtn.addEventListener('click', () => {
+                const isHidden = timerWidget.style.display === 'none';
+                if (isHidden) {
+                    timerWidget.style.display = 'flex';
+                    toggleTimerPanelBtn.classList.add('active');
+                } else {
+                    timerWidget.style.display = 'none';
+                    toggleTimerPanelBtn.classList.remove('active');
+                }
+            });
+        }
+
+        if (closeTimerWidgetBtn && timerWidget && toggleTimerPanelBtn) {
+            closeTimerWidgetBtn.addEventListener('click', () => {
+                timerWidget.style.display = 'none';
+                toggleTimerPanelBtn.classList.remove('active');
+            });
+        }
+
         updateTimerDisplay();
     }
 

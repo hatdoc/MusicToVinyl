@@ -1776,3 +1776,4 @@ input:checked+.slider:before {
 .badge-novice { background: rgba(255,255,255,0.1); color: #ccc; border: 1px solid #555; }
 .badge-enthusiast { background: rgba(197,160,89,0.1); color: var(--copper, #C5A059); border: 1px solid rgba(197,160,89,0.5); }
 .badge-master { background: rgba(226,106,44,0.1); color: var(--accent-color); border: 1px solid rgba(226,106,44,0.6); box-shadow: 0 0 8px rgba(226,106,44,0.3); }
+#focusTimerDisplay:hover { opacity: 0.8; }
