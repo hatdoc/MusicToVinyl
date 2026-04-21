@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-8983851567536524">
     <title>Vinyl Analog - Authentic Sound & Digital Turnable Simulator</title>
-    <meta name="description" content="Experience the authentic warmth of vinyl records with our digital turntable simulator. Convert digital tracks into rich, analog audio experiences.">
-    
+    <meta name="description"
+        content="Experience the authentic warmth of vinyl records with our digital turntable simulator. Convert digital tracks into rich, analog audio experiences.">
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://vinylanalog.com/">
     <meta property="og:title" content="Vinyl Analog - Authentic Sound & Digital Turnable Simulator">
-    <meta property="og:description" content="Experience the authentic warmth of vinyl records with our digital turntable simulator. Convert digital tracks into rich, analog audio experiences.">
+    <meta property="og:description"
+        content="Experience the authentic warmth of vinyl records with our digital turntable simulator. Convert digital tracks into rich, analog audio experiences.">
     <meta property="og:image" content="https://vinylanalog.com/images/og-image.jpg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://vinylanalog.com/">
     <meta property="twitter:title" content="Vinyl Analog - Authentic Sound & Digital Turnable Simulator">
-    <meta property="twitter:description" content="Experience the authentic warmth of vinyl records with our digital turntable simulator. Convert digital tracks into rich, analog audio experiences.">
+    <meta property="twitter:description"
+        content="Experience the authentic warmth of vinyl records with our digital turntable simulator. Convert digital tracks into rich, analog audio experiences.">
     <meta property="twitter:image" content="https://vinylanalog.com/images/og-image.jpg">
-    
+
     <!-- Schema.org JSON-LD -->
     <script type="application/ld+json">
     {
@@ -42,207 +46,268 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCY60G7C8B"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-      gtag('config', 'G-JCY60G7C8B');
+        gtag('config', 'G-JCY60G7C8B');
     </script>
     <!-- Microsoft Clarity -->
     <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
         })(window, document, "clarity", "script", "w3lwelhadf");
     </script>
     <link rel="stylesheet" href="style.css?v=8">
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8983851567536524"
-     crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto+Mono:wght@400;700&family=Cedarville+Cursive&display=swap" rel="stylesheet">
-    
+        crossorigin="anonymous"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto+Mono:wght@400;700&family=Cedarville+Cursive&display=swap"
+        rel="stylesheet">
+
     <!-- React & Supabase Ecosystem for Widgets -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 </head>
+
 <body class="theme-walnut">
 
     <div class="app-container">
 
         <main class="main-content" style="position: relative;">
             <!-- Main Navigation Bar -->
-            <nav class="main-nav" style="align-self: flex-start; justify-self: flex-start; width: 100%; top: 0; position: sticky; z-index: 1000;">
+            <nav class="main-nav"
+                style="align-self: flex-start; justify-self: flex-start; width: 100%; top: 0; position: sticky; z-index: 1000;">
                 <div class="nav-container">
                     <a href="/" class="nav-brand">Vinyl Analog</a>
                     <ul class="nav-links">
                         <li><a href="#" id="openUserGuideNav">How to Use</a></li>
                         <li><a href="about.html">About Us</a></li>
                         <li><a href="journal.html">Journal</a></li>
-                        <li id="react-nav-auth-root" style="display: flex; align-items: center; margin-left: 15px;"></li>
+                        <li id="react-nav-auth-root" style="display: flex; align-items: center; margin-left: 15px;">
+                        </li>
                     </ul>
                 </div>
             </nav>
 
             <!-- Floating Ambiance Controls (Top Right, Below Header) -->
-            <div class="controls ambiance-panel" style="position: absolute; top: 80px; right: 25px; z-index: 900; display: flex; gap: 10px; align-items: center; background: rgba(10,10,10,0.7); padding: 8px 15px; border-radius: 8px; border: 1px solid rgba(197,160,89,0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-                <span style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-right: 5px;">Room Ambiance</span>
-                <button id="toggleRainBtn" class="ambiance-btn" title="Rain" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🌧️</button>
-                <button id="toggleFireBtn" class="ambiance-btn" title="Fireplace" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🔥</button>
-                <button id="toggleOceanBtn" class="ambiance-btn" title="Ocean Waves" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🌊</button>
-                <button id="toggleCityBtn" class="ambiance-btn" title="City Rumble" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🏙️</button>
+            <div class="controls ambiance-panel"
+                style="position: absolute; top: 80px; right: 25px; z-index: 900; display: flex; gap: 10px; align-items: center; background: rgba(10,10,10,0.7); padding: 8px 15px; border-radius: 8px; border: 1px solid rgba(197,160,89,0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                <span
+                    style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-right: 5px;">Ambiance</span>
+                <button id="toggleRainBtn" class="ambiance-btn" title="Rain" aria-pressed="false"
+                    style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🌧️</button>
+                <button id="toggleFireBtn" class="ambiance-btn" title="Fireplace" aria-pressed="false"
+                    style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🔥</button>
+                <button id="toggleOceanBtn" class="ambiance-btn" title="Ocean Waves" aria-pressed="false"
+                    style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🌊</button>
+                <button id="toggleCityBtn" class="ambiance-btn" title="City Rumble" aria-pressed="false"
+                    style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🏙️</button>
             </div>
 
-            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
+            <div
+                style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
                 <header class="header">
                     <h1 class="logo">Vinyl Analog <span class="tagline">Authentic warmth for digital souls.</span></h1>
                     <div id="react-stats-root" style="display: flex; justify-content: center; margin-top: 15px;"></div>
                 </header>
 
                 <section class="turntable-wrapper" id="turntableWrapper">
-                <div class="theme-selector">
-                    <button class="theme-dot obsidian" data-theme="theme-obsidian" title="Obsidian"></button>
-                    <button class="theme-dot walnut active" data-theme="theme-walnut" title="Walnut"></button>
-                    <button class="theme-dot warm" data-theme="theme-warm" title="Cognac"></button>
-                    <button class="theme-dot alabaster" data-theme="theme-alabaster" title="Alabaster"></button>
-                </div>
-                
-                <!-- The Slide-out Record Sleeve for Metadata -->
-                <div class="record-sleeve" id="recordSleeve">
-                    <div class="sleeve-texture"></div>
-                    <div class="sleeve-metadata">
-                        <h2 class="handwritten" id="sleeveTitle">Unknown Track</h2>
-                        <p class="handwritten" id="sleeveArtist">Anonymous Label</p>
-                    </div>
-                </div>
-
-                <div class="turntable-hero" id="turntableHero">
-                    <!-- The wood chassis -->
-                    <div class="dust-cover-hinges">
-                        <div class="hinge left"></div>
-                        <div class="hinge right"></div>
+                    <div class="theme-selector">
+                        <button class="theme-dot obsidian" data-theme="theme-obsidian" title="Obsidian"></button>
+                        <button class="theme-dot walnut active" data-theme="theme-walnut" title="Walnut"></button>
+                        <button class="theme-dot warm" data-theme="theme-warm" title="Cognac"></button>
+                        <button class="theme-dot alabaster" data-theme="theme-alabaster" title="Alabaster"></button>
                     </div>
 
-                    <!-- Playback Keys (Piano Style) - FAR BOTTOM-LEFT EDGE -->
-                    <div class="piano-key-deck left-edge">
-                        <div class="lever-group">
-                            <button id="plinthPlayBtn" class="lever-key" aria-label="Play or Pause Track">⏵</button>
-                        </div>
-                        <div class="lever-group">
-                            <button id="plinthSkipBtn" class="lever-key" aria-label="Skip to Next Track">⏭</button>
+                    <!-- The Slide-out Record Sleeve for Metadata -->
+                    <div class="record-sleeve" id="recordSleeve">
+                        <div class="sleeve-texture"></div>
+                        <div class="sleeve-metadata">
+                            <h2 class="handwritten" id="sleeveTitle">Unknown Track</h2>
+                            <p class="handwritten" id="sleeveArtist">Anonymous Label</p>
                         </div>
                     </div>
-                    
-                    <div class="turntable-platter">
-                        <div class="platter-edge"></div>
-                        <div class="vinyl-record" id="vinylRecord">
-                            <div class="center-label" id="centerLabel">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 150 150">
-                                    <rect width="150" height="150" fill="var(--plinth-base)"/>
-                                    <circle cx="75" cy="75" r="70" fill="none" stroke="black" stroke-width="3"/>
-                                    <text x="50%" y="50%" font-family="var(--font-heading)" font-style="italic" font-size="28" fill="var(--accent-color)" dominant-baseline="middle" text-anchor="middle">Vinyl</text>
-                                </svg>
-                                <img id="albumArt" class="hidden" alt="Album Art" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:2; border-radius:50%; mix-blend-mode: multiply; opacity: 0.8; pointer-events: none;">
+
+                    <div class="turntable-hero" id="turntableHero">
+                        <!-- The wood chassis -->
+                        <div class="dust-cover-hinges">
+                            <div class="hinge left"></div>
+                            <div class="hinge right"></div>
+                        </div>
+
+                        <!-- Playback Keys (Piano Style) - FAR BOTTOM-LEFT EDGE -->
+                        <div class="piano-key-deck left-edge">
+                            <div class="lever-group">
+                                <button id="plinthPlayBtn" class="lever-key" aria-label="Play or Pause Track">⏵</button>
                             </div>
-                            <div class="grooves"></div>
-                        </div>
-                    </div>
-
-                    <!-- Tonearm System -->
-                    <div class="tonearm-base">
-                        <div class="tonearm-pivot"></div>
-                        <div class="tonearm" id="tonearm">
-                            <div class="counterweight"></div>
-                            <div class="arm-stick"></div>
-                            <div class="headshell">
-                                <div class="stylus"></div>
+                            <div class="lever-group">
+                                <button id="plinthSkipBtn" class="lever-key" aria-label="Skip to Next Track">⏭</button>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Arm Rest -->
-                    <div class="arm-rest"></div>
 
-                    <!-- Integrated Controls Deck (Right Side) -->
-                    <div class="controls panel-controls">
-                        <!-- Audio Dials -->
-                        <div class="knob-group">
-                            <div class="knob" data-control="volume"><div class="indicator"></div></div>
-                            <label>Vol</label>
+                        <div class="turntable-platter">
+                            <div class="platter-edge"></div>
+                            <div class="vinyl-record" id="vinylRecord">
+                                <div class="center-label" id="centerLabel">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"
+                                        viewBox="0 0 150 150">
+                                        <rect width="150" height="150" fill="var(--plinth-base)" />
+                                        <circle cx="75" cy="75" r="70" fill="none" stroke="black" stroke-width="3" />
+                                        <text x="50%" y="50%" font-family="var(--font-heading)" font-style="italic"
+                                            font-size="28" fill="var(--accent-color)" dominant-baseline="middle"
+                                            text-anchor="middle">Vinyl</text>
+                                    </svg>
+                                    <img id="albumArt" class="hidden" alt="Album Art"
+                                        style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:2; border-radius:50%; mix-blend-mode: multiply; opacity: 0.8; pointer-events: none;">
+                                </div>
+                                <div class="grooves"></div>
+                            </div>
                         </div>
-                        <div class="knob-group">
-                            <div class="knob" data-control="warmth"><div class="indicator"></div></div>
-                            <label>Warm</label>
+
+                        <!-- Tonearm System -->
+                        <div class="tonearm-base">
+                            <div class="tonearm-pivot"></div>
+                            <div class="tonearm" id="tonearm">
+                                <div class="counterweight"></div>
+                                <div class="arm-stick"></div>
+                                <div class="headshell">
+                                    <div class="stylus"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="knob-group">
-                            <div class="knob" data-control="crackle"><div class="indicator"></div></div>
-                            <label>Crackle</label>
+
+                        <!-- Arm Rest -->
+                        <div class="arm-rest"></div>
+
+                        <!-- Integrated Controls Deck (Right Side) -->
+                        <div class="controls panel-controls">
+                            <!-- Audio Dials -->
+                            <div class="knob-group">
+                                <div class="knob" data-control="volume">
+                                    <div class="indicator"></div>
+                                </div>
+                                <label>Vol</label>
+                            </div>
+                            <div class="knob-group">
+                                <div class="knob" data-control="warmth">
+                                    <div class="indicator"></div>
+                                </div>
+                                <label>Warm</label>
+                            </div>
+                            <div class="knob-group">
+                                <div class="knob" data-control="crackle">
+                                    <div class="indicator"></div>
+                                </div>
+                                <label>Crackle</label>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section class="converter-interface">
-                <div class="input-group">
-                    <input type="text" id="youtubeUrl" aria-label="Track Search or YouTube URL" placeholder="Search track name or paste YouTube URL..." autocomplete="off">
-                    <div class="button-group">
-                        <button id="convertBtn">Draw Record</button>
-                        <button id="reserveBtn" class="secondary">Reserve</button>
-                        <button id="randomSpinBtn" class="secondary" style="background: linear-gradient(145deg, #b87333, #8a5322); color: white; border: none; box-shadow: 0 4px 10px rgba(184, 115, 51, 0.3); font-weight: bold;">🎲 Random Spin</button>
-                    </div>
-                </div>
-                
-                <div id="statusMessage" class="status"></div>
-                
-                <!-- Affiliate Integration Button -->
-                <button id="affiliateBtn" class="affiliate-btn hidden">🔍 Find this on Real Vinyl</button>
-
-                <!-- YouTube IFrame Target -->
-                <div id="youtube-player-placeholder"></div>
-            </section>
-
-
-
-            <!-- React Auth Gate Root -->
-            <div id="react-auth-root"></div>
-            <div id="react-shopping-root"></div>
-            <div id="react-search-root"></div>
-
-            <!-- AdSense Editorial Content -->
-            <article class="editorial-content">
-                <div class="editorial-container">
-                    <header class="editorial-header">
-                        <h2>The Magic of Analog Sound in a Digital Age</h2>
-                        <p>A deep dive into why we simulate vinyl, and how our true generative audio engine works.</p>
-                    </header>
-                    
-                    <div class="prose-block">
-                        <h3>Why Simulate Vinyl?</h3>
-                        <p>In an era of hyper-compressed, perfectly sterile digital audio streams, our ears often crave the organic imperfections of the past. The physical medium of vinyl records isn't just a nostalgic artifact; it introduces a unique sonic signature that fundamentally changes how we perceive music. While a perfectly pristine vinyl pressing on high-end equipment is meant to have an incredibly clear sound, we often find that the slight imperfections—the subtle low-frequency rumble of the turntable motor, the soft hiss of the stylus riding in the groove, and the occasional warm crackle of dust particles—actually help by acting as a comforting background noise. Vinyl Analog bridges the gap, allowing you to wrap your favorite digital tracks in this auditory blanket.</p>
-                        <p>Digital music formats strip away the natural background noise floor, leading to a sometimes fatiguing "perfect" silence between notes. By reintroducing analog artifacts, we create a psychoacoustic bed that makes music feel more grounded and alive. It isn't simply about mimicking old technology; it's about exploring the emotional weight that texture adds to sound.</p>
-                    </div>
-                    
-                    <div class="prose-block">
-                        <h3>How to Use the Turntable</h3>
-                        <p>Using our analog simulator is designed to be as tactile and deliberate as operating a physical record player. Start by finding a track using the digital crate conversion interface. Once loaded, you can actively manipulate the physical controls on the right panel to dial in your perfect sound profile.</p>
-                        <p>The <strong>Warmth</strong> knob is your primary EQ manipulation point. It doesn't just passively roll off treble; it sweeps a master Biquad low-pass filter to actively muffle harsh digital highs, while simultaneously driving a synthesized 50Hz sine-wave hum to replicate the inherent grounding noise of vintage vacuum tube amplifiers. Turning this knob precisely allows you to dial in the "age" of your virtual pressing.</p>
-                        <p>The <strong>Crackle</strong> dial operates an independent generative noise floor, driving randomly seeded crackles, pops, and hiss across the stereo field to recreate the feeling of a well-worn stylus on a dusty groove.</p>
+                <section class="converter-interface">
+                    <div class="input-group">
+                        <input type="text" id="youtubeUrl" aria-label="Track Search or YouTube URL"
+                            placeholder="Search track name or paste YouTube URL..." autocomplete="off">
+                        <div class="button-group">
+                            <button id="convertBtn">Draw Record</button>
+                            <button id="reserveBtn" class="secondary">Reserve</button>
+                            <button id="randomSpinBtn" class="secondary"
+                                style="background: linear-gradient(145deg, #b87333, #8a5322); color: white; border: none; box-shadow: 0 4px 10px rgba(184, 115, 51, 0.3); font-weight: bold;">🎲
+                                Random Spin</button>
+                        </div>
                     </div>
 
-                    <div class="prose-block">
-                        <h3>How Our Audio Engine Works</h3>
-                        <p>This simulator goes beyond simply overlaying a static sound file. When you drop the needle, our Web Audio API engine spins up a dynamic, generative noise floor. We synthesize authentic humming frequencies to replicate grounding characteristics of vintage setups. The controls actively drive Biquad filters to mimic the natural compression of tube saturation and physical pressing limitations. Meanwhile, the crackle algorithm dictates the frequency and amplitude of generative pops and hisses, calculated in real-time to ensure no two playback sessions are ever exactly the same.</p>
-                        <p>Unlike basic loop players, our generative engine ensures that you never hear the same exact sequence of static twice. This commitment to dynamic generation creates a continuous, breathing analog bed that deeply enhances long listening sessions without the repetition fatigue associated with static audio overlays.</p>
-                    </div>
+                    <div id="statusMessage" class="status"></div>
 
-                    <div class="prose-block">
-                        <h3>Explore More</h3>
-                        <p>Interested in learning more about the philosophy of analog audio? Check out our <a href="journal.html" style="color: var(--copper); text-decoration: underline;">Editorial Journal</a> for featured essays on sound design, or read <a href="about.html" style="color: var(--copper); text-decoration: underline;">About Us</a> to see how we built this engine from the ground up.</p>
+                    <!-- Affiliate Integration Button -->
+                    <button id="affiliateBtn" class="affiliate-btn hidden">🔍 Find this on Real Vinyl</button>
+
+                    <!-- YouTube IFrame Target -->
+                    <div id="youtube-player-placeholder"></div>
+                </section>
+
+
+
+                <!-- React Auth Gate Root -->
+                <div id="react-auth-root"></div>
+                <div id="react-shopping-root"></div>
+                <div id="react-search-root"></div>
+
+                <!-- AdSense Editorial Content -->
+                <article class="editorial-content">
+                    <div class="editorial-container">
+                        <header class="editorial-header">
+                            <h2>The Magic of Analog Sound in a Digital Age</h2>
+                            <p>A deep dive into why we simulate vinyl, and how our true generative audio engine works.
+                            </p>
+                        </header>
+
+                        <div class="prose-block">
+                            <h3>Why Simulate Vinyl?</h3>
+                            <p>In an era of hyper-compressed, perfectly sterile digital audio streams, our ears often
+                                crave the organic imperfections of the past. The physical medium of vinyl records isn't
+                                just a nostalgic artifact; it introduces a unique sonic signature that fundamentally
+                                changes how we perceive music. While a perfectly pristine vinyl pressing on high-end
+                                equipment is meant to have an incredibly clear sound, we often find that the slight
+                                imperfections—the subtle low-frequency rumble of the turntable motor, the soft hiss of
+                                the stylus riding in the groove, and the occasional warm crackle of dust
+                                particles—actually help by acting as a comforting background noise. Vinyl Analog bridges
+                                the gap, allowing you to wrap your favorite digital tracks in this auditory blanket.</p>
+                            <p>Digital music formats strip away the natural background noise floor, leading to a
+                                sometimes fatiguing "perfect" silence between notes. By reintroducing analog artifacts,
+                                we create a psychoacoustic bed that makes music feel more grounded and alive. It isn't
+                                simply about mimicking old technology; it's about exploring the emotional weight that
+                                texture adds to sound.</p>
+                        </div>
+
+                        <div class="prose-block">
+                            <h3>How to Use the Turntable</h3>
+                            <p>Using our analog simulator is designed to be as tactile and deliberate as operating a
+                                physical record player. Start by finding a track using the digital crate conversion
+                                interface. Once loaded, you can actively manipulate the physical controls on the right
+                                panel to dial in your perfect sound profile.</p>
+                            <p>The <strong>Warmth</strong> knob is your primary EQ manipulation point. It doesn't just
+                                passively roll off treble; it sweeps a master Biquad low-pass filter to actively muffle
+                                harsh digital highs, while simultaneously driving a synthesized 50Hz sine-wave hum to
+                                replicate the inherent grounding noise of vintage vacuum tube amplifiers. Turning this
+                                knob precisely allows you to dial in the "age" of your virtual pressing.</p>
+                            <p>The <strong>Crackle</strong> dial operates an independent generative noise floor, driving
+                                randomly seeded crackles, pops, and hiss across the stereo field to recreate the feeling
+                                of a well-worn stylus on a dusty groove.</p>
+                        </div>
+
+                        <div class="prose-block">
+                            <h3>How Our Audio Engine Works</h3>
+                            <p>This simulator goes beyond simply overlaying a static sound file. When you drop the
+                                needle, our Web Audio API engine spins up a dynamic, generative noise floor. We
+                                synthesize authentic humming frequencies to replicate grounding characteristics of
+                                vintage setups. The controls actively drive Biquad filters to mimic the natural
+                                compression of tube saturation and physical pressing limitations. Meanwhile, the crackle
+                                algorithm dictates the frequency and amplitude of generative pops and hisses, calculated
+                                in real-time to ensure no two playback sessions are ever exactly the same.</p>
+                            <p>Unlike basic loop players, our generative engine ensures that you never hear the same
+                                exact sequence of static twice. This commitment to dynamic generation creates a
+                                continuous, breathing analog bed that deeply enhances long listening sessions without
+                                the repetition fatigue associated with static audio overlays.</p>
+                        </div>
+
+                        <div class="prose-block">
+                            <h3>Explore More</h3>
+                            <p>Interested in learning more about the philosophy of analog audio? Check out our <a
+                                    href="journal.html"
+                                    style="color: var(--copper); text-decoration: underline;">Editorial Journal</a> for
+                                featured essays on sound design, or read <a href="about.html"
+                                    style="color: var(--copper); text-decoration: underline;">About Us</a> to see how we
+                                built this engine from the ground up.</p>
+                        </div>
                     </div>
-                </div>
-            </article>
+                </article>
             </div>
         </main>
 
@@ -252,11 +317,15 @@
             <div class="sidebar-scrollable-content">
                 <!-- Sidebar React Crate Root -->
                 <div class="react-crate-container" id="react-crate-root"></div>
-                
+
                 <!-- Curated Vinyl Lists -->
                 <div class="curated-section">
-                    <h3 class="curated-title accordion-header" id="curatedToggle">Curated for Vinyl <span class="mobile-only" id="curatedArrow" style="margin-left: 8px; font-size: 0.8rem; color: #C5A059;">▼</span></h3>
-                    <p style="font-size: 0.8rem; color: #a4a4a4; margin-bottom: 15px; margin-top: 5px; line-height: 1.4;">Not sure which song to play? Discover our hand-picked analog classics.</p>
+                    <h3 class="curated-title accordion-header" id="curatedToggle">Curated for Vinyl <span
+                            class="mobile-only" id="curatedArrow"
+                            style="margin-left: 8px; font-size: 0.8rem; color: #C5A059;">▼</span></h3>
+                    <p
+                        style="font-size: 0.8rem; color: #a4a4a4; margin-bottom: 15px; margin-top: 5px; line-height: 1.4;">
+                        Not sure which song to play? Discover our hand-picked analog classics.</p>
                     <div id="curatedLists" class="mobile-collapsed">
                         <!-- Dynamically populated by JS based on music styles -->
                     </div>
@@ -268,11 +337,14 @@
     <!-- PRO Upgrade Modal -->
     <div id="proModal" class="hidden">
         <div class="tour-overlay"></div>
-        <div class="modal-content wooden-frame pro-modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10005; min-width: 320px; max-width: 500px; padding: 30px;">
-            <button class="close-modal" id="closeProModal" style="position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 24px; color: #888; cursor: pointer;">&times;</button>
+        <div class="modal-content wooden-frame pro-modal"
+            style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10005; min-width: 320px; max-width: 500px; padding: 30px;">
+            <button class="close-modal" id="closeProModal"
+                style="position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 24px; color: #888; cursor: pointer;">&times;</button>
             <h2 class="pro-title">Join for Free</h2>
-            <p style="color: #a4a4a4; font-size: 0.95rem; margin-bottom: 25px;">You've discovered an exclusive Vinyl Analog feature! Elevate your analog listening experience by creating a free account.</p>
-            
+            <p style="color: #a4a4a4; font-size: 0.95rem; margin-bottom: 25px;">You've discovered an exclusive Vinyl
+                Analog feature! Elevate your analog listening experience by creating a free account.</p>
+
             <ul class="pro-features-list">
                 <li>
                     <strong>📀 The Digital Crate</strong>
@@ -280,7 +352,8 @@
                 </li>
                 <li>
                     <strong>⏭️ Seamless Track Skipping</strong>
-                    <span>Use the mechanical skip lever to instantly drop the needle on the next track in your queue.</span>
+                    <span>Use the mechanical skip lever to instantly drop the needle on the next track in your
+                        queue.</span>
                 </li>
                 <li>
                     <strong>🎵 High-Fidelity Audio</strong>
@@ -288,7 +361,8 @@
                 </li>
             </ul>
 
-            <button id="proAuthBtn" class="action-btn" style="width: 100%; margin-top: 15px; padding: 15px; font-size: 1.1rem;">Join for Free / Log In</button>
+            <button id="proAuthBtn" class="action-btn"
+                style="width: 100%; margin-top: 15px; padding: 15px; font-size: 1.1rem;">Join for Free / Log In</button>
         </div>
     </div>
     <!-- Interactive Onboarding Tour Container -->
@@ -297,10 +371,13 @@
         <div id="tourTooltip" class="tour-tooltip wooden-frame">
             <button class="close-tour" id="closeTour">&times;</button>
             <div id="tourArrow" class="tour-arrow"></div>
-            <h3 id="tourTitle" style="color: var(--accent-color); margin-top: 0; font-family: var(--font-heading); font-size: 1.5rem;">Title</h3>
+            <h3 id="tourTitle"
+                style="color: var(--accent-color); margin-top: 0; font-family: var(--font-heading); font-size: 1.5rem;">
+                Title</h3>
             <p id="tourText" style="color: #a4a4a4; font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">Text</p>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span id="tourStepCounter" style="font-size: 0.75rem; color: #666; font-weight: bold; letter-spacing: 1px;">1/5</span>
+                <span id="tourStepCounter"
+                    style="font-size: 0.75rem; color: #666; font-weight: bold; letter-spacing: 1px;">1/5</span>
                 <button id="nextTourBtn" class="btn" style="padding: 8px 20px;">Next</button>
             </div>
         </div>
@@ -321,8 +398,9 @@
 
     <!-- App Logic -->
     <script src="script.js?v=11"></script>
-    
+
     <!-- React Components -->
     <script type="text/babel" src="reactComponents.jsx?v=6"></script>
 </body>
+
 </html>
