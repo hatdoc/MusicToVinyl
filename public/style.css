@@ -501,9 +501,10 @@ body {
 }
 
 .ambiance-btn.active {
-    background: rgba(197, 160, 89, 0.2) !important;
-    border-color: var(--copper) !important;
-    box-shadow: 0 0 10px rgba(197, 160, 89, 0.3) !important;
+    background: rgba(197, 160, 89, 0.6) !important;
+    border-color: #fff !important;
+    box-shadow: 0 0 15px rgba(197, 160, 89, 1), inset 0 0 10px rgba(255, 255, 255, 0.4) !important;
+    transform: scale(1.15) translateZ(10px);
 }
 
 .ambiance-btn:hover {
