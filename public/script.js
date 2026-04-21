@@ -1123,6 +1123,138 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('toggleFireBtn')?.classList.remove('active');
     }
 
+    function startOcean() {
+        if (!audioCtx) initAudioEngine();
+        if (ambNodes.oceanPlaying) return;
+        ambNodes.oceanPlaying = true;
+        
+        const bufferSize = audioCtx.sampleRate * 2;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = Math.random() * 2 - 1;
+        }
+        
+        ambNodes.ocean = audioCtx.createBufferSource();
+        ambNodes.ocean.buffer = buffer;
+        ambNodes.ocean.loop = true;
+        
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 200; 
+        filter.Q.value = 0.5;
+
+        // An LFO to sweep the frequency up and down to simulate waves crashing and receding
+        const filterLfo = audioCtx.createOscillator();
+        filterLfo.type = 'sine';
+        filterLfo.frequency.value = 0.12; // ~8.3 second cycle
+        
+        const filterLfoGain = audioCtx.createGain();
+        filterLfoGain.gain.value = 400; // Sweep up to 600Hz
+        
+        filterLfo.connect(filterLfoGain);
+        filterLfoGain.connect(filter.frequency);
+
+        ambNodes.oceanGain = audioCtx.createGain();
+        ambNodes.oceanGain.gain.value = 0.5;
+        
+        ambNodes.ocean.connect(filter);
+        filter.connect(ambNodes.oceanGain);
+        ambNodes.oceanGain.connect(masterGain);
+        
+        ambNodes.ocean.start();
+        filterLfo.start();
+        
+        ambNodes.oceanLfo = filterLfo;
+        document.getElementById('toggleOceanBtn')?.classList.add('active');
+    }
+
+    function stopOcean() {
+        if (ambNodes.ocean) {
+            ambNodes.ocean.stop();
+            ambNodes.ocean.disconnect();
+            ambNodes.ocean = null;
+        }
+        if (ambNodes.oceanLfo) {
+            ambNodes.oceanLfo.stop();
+            ambNodes.oceanLfo.disconnect();
+            ambNodes.oceanLfo = null;
+        }
+        if (ambNodes.oceanGain) {
+            ambNodes.oceanGain.disconnect();
+            ambNodes.oceanGain = null;
+        }
+        ambNodes.oceanPlaying = false;
+        document.getElementById('toggleOceanBtn')?.classList.remove('active');
+    }
+
+    function startCity() {
+        if (!audioCtx) initAudioEngine();
+        if (ambNodes.cityPlaying) return;
+        ambNodes.cityPlaying = true;
+        
+        const bufferSize = audioCtx.sampleRate * 2;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        let lastOut = 0;
+        for (let i = 0; i < bufferSize; i++) {
+            let white = Math.random() * 2 - 1;
+            // Very deep brown noise simulation for distant traffic rumble
+            data[i] = (lastOut + (0.005 * white)) / 1.005;
+            lastOut = data[i];
+        }
+        
+        ambNodes.city = audioCtx.createBufferSource();
+        ambNodes.city.buffer = buffer;
+        ambNodes.city.loop = true;
+        
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 150; 
+        
+        const lfo = audioCtx.createOscillator();
+        lfo.type = 'sine';
+        lfo.frequency.value = 0.05; // very slow subtle rumble fluctuation
+        
+        const lfoGain = audioCtx.createGain();
+        lfoGain.gain.value = 50;
+        
+        lfo.connect(lfoGain);
+        lfoGain.connect(filter.frequency);
+        
+        ambNodes.cityGain = audioCtx.createGain();
+        ambNodes.cityGain.gain.value = 0.7;
+        
+        ambNodes.city.connect(filter);
+        filter.connect(ambNodes.cityGain);
+        ambNodes.cityGain.connect(masterGain);
+        
+        ambNodes.city.start();
+        lfo.start();
+        ambNodes.cityLfo = lfo;
+        document.getElementById('toggleCityBtn')?.classList.add('active');
+    }
+
+    function stopCity() {
+        if (ambNodes.city) {
+            ambNodes.city.stop();
+            ambNodes.city.disconnect();
+            ambNodes.city = null;
+        }
+        if (ambNodes.cityLfo) {
+            ambNodes.cityLfo.stop();
+            ambNodes.cityLfo.disconnect();
+            ambNodes.cityLfo = null;
+        }
+        if (ambNodes.cityGain) {
+            ambNodes.cityGain.disconnect();
+            ambNodes.cityGain = null;
+        }
+        ambNodes.cityPlaying = false;
+        document.getElementById('toggleCityBtn')?.classList.remove('active');
+    }
+
     const toggleRainBtn = document.getElementById('toggleRainBtn');
     if (toggleRainBtn) {
         toggleRainBtn.addEventListener('click', () => {
@@ -1136,6 +1268,22 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleFireBtn.addEventListener('click', () => {
             if (ambNodes.firePlaying) stopFire();
             else startFire();
+        });
+    }
+
+    const toggleOceanBtn = document.getElementById('toggleOceanBtn');
+    if (toggleOceanBtn) {
+        toggleOceanBtn.addEventListener('click', () => {
+            if (ambNodes.oceanPlaying) stopOcean();
+            else startOcean();
+        });
+    }
+
+    const toggleCityBtn = document.getElementById('toggleCityBtn');
+    if (toggleCityBtn) {
+        toggleCityBtn.addEventListener('click', () => {
+            if (ambNodes.cityPlaying) stopCity();
+            else startCity();
         });
     }
 });
