@@ -72,7 +72,7 @@
 
     <div class="app-container">
 
-        <main class="main-content">
+        <main class="main-content" style="position: relative;">
             <!-- Main Navigation Bar -->
             <nav class="main-nav" style="align-self: flex-start; justify-self: flex-start; width: 100%; top: 0; position: sticky; z-index: 1000;">
                 <div class="nav-container">
@@ -87,7 +87,7 @@
             </nav>
 
             <!-- Floating Ambiance Controls (Top Right, Below Header) -->
-            <div class="controls ambiance-panel" style="position: fixed; top: 75px; right: 20px; z-index: 900; display: flex; gap: 10px; align-items: center; background: rgba(10,10,10,0.7); padding: 8px 15px; border-radius: 8px; border: 1px solid rgba(197,160,89,0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+            <div class="controls ambiance-panel" style="position: absolute; top: 80px; right: 25px; z-index: 900; display: flex; gap: 10px; align-items: center; background: rgba(10,10,10,0.7); padding: 8px 15px; border-radius: 8px; border: 1px solid rgba(197,160,89,0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
                 <span style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-right: 5px;">Room Ambiance</span>
                 <button id="toggleRainBtn" class="ambiance-btn" title="Toggle Rain Ambiance" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🌧️</button>
                 <button id="toggleFireBtn" class="ambiance-btn" title="Toggle Fireplace Ambiance" aria-pressed="false" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;">🔥</button>
