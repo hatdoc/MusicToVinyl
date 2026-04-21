@@ -6,6 +6,15 @@ const SUPABASE_URL = "https://hwtbojjsuisbxzjtmswo.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_NjBgOV9I2YpplsLP1eKlXw_30yMzzLZ";
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+const cleanTitle = (str) => {
+    if (!str) return str;
+    return str.replace(/[\(\[].*?[\)\]]/g, '')
+              .replace(/official|video|audio|lyric|lyrics|mv/ig, '')
+              .replace(/[-|]/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim();
+};
+
 // --- Auth Gate Component ---
 function AuthGate() {
     const [isVisible, setIsVisible] = useState(false);
@@ -504,9 +513,9 @@ function VirtualCrate() {
                                 <div key={item.id} style={{padding: '10px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', gap: '12px', alignItems: 'center'}}>
                                     <img src={item.snippet.thumbnails && item.snippet.thumbnails.default && item.snippet.thumbnails.default.url} style={{width: '60px', height: '45px', objectFit: 'cover', borderRadius: '4px'}} />
                                     <div style={{flex: 1, overflow: 'hidden'}}>
-                                        <div style={{fontSize: '0.85rem', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} title={item.snippet.title}>{item.snippet.title}</div>
+                                        <div style={{fontSize: '0.85rem', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} title={cleanTitle(item.snippet.title)}>{cleanTitle(item.snippet.title)}</div>
                                         <button 
-                                            onClick={() => window.dispatchEvent(new CustomEvent('playHistoryTrack', { detail: { youtube_id: item.snippet.resourceId.videoId, title: item.snippet.title } }))}
+                                            onClick={() => window.dispatchEvent(new CustomEvent('playHistoryTrack', { detail: { youtube_id: item.snippet.resourceId.videoId, title: cleanTitle(item.snippet.title) } }))}
                                             style={{marginTop: '5px', padding: '2px 8px', fontSize: '0.6rem', background: '#C5A059', border: 'none', color: '#000', borderRadius: '3px', cursor: 'pointer', fontWeight: 'bold'}}
                                         >
                                             Play Record
@@ -554,7 +563,7 @@ function VirtualCrate() {
                                 style={{width: '80px', height: '55px', minWidth: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)'}}
                             />
                             <div style={{flex: 1, overflow: 'hidden'}}>
-                                <div style={{fontSize: '0.85rem', lineHeight: '1.3', color: 'var(--text-main)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>{item.title}</div>
+                                <div style={{fontSize: '0.85rem', lineHeight: '1.3', color: 'var(--text-main)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>{cleanTitle(item.title)}</div>
                                 {isPro && (
                                     <button 
                                         onClick={(e) => queueHistoryTrack(item, e)}
@@ -577,7 +586,7 @@ function VirtualCrate() {
                             >
                                 <div style={{width: '20px', fontSize: '0.7rem', color: '#C5A059', fontWeight: 'bold'}}>{index + 1}</div>
                                 <div style={{flex: 1, overflow: 'hidden'}}>
-                                    <div style={{fontSize: '0.85rem', lineHeight: '1.3', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{item.title}</div>
+                                    <div style={{fontSize: '0.85rem', lineHeight: '1.3', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{cleanTitle(item.title)}</div>
                                     <button 
                                         onClick={(e) => removeFromQueue(index, e)}
                                         style={{marginTop: '5px', padding: '2px 8px', fontSize: '0.6rem', background: 'rgba(200, 50, 50, 0.1)', border: '1px solid rgba(200, 50, 50, 0.3)', color: '#ff8888', borderRadius: '3px', cursor: 'pointer'}}
@@ -602,15 +611,6 @@ function ShoppingModal() {
     const [track, setTrack] = useState({ title: '', id: '' });
     const [searchTerms, setSearchTerms] = useState({ query: '', display: '' });
     const [loading, setLoading] = useState(false);
-    
-    // Helper to sanitize messy YouTube titles
-    const cleanTitle = (str) => {
-        return str.replace(/[\(\[].*?[\)\]]/g, '') // strip brackets/parentheses
-                  .replace(/official|video|audio|lyric|lyrics|mv/ig, '')
-                  .replace(/[-|]/g, ' ')
-                  .replace(/\s+/g, ' ')
-                  .trim();
-    };
 
     useEffect(() => {
         const handleShow = async (e) => {
@@ -801,7 +801,7 @@ function SearchModal() {
                         >
                             <img src={r.thumbnail} style={{width: '90px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #000'}} />
                             <div style={{flex: 1, overflow: 'hidden', textAlign: 'left'}}>
-                                <div style={{color: '#e0e0e0', fontSize: '1rem', lineHeight: '1.2', marginBottom: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} title={r.title}>{r.title}</div>
+                                <div style={{color: '#e0e0e0', fontSize: '1rem', lineHeight: '1.2', marginBottom: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} title={cleanTitle(r.title)}>{cleanTitle(r.title)}</div>
                                 <div style={{color: '#888', fontSize: '0.8rem'}}>{r.author}</div>
                             </div>
                             {isPro && !isQueueAction && (
