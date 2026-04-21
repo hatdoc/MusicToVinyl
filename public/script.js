@@ -1051,7 +1051,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         ambNodes.rain.connect(filter);
         filter.connect(ambNodes.rainGain);
-        ambNodes.rainGain.connect(state.nodes.masterGain);
+        ambNodes.rainGain.connect(state.audioContext.destination);
         
         ambNodes.rain.start();
         document.getElementById('toggleRainBtn')?.classList.add('active');
@@ -1103,7 +1103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         ambNodes.fire.connect(filter);
         filter.connect(ambNodes.fireGain);
-        ambNodes.fireGain.connect(state.nodes.masterGain);
+        ambNodes.fireGain.connect(state.audioContext.destination);
         
         ambNodes.fire.start();
         document.getElementById('toggleFireBtn')?.classList.add('active');
@@ -1160,7 +1160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         ambNodes.ocean.connect(filter);
         filter.connect(ambNodes.oceanGain);
-        ambNodes.oceanGain.connect(state.nodes.masterGain);
+        ambNodes.oceanGain.connect(state.audioContext.destination);
         
         ambNodes.ocean.start();
         filterLfo.start();
@@ -1228,7 +1228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         ambNodes.city.connect(filter);
         filter.connect(ambNodes.cityGain);
-        ambNodes.cityGain.connect(state.nodes.masterGain);
+        ambNodes.cityGain.connect(state.audioContext.destination);
         
         ambNodes.city.start();
         lfo.start();
