@@ -1237,15 +1237,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (ambNodes.thunderPlaying) return;
         ambNodes.thunderPlaying = true;
         
-        // Thunder is low frequency rumble bursts on top of noise
         const bufferSize = state.audioContext.sampleRate * 2;
         const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
         const data = buffer.getChannelData(0);
-        let lastOut = 0;
         for (let i = 0; i < bufferSize; i++) {
-            let white = Math.random() * 2 - 1;
-            data[i] = (lastOut + (0.01 * white)) / 1.01;
-            lastOut = data[i];
+            data[i] = Math.random() * 2 - 1;
         }
         
         ambNodes.thunder = state.audioContext.createBufferSource();
@@ -1254,21 +1250,21 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const filter = state.audioContext.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.value = 100;
+        filter.frequency.value = 200;
         
         // Random volume variations for thunder claps
         const lfo = state.audioContext.createOscillator();
         lfo.type = 'sine';
-        lfo.frequency.value = 0.03; // very slow
+        lfo.frequency.value = 0.1; // slow rumble
         
         const lfoGain = state.audioContext.createGain();
-        lfoGain.gain.value = 80;
+        lfoGain.gain.value = 150;
         
         lfo.connect(lfoGain);
         lfoGain.connect(filter.frequency);
         
         ambNodes.thunderGain = state.audioContext.createGain();
-        ambNodes.thunderGain.gain.value = 0.9;
+        ambNodes.thunderGain.gain.value = 1.2;
         
         ambNodes.thunder.connect(filter);
         filter.connect(ambNodes.thunderGain);
@@ -1278,7 +1274,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lfo.start();
         ambNodes.thunderLfo = lfo;
         document.getElementById('toggleThunderBtn')?.classList.add('active');
-        updateShareUrl();
+        if(typeof updateShareUrl === 'function') updateShareUrl();
     }
 
     function stopThunder() {
@@ -1287,7 +1283,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (ambNodes.thunderGain) { ambNodes.thunderGain.disconnect(); ambNodes.thunderGain = null; }
         ambNodes.thunderPlaying = false;
         document.getElementById('toggleThunderBtn')?.classList.remove('active');
-        updateShareUrl();
+        if(typeof updateShareUrl === 'function') updateShareUrl();
     }
 
     function startWind() {
@@ -1363,12 +1359,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const buffer = state.audioContext.createBuffer(1, bufferSize, state.audioContext.sampleRate);
         const data = buffer.getChannelData(0);
         
-        let lastOut = 0;
         for (let i = 0; i < bufferSize; i++) {
-            let white = Math.random() * 2 - 1;
-            // Very deep brown noise simulation for distant traffic rumble
-            data[i] = (lastOut + (0.005 * white)) / 1.005;
-            lastOut = data[i];
+            data[i] = Math.random() * 2 - 1;
         }
         
         ambNodes.city = state.audioContext.createBufferSource();
@@ -1377,14 +1369,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const filter = state.audioContext.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.value = 150; 
+        filter.frequency.value = 250; 
         
         const lfo = state.audioContext.createOscillator();
         lfo.type = 'sine';
         lfo.frequency.value = 0.05; // very slow subtle rumble fluctuation
         
         const lfoGain = state.audioContext.createGain();
-        lfoGain.gain.value = 50;
+        lfoGain.gain.value = 100;
         
         lfo.connect(lfoGain);
         lfoGain.connect(filter.frequency);
