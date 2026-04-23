@@ -1363,12 +1363,27 @@ input:checked+.slider:before {
     pointer-events: auto;
     transition: top 0.5s cubic-bezier(0.4, 0, 0.2, 1), left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 10001;
+    background: linear-gradient(145deg, #1f1411, #0f0a08);
+    border: 1px solid var(--copper);
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
 }
 
 .close-tour {
     position: absolute;
-    top: 10px; right: 15px;
-    background: none; border: none; color: #888; font-size: 1.5rem; cursor: pointer;
+    top: 12px; right: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: #bbb;
+    font-size: 1.2rem;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
 .close-tour:hover { color: var(--copper); }
