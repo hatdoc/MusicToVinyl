@@ -1486,7 +1486,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!timerDisplay) return;
         const m = Math.floor(focusTimeRemaining / 60);
         const s = focusTimeRemaining % 60;
-        timerDisplay.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        const text = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        if (timerDisplay.tagName === 'INPUT') {
+            timerDisplay.value = text;
+        } else {
+            timerDisplay.textContent = text;
+        }
     }
 
     if (timerToggleBtn && timerResetBtn) {
@@ -1532,6 +1537,33 @@ document.addEventListener('DOMContentLoaded', () => {
             updateTimerDisplay();
             timerToggleBtn.textContent = 'Start';
         });
+
+        if (timerDisplay) {
+            timerDisplay.addEventListener('focus', (e) => {
+                if (isTimerRunning) e.target.blur();
+            });
+
+            timerDisplay.addEventListener('change', (e) => {
+                if (isTimerRunning) {
+                    updateTimerDisplay();
+                    return;
+                }
+                const val = e.target.value;
+                let mins = defaultFocusMinutes;
+                if (val.includes(':')) {
+                    const parts = val.split(':');
+                    mins = parseInt(parts[0], 10);
+                } else {
+                    mins = parseInt(val, 10);
+                }
+                
+                if (!isNaN(mins) && mins > 0 && mins <= 120) {
+                    defaultFocusMinutes = mins;
+                    focusTimeRemaining = defaultFocusMinutes * 60;
+                }
+                updateTimerDisplay();
+            });
+        }
 
         const timerIncreaseBtn = document.getElementById('timerIncreaseBtn');
         const timerDecreaseBtn = document.getElementById('timerDecreaseBtn');
