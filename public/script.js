@@ -1641,4 +1641,17 @@ document.addEventListener('DOMContentLoaded', () => {
         window.history.replaceState(null, '', newUrl);
     };
 
+    // --- Cookie Consent ---
+    const cookieBanner = document.getElementById('cookieConsentBanner');
+    const acceptCookiesBtn = document.getElementById('acceptCookiesBtn');
+    if (cookieBanner && acceptCookiesBtn) {
+        if (!localStorage.getItem('cookie_consent_accepted')) {
+            cookieBanner.style.display = 'flex';
+        }
+        acceptCookiesBtn.addEventListener('click', () => {
+            localStorage.setItem('cookie_consent_accepted', 'true');
+            cookieBanner.style.display = 'none';
+        });
+    }
+
 });

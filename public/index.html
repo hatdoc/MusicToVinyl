@@ -413,11 +413,18 @@
         </div>
         <div class="footer-links">
             <a href="about.html">About Us</a>
+            <a href="contact.html">Contact</a>
             <a href="terms.html">Terms</a>
             <a href="privacy.html">Privacy</a>
             <a href="/admin" class="hidden">Admin Dashboard</a>
         </div>
     </footer>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsentBanner" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--sidebar-bg); border-top: 1px solid var(--copper); padding: 15px 20px; z-index: 10000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -4px 20px rgba(0,0,0,0.5);">
+        <p style="margin: 0; font-size: 0.9rem; color: var(--text-main); line-height: 1.4; max-width: 80%;">We use cookies to enhance your experience and serve personalized ads via Google AdSense. By continuing to use Vinyl Analog, you consent to our use of cookies as described in our <a href="privacy.html" style="color: var(--copper); text-decoration: underline;">Privacy Policy</a>.</p>
+        <button id="acceptCookiesBtn" style="background: var(--copper); color: #000; border: none; padding: 8px 20px; font-family: var(--font-ui); font-weight: bold; border-radius: 4px; cursor: pointer; transition: transform 0.2s;">Got It</button>
+    </div>
 
     <!-- App Logic -->
     <script src="script.js?v=11"></script>
