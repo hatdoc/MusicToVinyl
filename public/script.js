@@ -1415,14 +1415,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if(typeof updateShareUrl === 'function') updateShareUrl();
     }
 
-    const toggleAmbianceNav = document.getElementById('toggleAmbianceNav');
+    const toggleAmbianceBtnMain = document.getElementById('toggleAmbianceBtnMain');
+    const toggleTimerBtnMain = document.getElementById('toggleTimerBtnMain');
     const closeAmbianceBtn = document.getElementById('closeAmbianceBtn');
     const ambiancePanel = document.getElementById('ambiance-panel');
+    const focusTimerWidget = document.getElementById('focusTimerWidget');
 
-    if (toggleAmbianceNav && ambiancePanel) {
-        toggleAmbianceNav.addEventListener('click', (e) => {
+    if (toggleAmbianceBtnMain && ambiancePanel) {
+        toggleAmbianceBtnMain.addEventListener('click', (e) => {
             e.preventDefault();
             ambiancePanel.style.display = ambiancePanel.style.display === 'none' ? 'flex' : 'none';
+        });
+    }
+
+    if (toggleTimerBtnMain && focusTimerWidget) {
+        toggleTimerBtnMain.addEventListener('click', (e) => {
+            e.preventDefault();
+            focusTimerWidget.style.display = focusTimerWidget.style.display === 'none' ? 'flex' : 'none';
         });
     }
     
@@ -1599,23 +1608,22 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        if (toggleTimerPanelBtn && timerWidget) {
-            toggleTimerPanelBtn.addEventListener('click', () => {
+        const toggleTimerBtnMain = document.getElementById('toggleTimerBtnMain');
+        if (toggleTimerBtnMain && timerWidget) {
+            toggleTimerBtnMain.addEventListener('click', (e) => {
+                e.preventDefault();
                 const isHidden = timerWidget.style.display === 'none';
                 if (isHidden) {
                     timerWidget.style.display = 'flex';
-                    toggleTimerPanelBtn.classList.add('active');
                 } else {
                     timerWidget.style.display = 'none';
-                    toggleTimerPanelBtn.classList.remove('active');
                 }
             });
         }
 
-        if (closeTimerWidgetBtn && timerWidget && toggleTimerPanelBtn) {
+        if (closeTimerWidgetBtn && timerWidget) {
             closeTimerWidgetBtn.addEventListener('click', () => {
                 timerWidget.style.display = 'none';
-                toggleTimerPanelBtn.classList.remove('active');
             });
         }
 
