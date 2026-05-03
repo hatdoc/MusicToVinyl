@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
         startPlayback(track.youtube_id);
     });
 
-    async function handleConversion(explicitId = null, addToQueue = false) {
+    async function handleConversion(explicitId = null, addToQueue = false, autoPlay = true) {
         let videoId = explicitId;
         const url = youtubeUrlInput.value.trim();
 
@@ -397,7 +397,55 @@ document.addEventListener('DOMContentLoaded', () => {
             albumArt.classList.remove('hidden');
         }
 
-        startPlayback(videoId);
+        if (autoPlay) {
+            startPlayback(videoId);
+        } else {
+            cuePlayback(videoId);
+        }
+    }
+
+    function cuePlayback(videoId) {
+        state.youtubeVideoId = videoId;
+        state.isPlaying = false;
+        state.isPaused = true;
+        
+        const thumbnail = `https://img.youtube.com/vi/${videoId}/0.jpg`;
+        if (albumArt) {
+            albumArt.src = thumbnail;
+            albumArt.classList.remove('hidden');
+        }
+
+        try {
+            fetch('/api/search?q=' + videoId)
+                .then(res => res.json())
+                .then(data => {
+                    const info = data[0];
+                    if (info) {
+                        sleeveTitle.textContent = info.title;
+                        sleeveArtist.textContent = info.author;
+                        affiliateBtn.classList.remove('hidden');
+                        affiliateBtn.onclick = () => {
+                            window.dispatchEvent(new CustomEvent('showShoppingModal', { detail: { title: info.title, id: videoId } }));
+                        };
+                        window.dispatchEvent(new CustomEvent('trackLoaded', { detail: { id: videoId, title: info.title } }));
+                        statusMessage.textContent = `Ready to Play: ${info.title}`;
+                    }
+                });
+        } catch (e) { }
+
+        const tryCue = () => {
+            if (state.youtubePlayer && typeof state.youtubePlayer.cueVideoById === "function") {
+                state.youtubePlayer.cueVideoById(videoId);
+            } else {
+                setTimeout(tryCue, 500);
+            }
+        };
+        tryCue();
+        
+        plinthPlayBtn.textContent = "⏵";
+        plinthPlayBtn.classList.remove('active');
+        vinylRecord.classList.remove('spinning');
+        turntableHero.classList.remove('playing');
     }
 
     function extractVideoId(url) {
@@ -973,7 +1021,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (deepLinkVideoId) {
         setTimeout(() => {
             statusMessage.textContent = "Loading deep-linked pressing...";
-            handleConversion(deepLinkVideoId);
+            handleConversion(deepLinkVideoId, false, false);
         }, 500); // Small delay to let initial animations settle
     }
 
