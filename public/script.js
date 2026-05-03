@@ -1608,18 +1608,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        const toggleTimerBtnMain = document.getElementById('toggleTimerBtnMain');
-        if (toggleTimerBtnMain && timerWidget) {
-            toggleTimerBtnMain.addEventListener('click', (e) => {
-                e.preventDefault();
-                const isHidden = timerWidget.style.display === 'none';
-                if (isHidden) {
-                    timerWidget.style.display = 'flex';
-                } else {
-                    timerWidget.style.display = 'none';
-                }
-            });
-        }
+        // Toggle timer button logic is already handled at the top of the file
 
         if (closeTimerWidgetBtn && timerWidget) {
             closeTimerWidgetBtn.addEventListener('click', () => {
