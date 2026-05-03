@@ -1415,6 +1415,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if(typeof updateShareUrl === 'function') updateShareUrl();
     }
 
+    const toggleAmbianceNav = document.getElementById('toggleAmbianceNav');
+    const closeAmbianceBtn = document.getElementById('closeAmbianceBtn');
+    const ambiancePanel = document.getElementById('ambiance-panel');
+
+    if (toggleAmbianceNav && ambiancePanel) {
+        toggleAmbianceNav.addEventListener('click', (e) => {
+            e.preventDefault();
+            ambiancePanel.style.display = ambiancePanel.style.display === 'none' ? 'flex' : 'none';
+        });
+    }
+    
+    if (closeAmbianceBtn && ambiancePanel) {
+        closeAmbianceBtn.addEventListener('click', () => {
+            ambiancePanel.style.display = 'none';
+        });
+    }
+
     const toggleRainBtn = document.getElementById('toggleRainBtn');
     if (toggleRainBtn) {
         toggleRainBtn.addEventListener('click', () => {

@@ -87,6 +87,7 @@
                     <a href="/" class="nav-brand">Vinyl Analog</a>
                     <ul class="nav-links">
                         <li><a href="#" id="openUserGuideNav">How to Use</a></li>
+                        <li><a href="#" id="toggleAmbianceNav">Ambiance</a></li>
                         <li><a href="about.html">About Us</a></li>
                         <li><a href="journal.html">Journal</a></li>
                         <li id="react-nav-auth-root" style="display: flex; align-items: center; margin-left: 15px;">
@@ -96,8 +97,9 @@
             </nav>
 
             <!-- Floating Ambiance Controls (Top Right, Below Header) -->
-            <div class="controls ambiance-panel"
-                style="position: absolute; top: 80px; right: 25px; z-index: 900; display: flex; gap: 10px; align-items: center; background: rgba(10,10,10,0.7); padding: 8px 15px; border-radius: 8px; border: 1px solid rgba(197,160,89,0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+            <div id="ambiance-panel" class="controls ambiance-panel"
+                style="position: absolute; top: 80px; right: 25px; z-index: 900; display: none; gap: 10px; align-items: center; background: rgba(10,10,10,0.7); padding: 8px 25px 8px 15px; border-radius: 8px; border: 1px solid rgba(197,160,89,0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                <button id="closeAmbianceBtn" title="Hide Ambiance" style="position: absolute; top: 2px; right: 5px; background: none; border: none; color: #888; cursor: pointer; font-size: 14px; padding: 2px;">&times;</button>
                 <span
                     style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-right: 5px;">Ambiance</span>
                 <button id="toggleRainBtn" class="ambiance-btn" title="Rain" aria-pressed="false"
@@ -119,7 +121,7 @@
 
             <!-- Floating Focus Timer -->
             <div id="focusTimerWidget" class="controls focus-timer-panel"
-                style="position: absolute; top: 135px; right: 25px; z-index: 900; display: flex; flex-direction: column; gap: 8px; background: rgba(10,10,10,0.7); padding: 12px 15px; border-radius: 8px; border: 1px solid rgba(197,160,89,0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.5); min-width: 140px; align-items: center;">
+                style="position: absolute; top: 135px; right: 25px; z-index: 900; display: none; flex-direction: column; gap: 8px; background: rgba(10,10,10,0.7); padding: 12px 15px; border-radius: 8px; border: 1px solid rgba(197,160,89,0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.5); min-width: 140px; align-items: center;">
                 <button id="closeTimerWidgetBtn" title="Hide Timer" style="position: absolute; top: 5px; right: 5px; background: none; border: none; color: #888; cursor: pointer; font-size: 14px; padding: 2px;">&times;</button>
                 <div style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px;">Focus Timer</div>
                 <div style="display: flex; align-items: center; gap: 8px;">
