@@ -152,6 +152,27 @@ document.addEventListener('DOMContentLoaded', () => {
         tourTooltip.setAttribute('data-placement', step.placement);
 
         // Exact positional tracking
+        updateTourPosition();
+        
+        // Scroll target into view if it's outside viewport
+        const isTargetVisible = (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+        if (!isTargetVisible) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    function updateTourPosition() {
+        if (currentTourStep >= tourSteps.length || (tourContainer && tourContainer.classList.contains('hidden'))) return;
+        
+        const step = tourSteps[currentTourStep];
+        const targetEl = document.querySelector(step.target);
+        if (!targetEl) return;
+
         const rect = targetEl.getBoundingClientRect();
         let top = 0, left = 0;
 
@@ -177,6 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
         tourTooltip.style.top = `${top}px`;
         tourTooltip.style.left = `${left}px`;
     }
+
+    window.addEventListener('scroll', updateTourPosition, { passive: true });
+    window.addEventListener('resize', updateTourPosition, { passive: true });
 
     function startTour() {
         if (tourContainer) tourContainer.classList.remove('hidden');
