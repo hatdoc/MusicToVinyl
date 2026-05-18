@@ -1094,6 +1094,10 @@ button:not(.lever-key):not(.knob):not(.theme-dot):not(.close-modal):not(.unhide-
     box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.9);
 }
 
+button:focus {
+    outline: none;
+}
+
 button:not(.lever-key):not(.knob):not(.theme-dot):not(.close-modal):not(.unhide-toggle):not(.hide-sidebar-btn):active {
     transform: translateY(1px);
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);

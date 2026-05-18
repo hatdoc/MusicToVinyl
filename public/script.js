@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             text: "Keep track of your total hours spun. Play more tracks to unlock gamification badges like Vinyl Enthusiast and Analog Master.",
             target: "#react-stats-root",
             placement: "bottom",
-            offsetY: -10
+            offsetY: 60
         }
     ];
 
