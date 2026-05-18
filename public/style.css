@@ -1342,26 +1342,25 @@ input:checked+.slider:before {
 
 /* --- INTERACTIVE ONBOARDING TOUR --- */
 #onboardingTour {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: 10000;
+    /* No position or z-index to avoid creating a stacking context trap */
     pointer-events: none;
 }
 
 .tour-overlay {
-    position: absolute;
+    position: fixed;
     inset: 0;
+    z-index: 10000;
     background: rgba(0, 0, 0, 0.7);
     pointer-events: auto;
     transition: opacity 0.3s;
 }
 
 .tour-tooltip {
-    position: absolute;
+    position: fixed;
     width: 320px;
     padding: 25px;
     pointer-events: auto;
-    z-index: 10001;
+    z-index: 10005;
     background: linear-gradient(145deg, #1f1411, #0f0a08);
     border: 1px solid var(--copper);
     border-radius: 8px;
