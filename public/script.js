@@ -298,17 +298,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 stopPlayback();
             }
         } else if (event.data == YT.PlayerState.PLAYING) {
+            state.isPlaying = true;
+            state.isPaused = false;
             const videoData = event.target.getVideoData();
             statusMessage.textContent = `Now Playing: ${videoData.title || "Analog Stream"}`;
             plinthPlayBtn.textContent = "⏸";
             plinthPlayBtn.classList.add('active');
             vinylRecord.classList.add('spinning');
             turntableHero.classList.add('playing');
+            playVinylNoise(); // Only play continuous noise when actual music is flowing
         } else if (event.data == YT.PlayerState.PAUSED) {
+            state.isPaused = true;
             vinylRecord.classList.remove('spinning');
             turntableHero.classList.remove('playing');
             plinthPlayBtn.textContent = "⏵";
             plinthPlayBtn.classList.remove('active');
+            if (state.audioContext) state.audioContext.suspend();
         }
     }
 
@@ -940,8 +945,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (state.isPaused) {
                             state.youtubePlayer.pauseVideo();
                         } else {
-                            playVinylNoise();
+                            // We no longer blindly call playVinylNoise() here. It's handled by onPlayerStateChange(PLAYING)
                             state.youtubePlayer.playVideo();
+                            
+                            // Autoplay failure detection
+                            setTimeout(() => {
+                                if (state.youtubePlayer && 
+                                    state.youtubePlayer.getPlayerState() !== YT.PlayerState.PLAYING && 
+                                    state.youtubePlayer.getPlayerState() !== YT.PlayerState.BUFFERING) {
+                                    console.warn("Autoplay blocked or failed to start.");
+                                    stopPlayback();
+                                    statusMessage.textContent = "Click Play to Start (Autoplay Blocked).";
+                                    cuePlayback(videoId);
+                                }
+                            }, 800);
                         }
                     } else {
                         setTimeout(tryPlay, 500);
@@ -956,32 +973,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function pausePlayback() {
-        state.isPaused = true;
         if (state.youtubePlayer && typeof state.youtubePlayer.pauseVideo === "function") {
-            state.youtubePlayer.pauseVideo();
+            state.youtubePlayer.pauseVideo(); // This will trigger onPlayerStateChange(PAUSED)
+        } else {
+            // Fallback if player isn't ready
+            state.isPaused = true;
+            if (state.audioContext) state.audioContext.suspend();
+            plinthPlayBtn.textContent = "⏵";
+            plinthPlayBtn.classList.remove('active');
+            vinylRecord.classList.remove('spinning');
+            turntableHero.classList.remove('playing');
         }
-        if (state.audioContext) {
-            state.audioContext.suspend();
-        }
-        plinthPlayBtn.textContent = "⏵";
-        plinthPlayBtn.classList.remove('active');
-        vinylRecord.classList.remove('spinning');
-        turntableHero.classList.remove('playing');
         statusMessage.textContent = "Playback Paused.";
     }
 
     function resumePlayback() {
-        state.isPaused = false;
         if (state.youtubePlayer && typeof state.youtubePlayer.playVideo === "function") {
-            state.youtubePlayer.playVideo();
+            state.youtubePlayer.playVideo(); // This will trigger onPlayerStateChange(PLAYING)
+        } else {
+            // Fallback if player isn't ready
+            state.isPaused = false;
+            if (state.audioContext) state.audioContext.resume();
+            plinthPlayBtn.textContent = "⏸";
+            plinthPlayBtn.classList.add('active');
+            vinylRecord.classList.add('spinning');
+            turntableHero.classList.add('playing');
         }
-        if (state.audioContext) {
-            state.audioContext.resume();
-        }
-        plinthPlayBtn.textContent = "⏸";
-        plinthPlayBtn.classList.add('active');
-        vinylRecord.classList.add('spinning');
-        turntableHero.classList.add('playing');
         statusMessage.textContent = "Resuming warmth...";
     }
 
